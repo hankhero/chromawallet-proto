@@ -18,3 +18,4 @@ tramp
 
 \.sass-cache
 \.DS_Store
+.module-cache

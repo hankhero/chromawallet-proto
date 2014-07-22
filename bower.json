@@ -1,0 +1,17 @@
+{
+  "name": "chromawallet",
+  "version": "0.0.0",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "gumby": "git://github.com/GumbyFramework/Gumby.git#~2.6.3",
+    "react": "~0.11.0"
+  }
+}

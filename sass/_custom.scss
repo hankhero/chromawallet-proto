@@ -1,0 +1,26 @@
+// Your custom SCSS should be written here...
+
+
+.overview .row {
+    border-bottom: 1px dashed;
+}
+
+.send fieldset {
+    border-top: 1px dashed;
+    margin-top: 10px; //TODO use mixin for size in px
+}
+
+.history-small table tbody td {
+    border:0;
+}
+.history-small table tbody th {
+    padding-left: 10px; //TODO use mixin for size in px
+}
+
+.history-small tbody {
+    border: 1px solid #e5e5e5; //TODO Use mixin for color
+}
+
+.navbar li.active a {
+    background-color: orange; //Temp
+}
