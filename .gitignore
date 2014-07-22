@@ -19,3 +19,6 @@ tramp
 \.sass-cache
 \.DS_Store
 .module-cache
+
+node_modules/*
+rsync-to-henrik.sh
