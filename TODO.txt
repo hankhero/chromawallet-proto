@@ -1,0 +1,5 @@
+Henrik
+
+I've edited bower_components/gumby/js/libs/ui/gumby.navbar.js
+
+Contribute back and check in
