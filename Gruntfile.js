@@ -45,7 +45,9 @@ module.exports = function(grunt) {
         },
 watch: {
     scripts: {
-        files: ['jsx/*.js', '!jsx/*_*.js'], //Second is to exclude flymake files
+        files: ['jsx/*.js', '!jsx/*_*.js', '!jsx/\.#*'],
+        //Second is to exclude flymake files, third auto-save emacs files
+
         tasks: ['shell:buildJsx'],
         options: {
             spawn: false

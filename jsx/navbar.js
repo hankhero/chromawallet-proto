@@ -6,15 +6,22 @@ var NavBar = React.createClass({
   },
   getDefaultProps: function() {
     return {
-      tabs: ['Oveview', 'Send', 'Assets',
-      'Receive', 'History','Trade']
+      tabs: ['Overview', 'Send', 'Assets',
+      'Receive', 'History','Trade'],
+      navigateHandler: function (tabName) {
+          console.log('Default navigate handler, please override');
+      }
     };
   },
   handleClick: function(tabName, event) {
-      console.log("Click", tabName, event);
-      this.setState({selected: tabName});
-    //this.setState({liked: !this.state.liked});
-  },  
+    console.log("Click", tabName, event);
+    console.log(this.props);
+    this.props.navigateHandler.call(this, tabName);
+    this.setTab(tabName);
+  },
+  setTab: function (tabName) {
+      this.setState({selected: tabName});      
+  },
   componentDidMount: function () {
       var node = this.getDOMNode(),
           $node = $(node),
@@ -49,12 +56,3 @@ var NavBar = React.createClass({
         </div>);
   }
 });
-
-$(document).ready(function() {
-  React.renderComponent(
-    <NavBar />,
-    document.getElementById('main')
-  );
-                      
-});
-
