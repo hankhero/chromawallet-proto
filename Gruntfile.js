@@ -54,7 +54,7 @@ watch: {
         }
     },
     sass: {
-        files: ['sass/*.scss'],
+        files: ['sass/*.scss','sass/var/*.scss'],
         tasks: ['compass'],
         options: {
             spawn: false

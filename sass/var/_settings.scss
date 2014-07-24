@@ -2,6 +2,13 @@
 // Happy Tinkering!
 
 
+// Chromaway colors
+
+$chroma-orange:  #ef4e22;
+$chroma-dark-blue:  #343c4b;
+$chroma-grey:  #939597;
+
+
 // Grid Settings
 $row-max-width: 940px !default;    				// 940px
 $gutter-in-px: 20px !default;      				// 20px
@@ -18,7 +25,7 @@ $max-device-width: 2880px;						// Max Document Size
 $nav-distance: 0; 							// Navigation distance from the top of the viewport
 
 // Typography
-$font-family: "Open Sans";
+$font-family: "SourceSansPro"; // Henrik changed
 $font-style-italic: italic;
 $icons: entypo;
 $font-smoothing: antialiased;
@@ -76,10 +83,10 @@ $body-link-hover-color: #c03d20 !default;
 
 // User Interface Colors
 $global-bg-color: #fff;
-$navbar-color: #4a4d50;
+$navbar-color: $chroma-dark-blue; //#4a4d50;
 $navbar-link-color: #fff;
 
-$primary-color: #3085d6;
+$primary-color: $chroma-dark-blue; //#3085d6;
 $secondary-color: #42a35a;
 $default-color: #f2f2f2;
 $info-color: #4a4d50;
