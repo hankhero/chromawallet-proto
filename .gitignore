@@ -21,4 +21,5 @@ tramp
 .module-cache
 
 node_modules/*
+build/
 rsync-to-henrik.sh
