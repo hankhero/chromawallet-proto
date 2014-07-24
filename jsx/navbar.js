@@ -27,7 +27,7 @@ var NavBar = React.createClass({
           $node = $(node),
           $toggler = $node.find('.icon-toggle');
       $toggler.attr('gumby-trigger', '#nav1 > ul');
-      Gumby.initialize(['toggles', 'switches']);
+      Gumby.initialize(['toggles', 'switches', 'navbar']);
   },
   render: function() {
     var self = this;

@@ -6,9 +6,16 @@
 	'use strict';
 
 	// define and init module on touch enabled devices only
+/*
+ HENRIK Disabled. Why? It causes error if you try to call
+gumbu.init('navbar') on a non-touch. 
+It also does not work responsive, if you try to develop an
+desktop for mobile it does not work good for a small window.
+
 	if(!Gumby.gumbyTouch) {
 		return;
 	}
+*/
 
 	function Navbar($el) {
 
