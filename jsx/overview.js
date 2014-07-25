@@ -25,7 +25,7 @@ var Overview = React.createClass({
     </div>
     <div className="six columns">
       <div>Balance: <span>3.20</span></div>
-      <div>Address: <span>CoPw4ahijciS1C@mp78983PxHDLX4BdQTSHu4nhHC7W6CEssn</span></div>
+      <div className="overview__address">Address: <span>CoPw4ahijciS1C@mp78983PxHDLX4BdQTSHu4nhHC7W6CEssn</span></div>
     </div>
   </div>
 </div>

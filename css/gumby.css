@@ -1701,8 +1701,11 @@ table.rounded thead th, table.rounded thead td, table.rounded caption + tbody tr
 
 span.desktop { display: none; }
 
+span.non-desktop { display: inline; }
+
 @media only screen and (min-width: 768px) { .navbar { margin-top: 30px; }
-  span.desktop { display: inline; } }
+  span.desktop { display: inline; }
+  span.non-desktop { display: none; } }
 @media only screen and (min-width: 768px) { body { background-image: url(../img/Sea_Texture_1_by_goldberry2000.jpg); background-repeat: repeat; } }
 .navbar ul li > a { text-shadow: inherit; }
 
@@ -1711,3 +1714,7 @@ span.desktop { display: none; }
 .module-heading .right-button { float: right; margin-top: 15px; }
 
 .btn { margin: 1px; }
+
+.overview__address { overflow: hidden; text-overflow: ellipsis; }
+
+.history__address { overflow: hidden; text-overflow: ellipsis; max-width: 300px; }

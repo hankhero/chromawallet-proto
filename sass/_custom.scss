@@ -37,6 +37,10 @@
 span.desktop {
     display: none;
 }
+span.non-desktop {
+    display: inline;
+}
+
 
 @include respond(desktop) {
     .navbar {
@@ -45,6 +49,9 @@ span.desktop {
 
     span.desktop {
         display: inline;
+    }
+    span.non-desktop {
+        display: none;
     }
 }
 
@@ -75,4 +82,15 @@ span.desktop {
     margin: 1px;
 }
 
+.overview__address {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+.history__address {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
+}
 
