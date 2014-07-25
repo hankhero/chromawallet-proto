@@ -34,10 +34,17 @@
     margin-bottom: 0;
 }
 
-@include respond(desktop) {
+span.desktop {
+    display: none;
+}
 
+@include respond(desktop) {
     .navbar {
         margin-top: 30px;
+    }
+
+    span.desktop {
+        display: inline;
     }
 }
 
@@ -52,6 +59,20 @@
 
 .navbar ul li > a {
     text-shadow: inherit;
+}
+
+
+.module-heading h2 {
+    float: left;
+}
+
+.module-heading .right-button {
+    float: right;
+    margin-top: 15px;
+}
+
+.btn {
+    margin: 1px;
 }
 
 

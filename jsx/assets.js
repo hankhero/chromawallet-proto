@@ -4,14 +4,15 @@ var Assets = React.createClass({
   render: function () {
       return (
 <div className="assets">
-
-  <div className="row">
+  <div className="row module-heading">
     <h2>Assets</h2>
-  </div>
-  <div className="row">
-    <div className=" medium primary btn"><a href="#">Issue new</a></div>
-    <div className=" medium primary btn"><a href="#">Add existing</a></div>
-    <div className=" medium primary btn"><a href="#">Import JSON</a></div>
+    <div className="right-button">
+      <div className=" medium primary btn">
+        <a href="#">Issue<span className="desktop"> new</span></a></div>
+      <div className=" medium primary btn">
+        <a href="#">Add<span className="desktop"> existing</span></a></div>
+      <div className=" medium primary btn"><a href="#">Import<span className="desktop"> JSON</span></a></div>
+    </div>
   </div>
   <div className="row">
     <table>

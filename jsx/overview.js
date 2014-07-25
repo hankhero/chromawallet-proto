@@ -5,15 +5,11 @@ var Overview = React.createClass({
       return (
 
 <div className="overview">
-  <div className="row">
-    <div className="four columns">
-      <h2>Overview</h2>
-    </div>
-
-    <div className="push_six two columns">
-      <div className=" medium primary btn"><a href="#">Update</a></div>
-    </div>
+  <div className="row module-heading">
+    <h2>Overview</h2>
+    <div className="right-button medium primary btn"><a href="#">Update</a></div>
   </div>
+
   <div className="row">
     <div className="six columns">
       <h3>bitcoin</h3>

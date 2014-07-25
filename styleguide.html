@@ -61,18 +61,14 @@
   </ul>
 </div>
 
-<div class="row">
+<div class="row" style="background-color: beige">
     <h2>Style guide, work-in-progress design</h2>  
 </div>
 
 <div class="overview">
-  <div class="row">
-    <div class="four columns">
-      <h2>Overview</h2>
-    </div>
-
-    <div class="push_six two columns">
-      <div class=" medium primary btn"><a href="#">Update</a></div>
+    <div class="row module-heading">
+        <h2>Overview</h2>
+        <div class="right-button medium primary btn"><a href="#">Update</a></div>
     </div>
   </div>
   <div class="row">
@@ -97,15 +93,9 @@
 
 
 <div class="send">
-  <div class="row">
-    <div class="twelve columns">
-      <h2>Send</h2>
-    </div>
-  </div>
-  <div class="row">
-    <div class="four columns">
-      <div class=" medium primary btn"><a href="#">Add recipient</a></div>
-    </div>
+  <div class="row module-heading">
+    <h2>Send</h2>
+    <div class="right-button medium primary btn"><a href="#">Add recipient</a></div>
   </div>
 
   <div class="recipient-form row">
@@ -161,15 +151,25 @@
 
 
 <div class="assets">
-
-  <div class="row">
+  <div class="row module-heading">
     <h2>Assets</h2>
+    <div class="right-button">
+      <div class=" medium primary btn">
+        <a href="#">Issue<span class="desktop"> new</span></a></div>
+      <div class=" medium primary btn">
+        <a href="#">Add<span class="desktop"> existing</span></a></div>
+      <div class=" medium primary btn"><a href="#">Import<span class="desktop"> JSON</span></a></div>
+    </div>
   </div>
-  <div class="row">
-    <div class=" medium primary btn"><a href="#">Issue new</a></div>
-    <div class=" medium primary btn"><a href="#">Add existing</a></div>
-    <div class=" medium primary btn"><a href="#">Import JSON</a></div>
-  </div>
+
+  <!-- <div class="row"> -->
+  <!--   <h2>Assets</h2> -->
+  <!-- </div> -->
+  <!-- <div class="row"> -->
+  <!--   <div class=" medium primary btn"><a href="#">Issue new</a></div> -->
+  <!--   <div class=" medium primary btn"><a href="#">Add existing</a></div> -->
+  <!--   <div class=" medium primary btn"><a href="#">Import JSON</a></div> -->
+  <!-- </div> -->
   <div class="row">
     <table>
 	  <thead>
@@ -197,14 +197,16 @@
 
 <div class="receive">
 
-  <div class="row">
+  <div class="row module-heading">
     <h2>Receive</h2>
+    <div class="right-button medium primary btn"><a href="#">New address</a></div>
   </div>
+
   <div class="row">
     <div class="six columns">
       <p>These are your addresses for receiving payments</p>
     </div>
-    <div class="four columns">
+    <div class="six columns">
       <div class="field">
         <div class="picker">
           <select id="receive-filter">
@@ -216,13 +218,13 @@
         </div>
       </div>
     </div>
-    <div class="two columns">
-      <div class=" medium primary btn"><a href="#">New address</a></div>
-    </div>
+
+
     
   </div>
-  <div class="row">
-  </div><!--row -->
+
+  <div class="row"></div>
+
   <div class="row">
     <table>
 	  <thead>
@@ -240,7 +242,7 @@
 		</tr>
 		<tr>
 		  <td>Foo-coin</td>
-		  <td>CoPw4ahijciS1C@mp78983PxHDLX4BdQTSHu4nhHC7W6CEssn&nbsp;<div class="small primary btn"><a href="#">Copy</a></div></td>
+		  <td><div>CoPw4ahi</div><div>jciS1C@m</div><div>p78983Px</div><div>HDLX4BdQ</div><div>TSHu4nhH</div><div>C7W6CEss</div>&nbsp;<div class="small primary btn"><a href="#">Copy</a></div></td>
 
 		  <td>1.02</td>
 		</tr>

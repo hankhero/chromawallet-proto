@@ -4,15 +4,9 @@ var Send = React.createClass({
   render: function () {
       return (
 <div className="send">
-  <div className="row">
-    <div className="twelve columns">
-      <h2>Send</h2>
-    </div>
-  </div>
-  <div className="row">
-    <div className="four columns">
-      <div className=" medium primary btn"><a href="#">Add recipient</a></div>
-    </div>
+  <div className="row module-heading">
+    <h2>Send</h2>
+    <div className="right-button medium primary btn"><a href="#">Add recipient</a></div>
   </div>
 
   <div className="recipient-form row">

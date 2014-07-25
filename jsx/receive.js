@@ -5,14 +5,17 @@ var Receive = React.createClass({
       return (
 <div className="receive">
 
-  <div className="row">
+  <div className="row module-heading">
     <h2>Receive</h2>
+    <div className="right-button medium primary btn"><a href="#">New address</a></div>
   </div>
+
   <div className="row">
     <div className="six columns">
       <p>These are your addresses for receiving payments</p>
     </div>
-    <div className="four columns">
+
+    <div className="six columns">
       <div className="field">
         <div className="picker">
           <select id="receive-filter">
@@ -24,10 +27,6 @@ var Receive = React.createClass({
         </div>
       </div>
     </div>
-    <div className="two columns">
-      <div className=" medium primary btn"><a href="#">New address</a></div>
-    </div>
-    
   </div>
   <div className="row">
   </div>
