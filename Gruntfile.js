@@ -43,12 +43,27 @@ module.exports = function(grunt) {
                 }
             }
         },
+        cacheBust: {
+          options: {
+            algorithm: 'sha1',
+            length: 32
+            //dir: '.'
+          },
+          assets: {
+              files: [{
+                          expand: true,
+                          //cwd: 'src',
+                          src: ['demo.html']
+                          //          dest: 'dest/'
+                      }]
+          }
+        },        
 watch: {
     scripts: {
         files: ['jsx/*.js', '!jsx/*_*.js', '!jsx/\.#*'],
         //Second is to exclude flymake files, third auto-save emacs files
 
-        tasks: ['shell:buildJsx'],
+        tasks: ['build'],
         options: {
             spawn: false
         }
@@ -69,15 +84,18 @@ watch: {
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-compass');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-cache-bust');
+
     
-    grunt.registerTask('jsx', [
-                           'shell:buildJsx'
+    grunt.registerTask('build', [
+                           'shell:buildJsx',
+                           'cacheBust'
                        ]);
 
     grunt.registerTask('default', [
-                           'jsx',
+                           'build',
                            'connect',
                            'watch'
                        ]);
 
-}
+};
