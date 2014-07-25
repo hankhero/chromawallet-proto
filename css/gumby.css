@@ -1699,6 +1699,15 @@ table.rounded thead th, table.rounded thead td, table.rounded caption + tbody tr
 
 .navbar { background-color: #343c4b; margin-bottom: 0; }
 
-@media only screen and (min-width: 768px) { .navbar { margin-top: 30px; } }
+span.desktop { display: none; }
+
+@media only screen and (min-width: 768px) { .navbar { margin-top: 30px; }
+  span.desktop { display: inline; } }
 @media only screen and (min-width: 768px) { body { background-image: url(../img/Sea_Texture_1_by_goldberry2000.jpg); background-repeat: repeat; } }
 .navbar ul li > a { text-shadow: inherit; }
+
+.module-heading h2 { float: left; }
+
+.module-heading .right-button { float: right; margin-top: 15px; }
+
+.btn { margin: 1px; }
