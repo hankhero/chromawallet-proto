@@ -1718,3 +1718,7 @@ span.non-desktop { display: inline; }
 .overview__address { overflow: hidden; text-overflow: ellipsis; }
 
 .history__address { overflow: hidden; text-overflow: ellipsis; max-width: 300px; }
+
+.receive__address-cell { max-width: 150px; }
+
+.receive__address { display: inline-block; max-width: 70%; overflow: hidden; text-overflow: ellipsis; }

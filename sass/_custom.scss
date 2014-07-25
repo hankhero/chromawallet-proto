@@ -94,3 +94,13 @@ span.non-desktop {
     max-width: 300px;
 }
 
+
+.receive__address-cell {
+    max-width: 150px;
+}
+.receive__address {
+    display: inline-block;
+    max-width: 70%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
