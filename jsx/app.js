@@ -26,14 +26,17 @@ var App = React.createClass({
       };
       return (
           <div>
-              <NavBar navigateHandler = {this.changeTab} />
+              <NavBar navigateHandler = {this.changeTab} 
+                  tabs = {['Overview', 'Send',
+                          'Receive', 'History']} />
               <div className={show('Overview') }><Overview /></div>
               <div className={show('Receive')} ><Receive /></div>
               <div className={show('Send')} ><Send /></div>
               <div className={show('History') }><History /></div>
-              <div className={show('Assets')} ><Assets /></div>
-              <div className={show('Trade')} ><Trade /></div>
            </div>
       );
+      //        <div className={show('Assets')} ><Assets /></div>
+      //        <div className={show('Trade')} ><Trade /></div>
+
   }
 });
