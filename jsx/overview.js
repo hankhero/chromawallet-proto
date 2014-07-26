@@ -2,8 +2,19 @@
 
 var AssetBalanceView = React.createClass({
     render: function () {
+        var asset = this.props.asset,
+            total = asset.getTotalBalance(),
+            unconfirmed = asset.getUnconfirmedBalance(),
+            available,
+            text = total;
+        if (unconfirmed && unconfirmed !==0) {
+            available = asset.getAvailableBalance();
+            text = text + " (" + unconfirmed + " unconfirmed, " +
+                available + " available)";
+        }
+
         return (
-            <span>{this.props.asset.getTotalBalance()}</span>
+            <span>{text}</span>
         );
     }
 });

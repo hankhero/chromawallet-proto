@@ -19,7 +19,7 @@ var MockAssetModel = function (props) {
             return props.unconfirmedBalance;
         },
         getAvailableBalance: function () {
-            return props.availableBBalance;
+            return props.availableBalance;
         }
         
     };
@@ -38,7 +38,8 @@ var MockWallet = function () {
             asset: 'Gold-coins',
             address: 'fasdf9fnasdfasdf9rfad@asdasdbe134bje',
             totalBalance: 10.34,
-            unconfirmedBalance: 2.2
+            unconfirmedBalance: 2.2,
+            availableBalance: 10.34 - 2.2
         })
     ],
     getAssetModels = function () {
@@ -78,7 +79,8 @@ var MockWallet = function () {
                 asset: 'Surprise-voucher',
                 address: 'asdfadf@asdasdsdfasdf9rfadvcadv',
                 totalBalance: 99.00,
-                unconfirmedBalance: undefined
+                unconfirmedBalance: 10,
+                availableBalance: 89
             }));
             updateCallback();
         }
