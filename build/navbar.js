@@ -2,7 +2,7 @@
 
 var NavBar = React.createClass({displayName: 'NavBar',
   getInitialState: function() {
-    return {selected: 'Send'};
+    return {selected: 'Overview'};
   },
   getDefaultProps: function() {
     return {

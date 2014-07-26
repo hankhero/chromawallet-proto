@@ -1,34 +1,48 @@
 /** @jsx React.DOM */
 
+var AssetBalanceView = React.createClass({
+    render: function () {
+        return (
+            <span>{this.props.asset.getTotalBalance()}</span>
+        );
+    }
+});
+var AssetAddressView = React.createClass({
+    render: function () {
+        return (
+            <span>{this.props.asset.getAddress()}</span>
+        );
+    }
+});
+
+
 var Overview = React.createClass({
   render: function () {
-      return (
+    var assets = this.props.wallet.getAssetModels();
+    return (
+       <div className="overview">
+         <div className="row module-heading">
+           <h2>Overview</h2>
+           <div className="right-button medium primary btn"><a href="#">Update</a></div>
+         </div>
+         {
+             assets.map(function (assetModel) {
+                var moniker = assetModel.getMoniker();
+                return (
+                   <div className="row">
+                     <div className="six columns">
+                       <h3>{moniker}</h3>
+                     </div>
+                     <div className="six columns">
+                       <div>Balance: <AssetBalanceView asset={assetModel} /></div>
+                       <div>Address: <AssetAddressView asset={assetModel}/></div>
+                     </div>
+                   </div>
+                );
+             })
+         }
 
-<div className="overview">
-  <div className="row module-heading">
-    <h2>Overview</h2>
-    <div className="right-button medium primary btn"><a href="#">Update</a></div>
-  </div>
-
-  <div className="row">
-    <div className="six columns">
-      <h3>bitcoin</h3>
-    </div>
-    <div className="six columns">
-      <div>Balance: <span>12.34</span></div>
-      <div>Address: <span>12asdf9fnasdfasdf9rfadvcadv</span></div>
-    </div>
-  </div>
-  <div className="row">
-    <div className="six columns">
-      <h3>gold-coin</h3>
-    </div>
-    <div className="six columns">
-      <div>Balance: <span>3.20</span></div>
-      <div className="overview__address">Address: <span>CoPw4ahijciS1C@mp78983PxHDLX4BdQTSHu4nhHC7W6CEssn</span></div>
-    </div>
-  </div>
-</div>
-      );
+       </div>
+    );
   }
 });
