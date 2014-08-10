@@ -56,11 +56,10 @@ span.non-desktop {
 }
 
 @include respond(desktop) {
-    // If we use this, we should notify the author.
-    // http://fc03.deviantart.net/fs22/i/2007/357/c/3/Sea_Texture_1_by_goldberry2000.jpg
     body {
-        background-image: url(../img/Sea_Texture_1_by_goldberry2000.jpg);
-        background-repeat: repeat;
+        /* background-image: url(../img/starnetblog_subtile_gray_pattern5.jpg); */
+        /* background-repeat: repeat; */
+        background-color: #ddd;
     }
 }
 
