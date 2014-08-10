@@ -1,21 +1,18 @@
 module.exports = function(grunt) {
-
     grunt.initConfig({
         srcPath: '.',
         buildPath: 'build',
-
         react: {
-          jsx: {
-           files: [
-           {
-               expand: true,
-               cwd: 'jsx',
-               src: [ '**/*.js' ],
-               dest: 'build/',
-               ext: '.js'
-          }]
-      }
-    },        
+            jsx: {
+                files: [{
+                    expand: true,
+                    cwd: 'jsx',
+                    src: [ '**/*.js' ],
+                    dest: 'build/',
+                    ext: '.js'
+                }]
+            }
+        },        
         connect: {
             server: {
                 options: {
@@ -26,7 +23,6 @@ module.exports = function(grunt) {
         },
         compass: {
             dist: {
-
                 options: {
                     sassDir: 'sass',
                     cssDir: 'css',
@@ -73,33 +69,40 @@ module.exports = function(grunt) {
                         return content;
                     }
                 }
+            },
+            cc_wallet_eng: {
+                src: "node_modules/cc-wallet-engine/cc-wallet-engine.js",
+                dest: "cc-wallet-engine.js"
             }
         },
-                         
-                         watch: {
-    scripts: {
-        files: ['jsx/*.js', '!jsx/*_*.js', '!jsx/\.#*'],
-        //Second is to exclude flymake files, third auto-save emacs files
-
-        tasks: ['build'],
-        options: {
-            spawn: false
+        subgrunt: {
+            cc_wallet_eng: {
+                projects: {
+                    "node_modules/cc-wallet-engine": "compile"
+                }
+            }
+        },
+        watch: {
+          scripts: {
+            files: ['jsx/*.js', '!jsx/*_*.js', '!jsx/\.#*'],
+            //Second is to exclude flymake files, third auto-save emacs files
+            tasks: ['build'],
+            options: {
+              spawn: false
+            }
+          },
+          sass: {
+            files: ['sass/*.scss','sass/var/*.scss'],
+            tasks: ['compass'],
+            options: {
+              spawn: false
+            }
+          }
         }
-    },
-    sass: {
-        files: ['sass/*.scss','sass/var/*.scss'],
-        tasks: ['compass'],
-        options: {
-            spawn: false
-        }
-    }
-}
-
-                         
     });
     
     grunt.loadNpmTasks('grunt-react');
-
+    grunt.loadNpmTasks('grunt-subgrunt');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-compass');
     grunt.loadNpmTasks('grunt-contrib-watch');
@@ -107,9 +110,14 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-cache-bust');
 
     
+    grunt.registerTask('build-eng', [
+                         'subgrunt:cc_wallet_eng',
+                         'copy:cc_wallet_eng'
+                       ]);
+
     grunt.registerTask('build', [
                            'react',
-                           'copy',
+                           'copy:demo_eng',
                            'cacheBust'
                        ]);
 
