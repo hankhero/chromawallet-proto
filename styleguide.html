@@ -65,6 +65,32 @@
     <h2>Style guide, work-in-progress design</h2>  
 </div>
 
+<div class="row" style="background-color: silver">
+  <p class="btn primary medium"><a href="#" class="switch active" gumby-trigger="#modal1">Open Login window</a></p>
+</div>
+
+
+<div class="modal" id="modal1">
+  <div class="content">
+    <a class="close switch" gumby-trigger="|#modal1"><i class="icon-cancel" /></i></a>
+    <div class="row">
+      <div class="ten columns centered text-center">
+        <h2>Login</h2>
+        <p>Enter your passphrase to login.</p>
+        <form>
+          <div class="field">
+            <input class="input" placeholder="Passphrase" type="password">
+          </div>
+        </form>
+        <p class="btn primary medium">
+          <a href="#" class="switch" gumby-trigger="|#modal1">Login</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <div class="overview">
     <div class="row module-heading">
         <h2>Overview</h2>
