@@ -1706,7 +1706,7 @@ span.non-desktop { display: inline; }
 @media only screen and (min-width: 768px) { .navbar { margin-top: 30px; }
   span.desktop { display: inline; }
   span.non-desktop { display: none; } }
-@media only screen and (min-width: 768px) { body { background-image: url(../img/Sea_Texture_1_by_goldberry2000.jpg); background-repeat: repeat; } }
+@media only screen and (min-width: 768px) { body { /* background-image: url(../img/starnetblog_subtile_gray_pattern5.jpg); */ /* background-repeat: repeat; */ background-color: #ddd; } }
 .navbar ul li > a { text-shadow: inherit; }
 
 .module-heading h2 { float: left; }

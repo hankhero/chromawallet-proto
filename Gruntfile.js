@@ -55,12 +55,28 @@ module.exports = function(grunt) {
               files: [{
                           expand: true,
                           //cwd: 'src',
-                          src: ['demo.html']
+                          src: ['demo.html', 'demo_eng.html']
                           //          dest: 'dest/'
                       }]
           }
-        },        
-watch: {
+        },
+
+        copy: {
+            demo_eng: {
+                src: 'demo.html',
+                dest: 'demo_eng.html',
+                options: {
+                    process: function (content, srcpath) {
+                        content = content.replace("build/models", "build/cc-eng-model");
+                        content = content.replace("<!-- load engines here -->",
+                                                  '<script src="cc-wallet-engine.js"></script>');
+                        return content;
+                    }
+                }
+            }
+        },
+                         
+                         watch: {
     scripts: {
         files: ['jsx/*.js', '!jsx/*_*.js', '!jsx/\.#*'],
         //Second is to exclude flymake files, third auto-save emacs files
@@ -79,18 +95,21 @@ watch: {
     }
 }
 
-
+                         
     });
     
     grunt.loadNpmTasks('grunt-react');
+
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-compass');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-cache-bust');
 
     
     grunt.registerTask('build', [
                            'react',
+                           'copy',
                            'cacheBust'
                        ]);
 
