@@ -4,11 +4,13 @@
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-connect": "^0.8.0",
+    "grunt-react": "",
     "npm": "^1.4.21",
     "install": "^0.1.7",
     "grunt-cache-bust": "^0.4.0"
   },
   "dependencies": {
+    "cc-wallet-engine": "git://github.com/fanatid/cc-wallet-engine.git",
     "grunt-shell": "^0.7.0",
     "grunt-contrib-connect": "^0.8.0",
     "grunt-contrib-watch": "^0.6.1",

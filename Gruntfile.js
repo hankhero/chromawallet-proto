@@ -3,17 +3,19 @@ module.exports = function(grunt) {
     grunt.initConfig({
         srcPath: '.',
         buildPath: 'build',
-        
-        shell: {
-            buildJsx: {
-                command: [
-                    'jsx -x js <%= srcPath %>/jsx/ <%= buildPath %>/'
-                    //,'rm -rf <%= src_path %>/jsx/.module-cache/'
-                ].join(' && '),
-                stdout: true,
-                failOnError: true
-            }
-        },
+
+        react: {
+          jsx: {
+           files: [
+           {
+               expand: true,
+               cwd: 'jsx',
+               src: [ '**/*.js' ],
+               dest: 'build/',
+               ext: '.js'
+          }]
+      }
+    },        
         connect: {
             server: {
                 options: {
@@ -80,7 +82,7 @@ watch: {
 
     });
     
-    grunt.loadNpmTasks('grunt-shell');
+    grunt.loadNpmTasks('grunt-react');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-compass');
     grunt.loadNpmTasks('grunt-contrib-watch');
@@ -88,7 +90,7 @@ watch: {
 
     
     grunt.registerTask('build', [
-                           'shell:buildJsx',
+                           'react',
                            'cacheBust'
                        ]);
 
