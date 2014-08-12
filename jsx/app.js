@@ -41,6 +41,8 @@ var App = React.createClass({
               <NavBar navigateHandler = {this.changeTab} 
                   tabs = {['Overview', 'Send',
                           'Receive', 'History']} />
+              <Login isLoggedIn={wallet.getIsLoggedIn()} 
+                     onLoginClick={wallet.loginClicked}/>
               <div className={show('Overview') }><Overview wallet={wallet}/></div>
               <div className={show('Receive')} ><Receive /></div>
               <div className={show('Send')} ><Send /></div>

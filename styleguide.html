@@ -66,25 +66,30 @@
 </div>
 
 <div class="row" style="background-color: silver">
-  <p class="btn primary medium"><a href="#" class="switch active" gumby-trigger="#modal1">Open Login window</a></p>
+  <p class="btn primary medium"><a href="#" class="switch active" gumby-trigger="#login-dialogue">Open Login window</a></p>
 </div>
 
 
-<div class="modal" id="modal1">
+<div class="modal" id="login-dialogue">
   <div class="content">
-    <a class="close switch" gumby-trigger="|#modal1"><i class="icon-cancel" /></i></a>
+    <!-- <a class="close switch" gumby-trigger="|#login-dialogue"><i class="icon-cancel" ></i></a> -->
     <div class="row">
       <div class="ten columns centered text-center">
         <h2>Login</h2>
-        <p>Enter your passphrase to login.</p>
+        <p>Enter your passphrase to login or a new one to create a wallet.</p>
         <form>
           <div class="field">
-            <input class="input" placeholder="Passphrase" type="password">
+            <input class="input" placeholder="Passphrase" type="password" />
           </div>
         </form>
         <p class="btn primary medium">
-          <a href="#" class="switch" gumby-trigger="|#modal1">Login</a>
+          <a href="#" class="switch" gumby-trigger="|#login-dialogue">Login</a>
         </p>
+        <p class="btn primary medium">
+          <a href="#" class="switch" gumby-trigger="|#login-dialogue">Create wallet</a>
+        </p>
+        <p/>
+        <p class="warning alert">I am an error message</p>
       </div>
     </div>
   </div>

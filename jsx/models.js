@@ -63,6 +63,18 @@ var MockWallet = function () {
             //          asset.format_value(wallet.get_available_balance(asset)))
         return assetModels;
     },
+    isLoggedIn = false,
+    loginClicked = function (loginComponent) {
+        var passphrase = loginComponent.getPassPhrase();
+        if (passphrase === 'test') {
+            isLoggedIn = true;
+        } else {
+            loginComponent.setErrorMessage('Demo error message. The passphrase is test.');
+        }
+    },
+    getIsLoggedIn = function () {
+        return isLoggedIn;
+    },
     setCallback = function (notifier) {
         updateCallback = notifier;
     };
@@ -70,6 +82,8 @@ var MockWallet = function () {
     return {
         setCallback: setCallback,
         getAssetModels: getAssetModels,
+        loginClicked: loginClicked,
+        getIsLoggedIn: getIsLoggedIn,
         _bumpBitcoin: function () {
             assetModels[0].props.totalBalance = assetModels[0].props.totalBalance + 0.25;
             updateCallback();
