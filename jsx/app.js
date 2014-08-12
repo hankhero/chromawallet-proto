@@ -13,7 +13,8 @@ var App = React.createClass({
   getInitialState: function() {
       return {
           tabName: 'Overview',
-          lastUpdate: 1234
+          lastUpdate: 1234,
+          wallet: wallet //Global wallet
       };
   },
   walletWasUpdated: function () {
@@ -28,6 +29,7 @@ var App = React.createClass({
   },
   render: function () {
       var self = this,
+      wallet = this.state.wallet,
       show = function (tabName) {
           return self.state.tabName === tabName? 'show': 'hide';
       };
