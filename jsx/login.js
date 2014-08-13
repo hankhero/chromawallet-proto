@@ -35,7 +35,9 @@ var Login = React.createClass({
         //this.setErrorMessage('Bad passphrase');
     },
     handleCreateWalletClick: function (event) {
-        this.setErrorMessage('Not implemented yet.');
+        if (this.props.onCreateWalletClick) {
+            this.props.onCreateWalletClick(this);
+        }
     },
     render: function () {
         if (this.props.isLoggedIn) {

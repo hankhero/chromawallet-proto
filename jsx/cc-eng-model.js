@@ -104,6 +104,7 @@ AssetModels.prototype.getIsLoggedIn = function () {
     return this.isLoggedIn;
 };
 
+
 AssetModels.prototype.loginClicked = function (loginComponent) {
     var passphrase = loginComponent.getPassPhrase();
     if (passphrase === 'test') {
@@ -114,6 +115,23 @@ AssetModels.prototype.loginClicked = function (loginComponent) {
     }
 };
 
+AssetModels.prototype.createWalletClicked = function (loginComponent) {
+    var passphrase = loginComponent.getPassPhrase();
+    if (window.confirm(
+        'Are you sure you want to create a wallet')) {
+        var masterKey = passphrase; //TODO do sha256(passphrase); (or should we do it inside ccWallet?
+        cc_wallet = new ccWallet({
+            "masterKey": masterKey, 
+            testnet: true});
+        wallet = new AssetModels(cc_wallet);
+        wallet.updateAssetModels();
+
+        this.isLoggedIn = true;
+        loginComponent.forceUpdate();
+     } else {
+        loginComponent.setErrorMessage('Try again.');
+     }
+};
 
 
 var cc_wallet = new ccWallet({

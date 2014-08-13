@@ -72,6 +72,15 @@ var MockWallet = function () {
             loginComponent.setErrorMessage('Demo error message. The passphrase is test.');
         }
     },
+    createWalletClicked = function (loginComponent) {
+        var passphrase = loginComponent.getPassPhrase();
+        if (window.confirm(
+                'Are you sure you want to create a wallet')) {
+            isLoggedIn = true;
+        } else {
+            loginComponent.setErrorMessage('Try again.');
+        }
+    },
     getIsLoggedIn = function () {
         return isLoggedIn;
     },
@@ -83,6 +92,7 @@ var MockWallet = function () {
         setCallback: setCallback,
         getAssetModels: getAssetModels,
         loginClicked: loginClicked,
+        createWalletClicked: createWalletClicked,
         getIsLoggedIn: getIsLoggedIn,
         _bumpBitcoin: function () {
             assetModels[0].props.totalBalance = assetModels[0].props.totalBalance + 0.25;

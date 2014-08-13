@@ -44,7 +44,9 @@ var App = React.createClass({
                   tabs = {['Overview', 'Send',
                           'Receive', 'History']} />
               <Login isLoggedIn={wallet.getIsLoggedIn()} 
-                     onLoginClick={wallet.loginClicked}/>
+                     onLoginClick={wallet.loginClicked}
+                     onCreateWalletClick={wallet.createWalletClicked}
+              />
               <div className={show('Overview') }><Overview wallet={wallet}/></div>
               <div className={show('Receive')} ><Receive /></div>
               <div className={show('Send')} ><Send /></div>
