@@ -6,6 +6,7 @@
     "grunt-cache-bust": "^0.4.0",
     "grunt-contrib-connect": "^0.8.0",
     "grunt-contrib-copy": "",
+    "grunt-contrib-watch": "git://github.com/jacksonrayhamilton/grunt-contrib-watch.git", //Fixed issue with emacs: https://github.com/gruntjs/grunt-contrib-watch/issues/239
     "grunt-react": "",
     "grunt-subgrunt": "^0.4.0",
     "install": "^0.1.7",
@@ -15,7 +16,6 @@
     "cc-wallet-engine": "git://github.com/fanatid/cc-wallet-engine.git",
     "grunt-shell": "^0.7.0",
     "grunt-contrib-connect": "^0.8.0",
-    "grunt-contrib-watch": "^0.6.1",
     "grunt-contrib-compass": "^0.9.0"
   }
 }
