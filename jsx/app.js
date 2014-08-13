@@ -43,7 +43,7 @@ var App = React.createClass({
                           'Receive', 'History']} />
               <div className={show('Overview') }><Overview wallet={wallet}/></div>
               <div className={show('Receive')} ><Receive /></div>
-              <div className={show('Send')} ><Send /></div>
+              <div className={show('Send')} ><Send wallet={wallet}/></div>
               <div className={show('History') }><History /></div>
            </div>
       );

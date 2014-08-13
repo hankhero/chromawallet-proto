@@ -1,8 +1,27 @@
 /** @jsx React.DOM */
 
+var AssetSelectView = React.createClass({
+    render: function () {
+        var asset = this.props.asset,
+            total = asset.getTotalBalance(),
+            available = asset.getAvailableBalance(),
+            moniker = asset.getMoniker(),
+            text = moniker;
+        if (available && available != 0){ // FIXME available should always be set!!
+          text = text + " (" + available + " available)";
+        } else {
+          text = text + " (" + total + " available)";
+        }
+        return (
+          <span>{text}</span>
+        );
+    }
+});
+
 var Send = React.createClass({
   render: function () {
-      return (
+    var assets = this.props.wallet.getAssetModels();
+    return (
 <div className="send">
   <div className="row module-heading">
     <h2>Send</h2>
@@ -40,9 +59,13 @@ var Send = React.createClass({
                 <div className="picker">
                   <select>
                     <option value="#" disabled>Select asset</option>
-                    <option>Bitcoin</option>
-                    <option>Gold-coin</option>
-                    <option>Foo-coin</option>
+                    {
+                      assets.map(function (assetModel) {
+                        return (
+                          <option><AssetSelectView asset={assetModel} /></option>
+                        )
+                      })
+                    }
                   </select>
                 </div>
               </li>
@@ -51,13 +74,13 @@ var Send = React.createClass({
               <div className=" medium primary btn"><a href="#">Send</a></div>
             </div>
           </div>
-          <div>Available balance: <span>14 bitcoins</span></div>
         </div>
       </ul>
     </fieldset>
   </div>
 
 </div>
-      );
+    );
   }
 });
+
