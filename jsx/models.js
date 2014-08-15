@@ -10,9 +10,9 @@ var MockPaymentModel = function (props) {
     return {
         checkAddress: function (address)  { return true; },
         checkAmount: function (amount) { return true; },
-        addRecipeint: function (address, amount) {
+        addRecipeint: function (address, amount, asset) {
             if (read_only) throw "read-only";
-            recipients.push({address: address, amount: amount});
+            recipients.push({address: address, amount: amount, asset: asset});
         },
         send: function (callback) {
             if (read_only) throw "read-only";
