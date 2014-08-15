@@ -64,7 +64,8 @@ var MockWallet = function () {
             asset: 'Bitcoin',
             address: '12asdf9fnasdfasdf9rfadvcadv',
             totalBalance: 12.35,
-            unconfirmedBalance: undefined
+            unconfirmedBalance: 0.0,
+            availableBalance: 12.35
         }),
         MockAssetModel({
             asset: 'Gold-coins',

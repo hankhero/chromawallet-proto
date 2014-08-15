@@ -3,15 +3,9 @@
 var AssetSelectView = React.createClass({
     render: function () {
         var asset = this.props.asset,
-            total = asset.getTotalBalance(),
             available = asset.getAvailableBalance(),
-            moniker = asset.getMoniker(),
-            text = moniker;
-        if (available && available != 0){ // FIXME available should always be set!!
-          text = text + " (" + available + " available)";
-        } else {
-          text = text + " (" + total + " available)";
-        }
+            text = asset.getMoniker();
+        text = text + " (" + available + " available)";
         return (
           <span>{text}</span>
         );
