@@ -3,6 +3,35 @@
 // Probably not much react, maybe move out later.
 
 
+var MockPaymentModel = function (props) {
+    var recipients = [],
+        read_only = false;
+    
+    return {
+        checkAddress: function (address)  { return true; },
+        checkAmount: function (amount) { return true; },
+        addRecipeint: function (address, amount) {
+            if (read_only) throw "read-only";
+            recipients.push({address: address, amount: amount});
+        },
+        send: function (callback) {
+            if (read_only) throw "read-only";
+            if (recipients.length == 0)
+                throw "recipient list is empty";
+            alert("sending " + recipients[0].amount + " to " + 
+                recipients[0].address);
+            read_only = true;
+            callback(this);
+        },
+        getStatus: function () {
+            if (read_only)
+                return "sent";
+            else
+                return "fresh";
+        }
+    };
+};
+
 var MockAssetModel = function (props) {
     return {
         props: props,
@@ -20,6 +49,9 @@ var MockAssetModel = function (props) {
         },
         getAvailableBalance: function () {
             return props.availableBalance;
+        },
+        makePayment: function () {
+            return new MockPaymentModel(props);
         }
         
     };
@@ -63,6 +95,27 @@ var MockWallet = function () {
             //          asset.format_value(wallet.get_available_balance(asset)))
         return assetModels;
     },
+    isLoggedIn = false,
+    loginClicked = function (loginComponent) {
+        var passphrase = loginComponent.getPassPhrase();
+        if (passphrase === 'test') {
+            isLoggedIn = true;
+        } else {
+            loginComponent.setErrorMessage('Demo error message. The passphrase is test.');
+        }
+    },
+    createWalletClicked = function (loginComponent) {
+        var passphrase = loginComponent.getPassPhrase();
+        if (window.confirm(
+                'Are you sure you want to create a wallet')) {
+            isLoggedIn = true;
+        } else {
+            loginComponent.setErrorMessage('Try again.');
+        }
+    },
+    getIsLoggedIn = function () {
+        return isLoggedIn;
+    },
     setCallback = function (notifier) {
         updateCallback = notifier;
     };
@@ -70,6 +123,9 @@ var MockWallet = function () {
     return {
         setCallback: setCallback,
         getAssetModels: getAssetModels,
+        loginClicked: loginClicked,
+        createWalletClicked: createWalletClicked,
+        getIsLoggedIn: getIsLoggedIn,
         _bumpBitcoin: function () {
             assetModels[0].props.totalBalance = assetModels[0].props.totalBalance + 0.25;
             updateCallback();

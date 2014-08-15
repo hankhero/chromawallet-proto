@@ -13,7 +13,8 @@ var App = React.createClass({
   getInitialState: function() {
       return {
           tabName: 'Overview',
-          lastUpdate: 1234
+          lastUpdate: 1234,
+          wallet: wallet //Global wallet
       };
   },
   walletWasUpdated: function () {
@@ -28,6 +29,7 @@ var App = React.createClass({
   },
   render: function () {
       var self = this,
+      wallet = this.state.wallet,
       show = function (tabName) {
           return self.state.tabName === tabName? 'show': 'hide';
       };
@@ -41,6 +43,10 @@ var App = React.createClass({
               <NavBar navigateHandler = {this.changeTab} 
                   tabs = {['Overview', 'Send',
                           'Receive', 'History']} />
+              <Login isLoggedIn={wallet.getIsLoggedIn()} 
+                     onLoginClick={wallet.loginClicked}
+                     onCreateWalletClick={wallet.createWalletClicked}
+              />
               <div className={show('Overview') }><Overview wallet={wallet}/></div>
               <div className={show('Receive')} ><Receive /></div>
               <div className={show('Send')} ><Send wallet={wallet}/></div>
