@@ -51,12 +51,7 @@ var App = React.createClass({
               <NavBar navigateHandler = {this.changeTab} 
                   tabs = {['Overview', 'Send',
                           'Receive', 'History']} />
-              {/* FIXME login bearks build, Login undefined 
-              <Login isLoggedIn={wallet.getIsLoggedIn()} 
-                     onLoginClick={wallet.loginClicked}
-                     onCreateWalletClick={wallet.createWalletClicked}
-              />
-              */}
+              <Login wallet={wallet} />
               <div className={show('Overview') }><Overview wallet={wallet}/></div>
               <div className={show('Receive')} ><Receive /></div>
               <div className={show('Send')} ><Send wallet={wallet} app={this}/></div>

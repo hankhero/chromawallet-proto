@@ -96,26 +96,15 @@ var MockWallet = function () {
             //          asset.format_value(wallet.get_available_balance(asset)))
         return assetModels;
     },
-    isLoggedIn = false,
-    loginClicked = function (loginComponent) {
-        var passphrase = loginComponent.getPassPhrase();
-        if (passphrase === 'test') {
-            isLoggedIn = true;
-        } else {
-            loginComponent.setErrorMessage('Demo error message. The passphrase is test.');
-        }
+    isInitializedFlag = false,
+    isInitialized = function () {
+        return isInitializedFlag;
     },
-    createWalletClicked = function (loginComponent) {
-        var passphrase = loginComponent.getPassPhrase();
-        if (window.confirm(
-                'Are you sure you want to create a wallet')) {
-            isLoggedIn = true;
-        } else {
-            loginComponent.setErrorMessage('Try again.');
-        }
+    initializeFromSeed = function (seed) {
+        isInitializedFlag = true;
     },
-    getIsLoggedIn = function () {
-        return isLoggedIn;
+    generateRandomSeed = function (entropy) {
+        return 'random seed';
     },
     setCallback = function (notifier) {
         updateCallback = notifier;
@@ -124,9 +113,9 @@ var MockWallet = function () {
     return {
         setCallback: setCallback,
         getAssetModels: getAssetModels,
-        loginClicked: loginClicked,
-        createWalletClicked: createWalletClicked,
-        getIsLoggedIn: getIsLoggedIn,
+        isInitialized: isInitialized,
+        initializeFromSeed: initializeFromSeed,
+        generateRandomSeed: generateRandomSeed,
         _bumpBitcoin: function () {
             assetModels[0].props.totalBalance = assetModels[0].props.totalBalance + 0.25;
             updateCallback();
