@@ -1,7 +1,6 @@
 /** @jsx React.DOM */
 
 
-
 var Login = React.createClass({
     setErrorMessage: function (text) {
         this.setState({errorMessage: text});
@@ -78,3 +77,5 @@ var Login = React.createClass({
         }
   }
 });
+
+module.exports = Login;

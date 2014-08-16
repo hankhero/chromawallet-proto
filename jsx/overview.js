@@ -57,3 +57,5 @@ var Overview = React.createClass({
     );
   }
 });
+
+module.exports = Overview;

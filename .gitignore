@@ -23,3 +23,5 @@ tramp
 node_modules/*
 build/
 rsync-to-henrik.sh
+
+dist/

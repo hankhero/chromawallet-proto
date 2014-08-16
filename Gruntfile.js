@@ -2,6 +2,25 @@ module.exports = function(grunt) {
     grunt.initConfig({
         srcPath: '.',
         buildPath: 'build',
+
+        browserify: {
+          production: {
+            src: ['jsx/index.js'],
+            dest: 'build/cw-ui.js',
+            options: {
+                alias: ['jsx/cc-eng-model.js:models'],
+                transform:  [ require('grunt-react').browserify ]
+            }
+          },
+          demo: {
+            src: ['jsx/index.js'],
+            dest: 'build/cw-ui-demo.js',
+            options: {
+                alias: ['jsx/models-mock.js:models'],
+                transform:  [ require('grunt-react').browserify ]
+            }
+          }
+        },
         react: {
             jsx: {
                 files: [{
@@ -12,7 +31,7 @@ module.exports = function(grunt) {
                     ext: '.js'
                 }]
             }
-        },        
+        },
         connect: {
             server: {
                 options: {
@@ -49,21 +68,50 @@ module.exports = function(grunt) {
           },
           assets: {
               files: [{
-                          expand: true,
-                          //cwd: 'src',
-                          src: ['demo.html', 'demo_eng.html']
-                          //          dest: 'dest/'
-                      }]
+                  expand: true,
+                  src: ['build/demo-ui.html', 'build/demo-eng.html'],
+                  dest: 'dist/'
+              }]
           }
         },
 
         copy: {
+            build_to_dist: {
+                expand: true,
+                cwd:'build',
+                src:'**',
+                dest: 'dist/'
+            },
+            bower_to_dist: {
+                expand: true,
+                src:'bower_components/**',
+                dest: 'dist/'
+            },
+            css_to_dist: {
+                expand: true,
+                src:'css/**',
+                dest: 'dist/'
+            },
+            img_to_dist: {
+                expand: true,
+                src:'img/**',
+                dest: 'dist/'
+            },
+            fonts_to_dist: {
+                expand: true,
+                src:'fonts/**',
+                dest: 'dist/'
+            },
+            demo_ui: {
+                src: 'html/demo-ui.html',
+                dest: 'build/demo-ui.html'
+            },
             demo_eng: {
-                src: 'demo.html',
-                dest: 'demo_eng.html',
+                src: 'html/demo-ui.html',
+                dest: 'build/demo-eng.html',
                 options: {
                     process: function (content, srcpath) {
-                        content = content.replace("build/models", "build/cc-eng-model");
+                        content = content.replace("cw-ui-demo.js", "cw-ui.js");
                         content = content.replace("<!-- load engines here -->",
                                                   '<script src="cc-wallet-engine.js"></script>');
                         return content;
@@ -72,7 +120,7 @@ module.exports = function(grunt) {
             },
             cc_wallet_eng: {
                 src: "node_modules/cc-wallet-engine/cc-wallet-engine.js",
-                dest: "cc-wallet-engine.js"
+                dest: "build/cc-wallet-engine.js"
             }
         },
         subgrunt: {
@@ -101,6 +149,7 @@ module.exports = function(grunt) {
         }
     });
     
+    grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-react');
     grunt.loadNpmTasks('grunt-subgrunt');
     grunt.loadNpmTasks('grunt-contrib-connect');
@@ -115,9 +164,17 @@ module.exports = function(grunt) {
                          'copy:cc_wallet_eng'
                        ]);
 
+    grunt.registerTask('dist', [
+        'copy:build_to_dist', 'copy:bower_to_dist',
+        'copy:css_to_dist', 'copy:img_to_dist','copy:fonts_to_dist']);
+
     grunt.registerTask('build', [
                            'react',
+                           'browserify:production',
+                           'browserify:demo',
+                           'copy:demo_ui',
                            'copy:demo_eng',
+                           'dist',
                            'cacheBust'
                        ]);
 

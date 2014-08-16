@@ -56,3 +56,5 @@ var NavBar = React.createClass({
         </div>);
   }
 });
+
+module.exports = NavBar;
