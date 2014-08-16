@@ -25,3 +25,5 @@ build/
 rsync-to-henrik.sh
 
 dist/
+
+cc-wallet-engine.js
