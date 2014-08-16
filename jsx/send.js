@@ -130,3 +130,4 @@ var Send = React.createClass({
   }
 });
 
+module.exports = Send;
