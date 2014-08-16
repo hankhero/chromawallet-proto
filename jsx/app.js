@@ -1,6 +1,14 @@
 /** @jsx React.DOM */
 
-$(document).ready(function() {
+var wallet = require('models').wallet, //Aliased by browserify
+    NavBar = require('./navbar'),
+    Login = require('./login'),
+    Send = require('./send'),
+    Receive = require('./receive'),
+    Overview = require('./overview'),
+    History = require('./history');
+
+$ ( document).ready(function() {
   React.renderComponent(
     <App />,
     document.getElementById('main')

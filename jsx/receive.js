@@ -57,3 +57,5 @@ var Receive = React.createClass({
       );
   }
 });
+
+module.exports = Receive;

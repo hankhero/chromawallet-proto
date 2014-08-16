@@ -1,4 +1,5 @@
 /** @jsx React.DOM */
+var ccWallet = require('../cc-wallet-engine');
 
 // Probably not much react, maybe move out later.
 
@@ -143,3 +144,7 @@ cc_wallet.addAssetDefinition({
                              });
 var wallet = new AssetModels(cc_wallet);
 wallet.updateAssetModels();
+
+module.exports = {
+    wallet: wallet
+};

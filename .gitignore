@@ -24,6 +24,9 @@ node_modules/*
 build/
 rsync-to-henrik.sh
 
+dist/
+cc-wallet-engine.js
+
 # vim files
 *.swp
 *.swo

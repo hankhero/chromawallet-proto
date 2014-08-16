@@ -56,3 +56,5 @@ var History = React.createClass({
       );
   }
 });
+
+module.exports = History;

@@ -155,3 +155,8 @@ window.setInterval(function (){
 window.setTimeout(function (){
     mockWallet._addNewAsset();
 }, 10000);
+
+module.exports = {
+    wallet: wallet
+};
+
