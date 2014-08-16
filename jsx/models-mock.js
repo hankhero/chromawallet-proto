@@ -102,6 +102,7 @@ var MockWallet = function () {
     },
     initializeFromSeed = function (seed) {
         isInitializedFlag = true;
+        updateCallback();
     },
     generateRandomSeed = function (entropy) {
         return 'random seed';
