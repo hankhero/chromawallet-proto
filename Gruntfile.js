@@ -69,7 +69,7 @@ module.exports = function(grunt) {
           assets: {
               files: [{
                   expand: true,
-                  src: ['build/demo-ui.html', 'build/demo-eng.html'],
+                  src: ['dist/demo-ui.html', 'dist/demo-eng.html'],
                   dest: 'dist/'
               }]
           }
