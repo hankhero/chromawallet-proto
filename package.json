@@ -2,20 +2,20 @@
   "name": "chromawallet-web",
   "version": "0.1.0",
   "devDependencies": {
+    "grunt-contrib-watch": "git://github.com/jacksonrayhamilton/grunt-contrib-watch.git"
+  },
+  "dependencies": {
+    "cc-wallet-engine": "git://github.com/fanatid/cc-wallet-engine.git",
     "grunt": "~0.4.1",
-    "grunt-cache-bust": "^0.4.0",
-    "grunt-contrib-connect": "^0.8.0",
+    "grunt-shell": "^0.7.0",
     "grunt-contrib-copy": "",
-    "grunt-contrib-watch": "git://github.com/jacksonrayhamilton/grunt-contrib-watch.git",
+    "grunt-contrib-connect": "^0.8.0",
+    "grunt-contrib-compass": "^0.9.0",
+    "grunt-browserify": "^2.1.4",
+    "grunt-cache-bust": "^0.4.0",
     "grunt-react": "",
     "grunt-subgrunt": "^0.4.0",
     "install": "^0.1.7",
     "npm": "^1.4.21"
-  },
-  "dependencies": {
-    "cc-wallet-engine": "git://github.com/fanatid/cc-wallet-engine.git",
-    "grunt-shell": "^0.7.0",
-    "grunt-contrib-connect": "^0.8.0",
-    "grunt-contrib-compass": "^0.9.0"
   }
 }
