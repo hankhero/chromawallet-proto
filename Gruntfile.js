@@ -9,7 +9,10 @@ module.exports = function(grunt) {
             dest: 'build/cw-ui.js',
             options: {
                 alias: ['jsx/cc-eng-model.js:models'],
-                transform:  [ require('grunt-react').browserify ]
+                transform:  [ require('grunt-react').browserify ],
+                bundleOptions: {
+                    debug: true
+                }
             }
           },
           demo: {
@@ -17,7 +20,10 @@ module.exports = function(grunt) {
             dest: 'build/cw-ui-demo.js',
             options: {
                 alias: ['jsx/models-mock.js:models'],
-                transform:  [ require('grunt-react').browserify ]
+                transform:  [ require('grunt-react').browserify ],
+                bundleOptions: {
+                    debug: true
+                }
             }
           }
         },
