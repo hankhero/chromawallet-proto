@@ -57,6 +57,68 @@ var MockAssetModel = function (props) {
     };
 };
 
+var MockAssetValue = function (asset, value) {
+    return {
+        getAsset: function () {
+            return asset;
+        },
+        getValue: function () {
+            return value;
+        }
+    };
+};
+
+var MockAssetTarget = function (address, assetValue) {
+    return {
+        getAddress: function () {
+            return address;
+        },
+        getAsset: function () {
+            return assetValue.getAsset();
+        },
+        getValue: function () {
+            return assetValue.getValue();
+        }
+    };
+};
+
+
+var MockHistoryEntryModel = function(props) {
+    return {
+        isTrade: function () {
+            return (props.txType === 'trade');
+        },
+        isSend: function () {
+            return (props.txType === 'send');
+        },
+        isReceive: function () {
+            return (props.txType === 'receive');
+        },
+        getTransactionTypeString: function () {
+            return props.txType;
+        },
+        getTargets: function () {
+            return props.targets;
+        },
+        getAddress: function () {
+            return props.address;
+        },
+        getDate: function () {
+            //datetime = QtCore.QDateTime.fromTime_t(ent.txtime)
+            return props.date;
+        },
+        // For trades
+        getInValues: function () {
+            return props.inValues;
+        },
+        getOutValues: function () {
+            return props.outValues;
+        }
+
+    };
+};
+
+
 var MockWallet = function () {
     var updateCallback = function (){},
     assetModels = [
@@ -72,6 +134,30 @@ var MockWallet = function () {
             totalBalance: 10.34,
             unconfirmedBalance: 2.2,
             availableBalance: 10.34 - 2.2
+        })
+    ],
+    historyEntries = [
+        MockHistoryEntryModel({
+            date: '2014-07-20',
+            address: 'fasdf9fnasdfasdf9rfad@asdasdbe134bje',
+            txType: 'send',
+            targets: [
+                mockAssetTarget('fasdf9fnasdfasdf9rfad@asdasdbe134bje', 
+                    MockAssetValue(
+                        MockAssetModel({asset:'Gold'}),
+                        120))
+            ]
+        }),
+        MockHistoryEntryModel({
+            date: '2014-07-21',
+            address: 'fasdf9fnasdfasdf9rfad@asdasdbe134bje',
+            txType: 'receive',
+            targets: [
+                mockAssetTarget('fasdf9fnasdfasdf9rfad@asdasdbe134bje',
+                    MockAssetValue(
+                        MockAssetModel({asset:'Silver'}),
+                        100))
+            ]
         })
     ],
     getAssetModels = function () {
@@ -95,6 +181,7 @@ var MockWallet = function () {
             //          asset.format_value(wallet.get_available_balance(asset)))
         return assetModels;
     },
+    getHistory = function () {return historyEntries;},
     isLoggedIn = false,
     loginClicked = function (loginComponent) {
         var passphrase = loginComponent.getPassPhrase();
@@ -123,6 +210,7 @@ var MockWallet = function () {
     return {
         setCallback: setCallback,
         getAssetModels: getAssetModels,
+        getHistory: getHistory,
         loginClicked: loginClicked,
         createWalletClicked: createWalletClicked,
         getIsLoggedIn: getIsLoggedIn,
