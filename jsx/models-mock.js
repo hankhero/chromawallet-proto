@@ -143,7 +143,7 @@ var MockWallet = function () {
             address: 'fasdf9fnasdfasdf9rfad@asdasdbe134bje',
             txType: 'send',
             targets: [
-                mockAssetTarget('fasdf9fnasdfasdf9rfad@asdasdbe134bje', 
+                MockAssetTarget('fasdf9fnasdfasdf9rfad@asdasdbe134bje', 
                     MockAssetValue(
                         MockAssetModel({asset:'Gold'}),
                         120))
@@ -154,7 +154,7 @@ var MockWallet = function () {
             address: 'fasdf9fnasdfasdf9rfad@asdasdbe134bje',
             txType: 'receive',
             targets: [
-                mockAssetTarget('fasdf9fnasdfasdf9rfad@asdasdbe134bje',
+                MockAssetTarget('fasdf9fnasdfasdf9rfad@asdasdbe134bje',
                     MockAssetValue(
                         MockAssetModel({asset:'Silver'}),
                         100))
