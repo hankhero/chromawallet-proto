@@ -8,13 +8,6 @@ var Login = React.createClass({
     getPassPhrase: function () {
         return this.state.passphrase; 
     },
-    getDefaultProps: function () {
-        return {
-            isLoggedIn: false,
-            onLoginClick: null,
-            onCreateWalletClick: null
-        };
-    },
     getInitialState: function () {
         return {
             passphrase: '',
@@ -28,18 +21,16 @@ var Login = React.createClass({
         });
     },
     handleLoginClick: function (event) {
-        if (this.props.onLoginClick) {
-            this.props.onLoginClick(this);
-        }
-        //this.setErrorMessage('Bad passphrase');
+        this.props.wallet.initializeFromSeed(this.getPassPhrase());
     },
     handleCreateWalletClick: function (event) {
-        if (this.props.onCreateWalletClick) {
-            this.props.onCreateWalletClick(this);
-        }
+        this.setState({
+                passphrase: this.props.wallet.generateRandomSeed(),
+                errorMessage: null
+        });
     },
     render: function () {
-        if (this.props.isLoggedIn) {
+        if (this.props.wallet.isInitialized()) {
             return <div/>;
         } else {
             var passphrase = this.getPassPhrase(),

@@ -10,9 +10,9 @@ var MockPaymentModel = function (props) {
     return {
         checkAddress: function (address)  { return true; },
         checkAmount: function (amount) { return true; },
-        addRecipeint: function (address, amount) {
+        addRecipeint: function (address, amount, asset) {
             if (read_only) throw "read-only";
-            recipients.push({address: address, amount: amount});
+            recipients.push({address: address, amount: amount, asset: asset});
         },
         send: function (callback) {
             if (read_only) throw "read-only";
@@ -126,7 +126,8 @@ var MockWallet = function () {
             asset: 'Bitcoin',
             address: '12asdf9fnasdfasdf9rfadvcadv',
             totalBalance: 12.35,
-            unconfirmedBalance: undefined
+            unconfirmedBalance: 0.0,
+            availableBalance: 12.35
         }),
         MockAssetModel({
             asset: 'Gold-coins',
@@ -182,26 +183,16 @@ var MockWallet = function () {
         return assetModels;
     },
     getHistory = function () {return historyEntries;},
-    isLoggedIn = false,
-    loginClicked = function (loginComponent) {
-        var passphrase = loginComponent.getPassPhrase();
-        if (passphrase === 'test') {
-            isLoggedIn = true;
-        } else {
-            loginComponent.setErrorMessage('Demo error message. The passphrase is test.');
-        }
+    isInitializedFlag = false,
+    isInitialized = function () {
+        return isInitializedFlag;
     },
-    createWalletClicked = function (loginComponent) {
-        var passphrase = loginComponent.getPassPhrase();
-        if (window.confirm(
-                'Are you sure you want to create a wallet')) {
-            isLoggedIn = true;
-        } else {
-            loginComponent.setErrorMessage('Try again.');
-        }
+    initializeFromSeed = function (seed) {
+        isInitializedFlag = true;
+        updateCallback();
     },
-    getIsLoggedIn = function () {
-        return isLoggedIn;
+    generateRandomSeed = function (entropy) {
+        return 'random seed';
     },
     setCallback = function (notifier) {
         updateCallback = notifier;
@@ -211,9 +202,10 @@ var MockWallet = function () {
         setCallback: setCallback,
         getAssetModels: getAssetModels,
         getHistory: getHistory,
-        loginClicked: loginClicked,
-        createWalletClicked: createWalletClicked,
-        getIsLoggedIn: getIsLoggedIn,
+        isInitialized: isInitialized,
+        initializeFromSeed: initializeFromSeed,
+        generateRandomSeed: generateRandomSeed,
+
         _bumpBitcoin: function () {
             assetModels[0].props.totalBalance = assetModels[0].props.totalBalance + 0.25;
             updateCallback();
