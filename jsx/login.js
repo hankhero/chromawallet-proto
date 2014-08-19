@@ -52,10 +52,10 @@ var Login = React.createClass({
           </div>
         </form>
         <p className="btn primary medium">
-          <a href="#" onClick={this.handleLoginClick} >Login</a>
+          <button onClick={this.handleLoginClick} >Login</button>
         </p>
         <p className="btn primary medium">
-          <a href="#" onClick={this.handleCreateWalletClick} >Create wallet</a>
+          <button onClick={this.handleCreateWalletClick} >Create wallet</button>
         </p>
         <p/>
         <p className={warningClasses}>{errorMessage}</p>
