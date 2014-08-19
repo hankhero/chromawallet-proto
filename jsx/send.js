@@ -1,12 +1,12 @@
 /** @jsx React.DOM */
 
-var AssetLabel = React.createClass({
+var AssetOption = React.createClass({
   render: function () {
     var asset = this.props.asset;
     var available = asset.getAvailableBalance();
     var text = asset.getMoniker() + " (" + available + " available)";
     return (
-      <span>{text}</span>
+       <option value={asset.getMoniker()}>{text}</option>
     );
   }
 });
@@ -78,11 +78,11 @@ var Send = React.createClass({
 
         <div className="row">
           <div className="two columns">
-            <label className="inline" for="text1">Address:</label>
+            <label className="inline" for="send-address">Address:</label>
           </div>
           <div className="ten columns">          
             <li className="field">
-              <input className="text input" type="text" placeholder="Address" 
+              <input className="text input" id="send-address" type="text" placeholder="Address" 
                      onChange={this.onChangeAddress} value={this.state.address}
               />
             </li>
@@ -90,11 +90,11 @@ var Send = React.createClass({
 
           <div className="row">
             <div className="two columns">
-              <label className="inline" for="text2">Amount:</label>
+              <label className="inline" for="send-amount">Amount:</label>
             </div>
             <div className="four columns">
               <li className="field">
-                <input className="narrow text input" type="text" placeholder="Ammount" 
+                <input className="narrow text input" id="send-amount" type="text" placeholder="Ammount" 
                        onChange={this.onChangeAmmount} value={this.state.amount}
                 />
               </li>
@@ -107,10 +107,8 @@ var Send = React.createClass({
                     {
                       assets.map(function (asset) {
                         return (
-                          <option value={asset.getMoniker()}>
-                            <AssetLabel asset={asset} />
-                          </option>
-                        )
+                            <AssetOption asset={asset} />
+                        );
                       })
                     }
                   </select>

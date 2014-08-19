@@ -57,6 +57,77 @@ var MockAssetModel = function (props) {
     };
 };
 
+var MockAssetValue = function (asset, value) {
+    return {
+        getAsset: function () {
+            return asset;
+        },
+
+        // The following two are from AdditiveAssetValue
+        getValue: function () {
+            return value;
+        },
+        getFormattedValue: function () {
+            return value;
+        }
+    };
+};
+
+var MockAssetTarget = function (address, assetValue) {
+    return {
+        getAddress: function () {
+            return address;
+        },
+        getAsset: function () {
+            return assetValue.getAsset();
+        },
+        getValue: function () {
+            return assetValue.getValue();
+        },
+        getFormattedValue: function () {
+            return assetValue.getFormattedValue();
+        }
+
+    };
+};
+
+
+var MockHistoryEntryModel = function(props) {
+    return {
+        isTrade: function () {
+            return (props.txType === 'trade');
+        },
+        isSend: function () {
+            return (props.txType === 'send');
+        },
+        isReceive: function () {
+            return (props.txType === 'receive');
+        },
+        getTransactionTypeString: function () {
+            return props.txType;
+        },
+        getTargets: function () {
+            return props.targets;
+        },
+        getAddress: function () {
+            return props.address;
+        },
+        getDate: function () {
+            //datetime = QtCore.QDateTime.fromTime_t(ent.txtime)
+            return props.date;
+        },
+        // For trades
+        getInValues: function () {
+            return props.inValues;
+        },
+        getOutValues: function () {
+            return props.outValues;
+        }
+
+    };
+};
+
+
 var MockWallet = function () {
     var updateCallback = function (){},
     assetModels = [
@@ -74,6 +145,52 @@ var MockWallet = function () {
             unconfirmedBalance: 2.2,
             availableBalance: 10.34 - 2.2
         })
+    ],
+    historyEntries = [
+        MockHistoryEntryModel({
+            date: '2014-07-20',
+            address: 'fasdf9fnasdfasdf9rfad@asdasdbe134bje',
+            txType: 'send',
+            targets: [
+                MockAssetTarget('fasdf9fnasdfasdf9rfad@asdasdbe134bje', 
+                    MockAssetValue(
+                        MockAssetModel({asset:'Gold'}),
+                        120))
+            ]
+        }),
+        MockHistoryEntryModel({
+            date: '2014-07-21',
+            address: 'fasdf9fnasdfasdf9rfad@asdasdbe134bje',
+            txType: 'receive',
+            targets: [
+                MockAssetTarget('fasdf9fnasdfasdf9rfad@asdasdbe134bje',
+                    MockAssetValue(
+                        MockAssetModel({asset:'Silver'}),
+                        100))
+            ]
+        }),
+        MockHistoryEntryModel({
+            date: '2014-07-22',
+            address: 'qwertyuiopfad@asdasdbe134bje',
+            txType: 'trade',
+            inValues: [
+                MockAssetTarget('fasdf9fnasdfasdf9rfad@asdasdbe134bje',
+                    MockAssetValue(
+                        MockAssetModel({asset:'Foo'}),
+                        100)),
+                MockAssetTarget('fasdf9fnasdfasdf9rfad@asdasdbe134bje',
+                    MockAssetValue(
+                        MockAssetModel({asset:'Bar'}),
+                        50))
+            ],
+            outValues: [
+                MockAssetTarget('fasdf9fnasdfasdf9rfad@asdasdbe134bje',
+                    MockAssetValue(
+                        MockAssetModel({asset:'FooBar'}),
+                        150))
+            ]
+        })
+
     ],
     getAssetModels = function () {
         // for moniker in wallet.get_all_monikers():
@@ -96,6 +213,7 @@ var MockWallet = function () {
             //          asset.format_value(wallet.get_available_balance(asset)))
         return assetModels;
     },
+    getHistory = function () {return historyEntries;},
     isInitializedFlag = false,
     isInitialized = function () {
         return isInitializedFlag;
@@ -114,9 +232,11 @@ var MockWallet = function () {
     return {
         setCallback: setCallback,
         getAssetModels: getAssetModels,
+        getHistory: getHistory,
         isInitialized: isInitialized,
         initializeFromSeed: initializeFromSeed,
         generateRandomSeed: generateRandomSeed,
+
         _bumpBitcoin: function () {
             assetModels[0].props.totalBalance = assetModels[0].props.totalBalance + 0.25;
             updateCallback();
