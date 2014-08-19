@@ -62,7 +62,12 @@ var MockAssetValue = function (asset, value) {
         getAsset: function () {
             return asset;
         },
+
+        // The following two are from AdditiveAssetValue
         getValue: function () {
+            return value;
+        },
+        getFormattedValue: function () {
             return value;
         }
     };
@@ -78,7 +83,11 @@ var MockAssetTarget = function (address, assetValue) {
         },
         getValue: function () {
             return assetValue.getValue();
+        },
+        getFormattedValue: function () {
+            return assetValue.getFormattedValue();
         }
+
     };
 };
 
@@ -159,7 +168,29 @@ var MockWallet = function () {
                         MockAssetModel({asset:'Silver'}),
                         100))
             ]
+        }),
+        MockHistoryEntryModel({
+            date: '2014-07-22',
+            address: 'qwertyuiopfad@asdasdbe134bje',
+            txType: 'trade',
+            inValues: [
+                MockAssetTarget('fasdf9fnasdfasdf9rfad@asdasdbe134bje',
+                    MockAssetValue(
+                        MockAssetModel({asset:'Foo'}),
+                        100)),
+                MockAssetTarget('fasdf9fnasdfasdf9rfad@asdasdbe134bje',
+                    MockAssetValue(
+                        MockAssetModel({asset:'Bar'}),
+                        50))
+            ],
+            outValues: [
+                MockAssetTarget('fasdf9fnasdfasdf9rfad@asdasdbe134bje',
+                    MockAssetValue(
+                        MockAssetModel({asset:'FooBar'}),
+                        150))
+            ]
         })
+
     ],
     getAssetModels = function () {
         // for moniker in wallet.get_all_monikers():

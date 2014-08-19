@@ -21,15 +21,17 @@ var HistoryEntryRow = React.createClass({
 
 var formatDateString = function(date) {
    // datetime_str = datetime.toString(QtCore.Qt.DefaultLocaleShortDate)
+    return '' + date;
 };
 
 var HistoryEntry = React.createClass({
-    render: function () {
+    renderSendOrReceive: function() {
         var entry = this.props.entry,
-            datetime = formatDateString(entry.getDate());
-        if (entry.isSend() || entry.isReceive()) {
-            var targets = entry.getTargets() || [];
-            return <div>{
+            datetime = formatDateString(entry.getDate()),
+            targets = entry.getTargets() || [];
+            return (
+            <div>
+            {
                 targets.map(function(tgt) {
                     var asset = tgt.getAsset(),
                         moniker = asset.getMoniker(), //asset.get_monikers()[0],
@@ -49,28 +51,50 @@ var HistoryEntry = React.createClass({
                                 address={address}
                     />);
                 })
-            }</div>;
+            }
+            </div>);
+    },
+    renderTrade: function () {
+        var entry = this.props.entry,
+            datetime = formatDateString(entry.getDate()),
+            renderValue = function (value, valuePrefix) {
+                var asset = value.getAsset(),
+                    formattedValue = valuePrefix + value.getFormattedValue(),
+                    txType = entry.getTransactionTypeString(),
+                    moniker = asset.getMoniker();
+                return (
+                    <HistoryEntryRow
+                        datetime={datetime}
+                        txType={txType}
+                        amount={formattedValue}
+                        moniker={moniker}
+                        address=''
+                    />);
+            },
+            inValues = entry.getInValues(),
+            outValues = entry.getOutValues();
+        return (
+            <div>
+            {
+                inValues.map(function (value) {
+                    return renderValue(value, '+');
+                })
+            }
+            {
+                outValues.map(function (value) {
+                    return renderValue(value, '-');
+                })
+    
+            }
+            </div>);
+    },
+    render: function () {
+        var entry = this.props.entry,
+            datetime = formatDateString(entry.getDate());
+        if (entry.isSend() || entry.isReceive()) {
+            return this.renderSendOrReceive();
         } else if (entry.isTrade()) {
-                // print ent.get_in_values()
-                // print ent.get_out_values()
-                // for val in ent.get_in_values():
-                //     asset = val.get_asset()
-                //     moniker = asset.get_monikers()[0]
-                //     print [datetime_str, ent.txtype, 
-                //                        "+" + val.get_formatted_value(),
-                //                        moniker, '']
-                //     self.model.addRow([datetime_str, ent.txtype, 
-                //                        "+" + val.get_formatted_value(),
-                //                        moniker, ''])
-                // for val in ent.get_out_values():
-                //     asset = val.get_asset()
-                //     moniker = asset.get_monikers()[0]
-                //     print [datetime_str, ent.txtype, 
-                //                        "-" + val.get_formatted_value(),
-                //                        moniker, '']
-                //     self.model.addRow([datetime_str, ent.txtype, 
-                //                        "-" + val.get_formatted_value(),
-                //                        moniker, ''])
+            return this.renderTrade();
         } else {
             return (
                 <HistoryEntryRow
