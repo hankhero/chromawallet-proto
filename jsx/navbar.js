@@ -47,7 +47,7 @@ var NavBar = React.createClass({
                     var activeClass = 
                         tab === self.state.selected ? 'active': null;
                     return <li className={activeClass}>
-                      <a href="#"
+                      <a href={ '#' + tab.toLowerCase() }
                          onClick={self.handleClick.bind(self,tab)}>
                       {tab}</a></li>;
                 })

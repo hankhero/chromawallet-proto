@@ -20,11 +20,24 @@ $ ( document).ready(function() {
 var App = React.createClass({
   getInitialState: function() {
       return {
-          tabName: 'Overview',
+          tabName: this.deepLinkedOrDefaultTab(),
           lastUpdate: 1234,
           wallet: wallet //Global wallet
       };
   },
+  deepLinkedOrDefaultTab: function () {
+      var defaultTabName = 'Overview',
+      hash = window.location.hash,
+          selectedTabName;
+      if (hash.length > 2) {
+          selectedTabName = hash.substr(1,1).toUpperCase() + hash.substr(2);
+          if (this.tabs.indexOf(selectedTabName) > -1) {
+              return selectedTabName;
+          }
+      }
+      return defaultTabName;
+  },
+  tabs: ['Overview', 'Send', 'Receive', 'History'],
   walletWasUpdated: function () {
      this.setState({
          lastUpdate: Date.now()
@@ -49,8 +62,7 @@ var App = React.createClass({
       return (
           <div>
               <NavBar navigateHandler = {this.changeTab} 
-                  tabs = {['Overview', 'Send',
-                          'Receive', 'History']} />
+                  tabs = {this.tabs} />
               <Login wallet={wallet} />
               <div className={show('Overview') }><Overview wallet={wallet}/></div>
               <div className={show('Receive')} ><Receive /></div>
