@@ -5,7 +5,7 @@
     "grunt-contrib-watch": "git://github.com/jacksonrayhamilton/grunt-contrib-watch.git"
   },
   "dependencies": {
-    "cc-wallet-engine": "git://github.com/fanatid/cc-wallet-engine.git",
+    "cc-wallet-engine": "git://github.com/chromaway/cc-wallet-engine.git",
     "grunt": "~0.4.1",
     "grunt-shell": "^0.7.0",
     "grunt-contrib-copy": "",
