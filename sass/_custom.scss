@@ -33,6 +33,9 @@
     background-color: $chroma-dark-blue;
     margin-bottom: 0;
 }
+.navbar ul li > a {
+    font-size: 1.5rem;
+}
 
 span.desktop {
     display: none;
