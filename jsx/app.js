@@ -61,8 +61,9 @@ var App = React.createClass({
 
       return (
           <div>
-              <NavBar navigateHandler = {this.changeTab} 
-                  tabs = {this.tabs} />
+              <NavBar navigateHandler = {this.changeTab}
+                      selected = {this.state.tabName}
+                      tabs = {this.tabs} />
               <Login wallet={wallet} />
               <div className={show('Overview') }><Overview wallet={wallet}/></div>
               <div className={show('Receive')} ><Receive /></div>

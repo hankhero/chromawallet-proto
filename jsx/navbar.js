@@ -1,26 +1,18 @@
 /** @jsx React.DOM */
 
 var NavBar = React.createClass({
-  getInitialState: function() {
-    return {selected: 'Overview'};
-  },
   getDefaultProps: function() {
     return {
       tabs: ['Overview', 'Send', 'Assets',
       'Receive', 'History','Trade'],
+      selected: 'Overview',
       navigateHandler: function (tabName) {
           console.log('Default navigate handler, please override');
       }
     };
   },
   handleClick: function(tabName, event) {
-    console.log("Click", tabName, event);
-    console.log(this.props);
     this.props.navigateHandler.call(this, tabName);
-    this.setTab(tabName);
-  },
-  setTab: function (tabName) {
-      this.setState({selected: tabName});      
   },
   componentDidMount: function () {
       var node = this.getDOMNode(),
@@ -45,7 +37,7 @@ var NavBar = React.createClass({
             {
                 this.props.tabs.map(function (tab) {
                     var activeClass = 
-                        tab === self.state.selected ? 'active': null;
+                        tab === self.props.selected ? 'active': null;
                     return <li className={activeClass}>
                       <a href={ '#' + tab.toLowerCase() }
                          onClick={self.handleClick.bind(self,tab)}>
