@@ -27,17 +27,6 @@ module.exports = function(grunt) {
             }
           }
         },
-        react: {
-            jsx: {
-                files: [{
-                    expand: true,
-                    cwd: 'jsx',
-                    src: [ '**/*.js' ],
-                    dest: 'build/',
-                    ext: '.js'
-                }]
-            }
-        },
         connect: {
             server: {
                 options: {
@@ -156,7 +145,6 @@ module.exports = function(grunt) {
         'copy:css_to_dist', 'copy:img_to_dist','copy:fonts_to_dist']);
 
     grunt.registerTask('build', [
-                           'react',
                            'browserify:production',
                            'browserify:demo',
                            'copy:demo_ui',
