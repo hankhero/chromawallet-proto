@@ -1,12 +1,14 @@
 /** @jsx React.DOM */
 
-var AssetLabel = React.createClass({
+var AssetOption = React.createClass({
   render: function () {
     var asset = this.props.asset;
     var available = asset.getAvailableBalance();
     var text = asset.getMoniker() + " (" + available + " available)";
     return (
-      <span>{text}</span>
+      <option value={asset.getMoniker()}>
+            {text}
+     </option>
     );
   }
 });
@@ -142,9 +144,7 @@ var Send = React.createClass({
                       {
                         assets.map(function (asset) {
                           return (
-                            <option value={asset.getMoniker()}>
-                              <AssetLabel asset={asset} />
-                            </option>
+                              <AssetOption asset={asset} />
                           )
                         })
                       }
