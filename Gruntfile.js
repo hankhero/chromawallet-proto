@@ -123,17 +123,6 @@ module.exports = function(grunt) {
                         return content;
                     }
                 }
-            },
-            cc_wallet_eng: {
-                src: "node_modules/cc-wallet-engine/cc-wallet-engine.js",
-                dest: "build/cc-wallet-engine.js"
-            }
-        },
-        subgrunt: {
-            cc_wallet_eng: {
-                projects: {
-                    "node_modules/cc-wallet-engine": "compile"
-                }
             }
         },
         watch: {
@@ -163,12 +152,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-cache-bust');
-
-    
-    grunt.registerTask('build-eng', [
-                         'subgrunt:cc_wallet_eng',
-                         'copy:cc_wallet_eng'
-                       ]);
 
     grunt.registerTask('dist', [
         'copy:build_to_dist', 'copy:bower_to_dist',
