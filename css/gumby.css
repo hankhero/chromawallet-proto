@@ -1,4 +1,3 @@
-@charset "UTF-8";
 /**
 * Gumby Framework
 * ---------------
@@ -1475,7 +1474,7 @@ input.xxwide:first-child:last-child, .input.xxwide:first-child:last-child { marg
 label + .xnarrow:last-child, label + .narrow:last-child, label + .normal:last-child, label + .wide:last-child, label + .xwide:last-child, label + .xxwide:last-child { margin-left: 0; }
 
 @media only screen and (max-width: 960px) { .xxwide:first-child, .xxwide:last-child { margin-right: 0%; } }
-/* remove inline-block white-space — A 0px font-size = 0px of white space */
+/* remove inline-block white-space, A 0px font-size = 0px of white space */
 .prepend, .append { font-size: 0; white-space: nowrap; padding-bottom: 3.5px; }
 
 .prepend input, .prepend .input, .append input, .append .input { display: inline-block; max-width: 100%; margin-right: 0; margin-left: 0; }
@@ -1698,6 +1697,8 @@ table.rounded thead th, table.rounded thead td, table.rounded caption + tbody tr
 .row { background-color: #fff; }
 
 .navbar { background-color: #343c4b; margin-bottom: 0; }
+
+.navbar ul li > a { font-size: 1.5rem; }
 
 span.desktop { display: none; }
 
