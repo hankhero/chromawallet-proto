@@ -118,8 +118,6 @@ module.exports = function(grunt) {
                 options: {
                     process: function (content, srcpath) {
                         content = content.replace("cw-ui-demo.js", "cw-ui.js");
-                        content = content.replace("<!-- load engines here -->",
-                                                  '<script src="cc-wallet-engine.js"></script>');
                         return content;
                     }
                 }
