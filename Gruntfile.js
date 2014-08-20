@@ -145,6 +145,7 @@ module.exports = function(grunt) {
         'copy:css_to_dist', 'copy:img_to_dist','copy:fonts_to_dist']);
 
     grunt.registerTask('build', [
+                           'compass',
                            'browserify:production',
                            'browserify:demo',
                            'copy:demo_ui',
