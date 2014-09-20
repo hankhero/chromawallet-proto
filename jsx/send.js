@@ -1,5 +1,7 @@
 /** @jsx React.DOM */
 
+var React = require('react');
+
 var AssetOption = React.createClass({
   render: function () {
     var asset = this.props.asset;

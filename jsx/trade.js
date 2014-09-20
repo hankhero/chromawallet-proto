@@ -1,5 +1,7 @@
 /** @jsx React.DOM */
 
+var React = require('react');
+
 var Trade = React.createClass({
   render: function () {
       return (

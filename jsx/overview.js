@@ -1,5 +1,7 @@
 /** @jsx React.DOM */
 
+var React = require('react');
+
 var AssetBalanceView = React.createClass({
     render: function () {
         var asset = this.props.asset,

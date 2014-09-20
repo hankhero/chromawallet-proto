@@ -1,5 +1,7 @@
 /** @jsx React.DOM */
 
+var React = require('react');
+
 var HistoryEntryRow = React.createClass({
     render: function () {
         return (

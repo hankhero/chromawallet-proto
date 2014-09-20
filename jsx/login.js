@@ -1,5 +1,6 @@
 /** @jsx React.DOM */
 
+var React = require('react');
 
 var Login = React.createClass({
     setErrorMessage: function (text) {
