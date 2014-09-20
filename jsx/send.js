@@ -87,6 +87,12 @@ var Send = React.createClass({
           this.setState(this.state);
           return;          
       }
+
+      // TODO: temp
+      if (this.props.wallet.temp_mnemonic != undefined) {
+          payment.setMnemonic(this.props.wallet.temp_mnemonic,
+                              this.props.wallet.temp_password);
+      }
       
       var self = this;
       var app = this.props.app;

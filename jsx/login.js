@@ -22,11 +22,11 @@ var Login = React.createClass({
         });
     },
     handleLoginClick: function (event) {
-        this.props.wallet.initializeFromSeed(this.getPassPhrase());
+        this.props.wallet.initialize(this.getPassPhrase(), 'nothing');
     },
     handleCreateWalletClick: function (event) {
         this.setState({
-                passphrase: this.props.wallet.generateRandomSeed(),
+                passphrase: this.props.wallet.generateMnemonic(),
                 errorMessage: null
         });
     },
@@ -48,8 +48,8 @@ var Login = React.createClass({
 
         <form>
           <div className="field">
-            <input className="input" placeholder="Passphrase"
-               type="password" value={passphrase} onChange={this.handleChange}/>
+            <input className="input" placeholder="Mnemonic"
+               type="text" value={passphrase} onChange={this.handleChange}/>
           </div>
         </form>
         <p className="btn primary medium">
