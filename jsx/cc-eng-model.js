@@ -25,7 +25,10 @@ console.log('done!');
 //    wallet.update();
 //}
 
-//setInterval(function () { wallet.update(); }, 10000);
+setInterval(function () { wallet.update(); }, 10000);
+
+wallet.update();
+
 
 module.exports = {
     wallet: wallet

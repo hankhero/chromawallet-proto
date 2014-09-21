@@ -2,25 +2,6 @@
 
 var React = require('react');
 
-var HistoryEntryRow = React.createClass({
-    render: function () {
-        return (
-	  <tbody>
-        <tr>
-          <td>{this.props.datetime}</td>
-          <td>{this.props.txType}</td>
-          <td>{this.props.amount}</td>
-		  <td>{this.props.moniker}</td>
-		</tr>
-		<tr>
-          <th className="history__address" scope="row" colSpan="4">
-            Address: <span>CoPw4ahijciS1C@mp78983PxHDLX4BdQTSHu4nhHC7W6CEssn</span>
-          </th>
-        </tr>
-	  </tbody>);
-    }
-});
-
 var formatDateString = function(date) {
    // datetime_str = datetime.toString(QtCore.Qt.DefaultLocaleShortDate)
     return '' + date;
@@ -32,77 +13,55 @@ var HistoryEntry = React.createClass({
             datetime = formatDateString(entry.getDate()),
             targets = entry.getTargets() || [];
             return (
-            <div>
+            <tbody>
             {
                 targets.map(function(tgt) {
-                    var asset = tgt.getAsset(),
-                        moniker = asset.getMoniker(), //asset.get_monikers()[0],
-                        value = tgt.getValue(),//get_formatted_value
+                    var moniker = tgt.getAssetMoniker(),
+                        value = tgt.getFormattedValue(),
                         valuePrefix = entry.isSend() ? '-' : '+',
                         txType = '',
                         address = tgt.getAddress(),
                         amount = valuePrefix + value;
                     if (entry.isSend()) { txType = 'Send'; }
                     if (entry.isReceive()) { txType = 'Receive'; }
-                    return (
-                        <HistoryEntryRow
-                                datetime={datetime}
-                                txType={txType}
-                                amount={amount}
-                                moniker={moniker}
-                                address={address}
-                    />);
+                    return [<tr>
+                        <td>{datetime}</td>
+                        <td>{txType}</td>
+                        <td>{amount}</td>
+		        <td>{moniker}</td>
+		</tr>,
+		<tr>
+                        <th className="history__address" scope="row" colSpan="4">
+                        Address: <span>{address}</span>
+                        </th>
+                </tr>];
+                    //<HistoryEntryRow datetime={datetime} txType={txType}  amount={amount}   moniker={moniker} address={address}    />);
                 })
             }
-            </div>);
+            </tbody>);
     },
-    renderTrade: function () {
+    renderPaymentToYourself: function () {
+        // backend doesn't give us much information about 
+        // this kind of payments
+        // TODO
         var entry = this.props.entry,
-            datetime = formatDateString(entry.getDate()),
-            renderValue = function (value, valuePrefix) {
-                var asset = value.getAsset(),
-                    formattedValue = valuePrefix + value.getFormattedValue(),
-                    txType = entry.getTransactionTypeString(),
-                    moniker = asset.getMoniker();
-                return (
-                    <HistoryEntryRow
-                        datetime={datetime}
-                        txType={txType}
-                        amount={formattedValue}
-                        moniker={moniker}
-                        address=''
-                    />);
-            },
-            inValues = entry.getInValues(),
-            outValues = entry.getOutValues();
-        return (
-            <div>
-            {
-                inValues.map(function (value) {
-                    return renderValue(value, '+');
-                })
-            }
-            {
-                outValues.map(function (value) {
-                    return renderValue(value, '-');
-                })
-    
-            }
-            </div>);
+            datetime = formatDateString(entry.getDate());
+        return (<tbody><tr>
+            <td>{datetime}</td>
+            <td>internal</td>
+            <td></td>
+	    <td></td></tr></tbody>);
     },
     render: function () {
         var entry = this.props.entry,
             datetime = formatDateString(entry.getDate());
         if (entry.isSend() || entry.isReceive()) {
             return this.renderSendOrReceive();
-        } else if (entry.isTrade()) {
-            return this.renderTrade();
+        } else if (entry.isPaymentToYourself()) {
+            return this.renderPaymentToYourself();
         } else {
-            return (
-                <HistoryEntryRow
-                        datetime={datetime}
-                        txType={entry.getTransactionTypeString()}
-                />);
+            console.log('unknown history entry');
+            return <tbody />;
         };
     }
 });
@@ -137,6 +96,7 @@ var History = React.createClass({
                       return <HistoryEntry entry={historyEntryModel} />;
                   })
               }
+
     </table>
   </div>
 </div>

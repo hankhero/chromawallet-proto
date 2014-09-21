@@ -57,37 +57,17 @@ var MockAssetModel = function (props) {
     };
 };
 
-var MockAssetValue = function (asset, value) {
-    return {
-        getAsset: function () {
-            return asset;
-        },
-
-        // The following two are from AdditiveAssetValue
-        getValue: function () {
-            return value;
-        },
-        getFormattedValue: function () {
-            return value;
-        }
-    };
-};
-
-var MockAssetTarget = function (address, assetValue) {
+var MockAssetTarget = function (address, assetMoniker, formattedValue) {
     return {
         getAddress: function () {
             return address;
         },
-        getAsset: function () {
-            return assetValue.getAsset();
-        },
-        getValue: function () {
-            return assetValue.getValue();
+        getAssetMoniker: function () {
+            return assetMoniker;
         },
         getFormattedValue: function () {
-            return assetValue.getFormattedValue();
+            return formattedValue;
         }
-
     };
 };
 
@@ -153,9 +133,7 @@ var MockWallet = function () {
             txType: 'send',
             targets: [
                 MockAssetTarget('fasdf9fnasdfasdf9rfad@asdasdbe134bje', 
-                    MockAssetValue(
-                        MockAssetModel({asset:'Gold'}),
-                        120))
+                'Gold', "120")
             ]
         }),
         MockHistoryEntryModel({
@@ -164,30 +142,7 @@ var MockWallet = function () {
             txType: 'receive',
             targets: [
                 MockAssetTarget('fasdf9fnasdfasdf9rfad@asdasdbe134bje',
-                    MockAssetValue(
-                        MockAssetModel({asset:'Silver'}),
-                        100))
-            ]
-        }),
-        MockHistoryEntryModel({
-            date: '2014-07-22',
-            address: 'qwertyuiopfad@asdasdbe134bje',
-            txType: 'trade',
-            inValues: [
-                MockAssetTarget('fasdf9fnasdfasdf9rfad@asdasdbe134bje',
-                    MockAssetValue(
-                        MockAssetModel({asset:'Foo'}),
-                        100)),
-                MockAssetTarget('fasdf9fnasdfasdf9rfad@asdasdbe134bje',
-                    MockAssetValue(
-                        MockAssetModel({asset:'Bar'}),
-                        50))
-            ],
-            outValues: [
-                MockAssetTarget('fasdf9fnasdfasdf9rfad@asdasdbe134bje',
-                    MockAssetValue(
-                        MockAssetModel({asset:'FooBar'}),
-                        150))
+                'Silver', "100")
             ]
         })
 
