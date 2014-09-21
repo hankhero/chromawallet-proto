@@ -35,29 +35,40 @@ var send_style = {
   padding: '0 18px !important'
 };
 
+var SendButton = React.createClass({
+        render: function () {
+            var sending = this.props.sending;
+            var text = sending ? 'Sending...' : 'Send';
+            var disabled = sending;
+                return (<li className="field">
+                    <button className="medium primary btn" style={send_style} disabled={disabled}>
+                        {text}
+                    </button>
+                </li>);            
+        }
+});
+
 var Send = React.createClass({
 
   getInitialState: function() {
     return {
       address: '',  address_error: '',
       amount: '', amount_error: '',
-      asset: '#',   asset_error: ''
+      asset: '#',   asset_error: '',
+      sending: false
     };
   },
 
   onChangeAddress: function(e) {
-    this.state.address = e.target.value;
-    this.setState(this.state);
+    this.setState({address: e.target.value});
   },
 
   onChangeAmount: function(e) {
-    this.state.amount = e.target.value;
-    this.setState(this.state);
+    this.setState({amount:  e.target.value});
   },
 
   onChangeAsset: function(e) {
-    this.state.asset = e.target.value;
-    this.setState(this.state);
+    this.setState({asset: e.target.value});
   },
 
   handleSubmit: function(e) {
@@ -71,20 +82,17 @@ var Send = React.createClass({
           }
       }
       if (asset == null) {
-          this.state.asset_error = "No asset selected!";
-          this.setState(this.state);
+          this.setState({asset_error: "No asset selected"});
           return;
       }
 
       var payment = asset.makePayment();
       if (!payment.checkAddress(this.state.address)) {
-          this.state.address_error = "Invalid address";
-          this.setState(this.state);
+          this.setState({address_error: "Invalid address"});
           return;         
       }
       if (!payment.checkAmount(this.state.amount)) {
-          this.state.amount_error = "Wrong amount";
-          this.setState(this.state);
+          this.setState({amount_error: "Wrong amount"});
           return;          
       }
 
@@ -98,8 +106,16 @@ var Send = React.createClass({
       var app = this.props.app;
       payment.addRecipient(this.state.address,
                            this.state.amount);
-      payment.send(function () {
+      this.setState({sending: true});
+      payment.send(function (err, txid) {
+          if (err) {
+              alert('Error when sending coins :(');
+              self.setState({sending: false});
+              return;
+          } else {
+              self.setState({sending: false});
               app.changeTab('History'); // change tab
+          }
       });
   },
 
@@ -165,11 +181,7 @@ var Send = React.createClass({
 
               <div className="row">
                 <div className="ten columns">
-                  <li className="field">
-                    <button className="medium primary btn" style={send_style}>
-                      Send
-                    </button>
-                  </li>
+                   <SendButton sending={this.state.sending} />
                 </div>
               </div>
                 

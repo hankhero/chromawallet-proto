@@ -25,10 +25,15 @@ console.log('done!');
 //    wallet.update();
 //}
 
-setInterval(function () { wallet.update(); }, 10000);
-
 wallet.update();
 
+setInterval(function () {
+    if (wallet.isInitialized())
+        wallet.ccWallet.scanAllAddresses(function (err) {
+            if (err) console.log(err);
+            wallet.update();
+        });
+    }, 15000);
 
 module.exports = {
     wallet: wallet
