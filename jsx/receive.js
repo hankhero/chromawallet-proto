@@ -5,6 +5,11 @@ var React = require('react');
 var QRCode = require('qrcode.react');
 
 var AssetAddressWithQR = React.createClass({
+    copyAddress : function () {
+        if (window.cordova && cordova.plugins.clipboard) {
+            cordova.plugins.clipboard.copy(this.props.asset.getAddress());
+        }        
+    },
     render: function () {
         var assetModel = this.props.asset;
         var aparts = assetModel.getAddress().split('@');
@@ -23,7 +28,7 @@ var AssetAddressWithQR = React.createClass({
                         <h3>{assetModel.getMoniker()}</h3>
                 </div>
                 <div className="six columns">
-                        <span>{assetModel.getAddress()}</span>
+                        <span>{assetModel.getAddress()} <img src="img/copy.png" onClick={this.copyAddress}/></span>
                 </div>
                 <div className="six columns">
                         <QRCode value={uri} size={256} />       

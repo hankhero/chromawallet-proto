@@ -12,4 +12,7 @@
     <feature name="BarcodeScanner">
         <param name="id" value="com.phonegap.plugins.barcodescanner" />
     </feature>
+    <feature name="Clipboard">
+        <param name="id" value="com.verso.cordova.clipboard" />
+    </feature>
 </widget>

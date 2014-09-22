@@ -21,9 +21,14 @@ var AssetBalanceView = React.createClass({
     }
 });
 var AssetAddressView = React.createClass({
+    copyAddress : function () {
+        if (window.cordova && cordova.plugins.clipboard) {
+            cordova.plugins.clipboard.copy(this.props.asset.getAddress());
+        }        
+    },
     render: function () {
         return (
-            <span>{this.props.asset.getAddress()}</span>
+            <span>{this.props.asset.getAddress()} <img src="img/copy.png" onClick={this.copyAddress}/></span>
         );
     }
 });
