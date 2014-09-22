@@ -49,7 +49,6 @@ var SendButton = React.createClass({
 });
 
 var Send = React.createClass({
-
   getInitialState: function() {
     return {
       address: '',  address_error: '',
@@ -58,7 +57,38 @@ var Send = React.createClass({
       sending: false
     };
   },
-
+  scanURI: function () {
+      var self = this;
+      if (window.cordova && cordova.plugins.barcodeScanner) {
+          cordova.plugins.barcodeScanner.scan(
+              function (result) {
+                  self.initFromURI(result.text);
+              }, 
+              function (error) {
+                  this.setState(this.getInitialState());
+              });
+      } else {
+          var uri = prompt('Enter Bitcoin URI');
+          this.initFromURI(uri);          
+      }
+  },
+  initFromURI: function (uri) {
+      try {
+          var assetModel = this.props.wallet.getAssetForURI(uri);
+          if (assetModel) {
+              var params = assetModel.decodePaymentURI(uri);
+              if (params) {
+                  this.setState({asset: assetModel.getMoniker(),
+                                 address: params.address,
+                                 amount: params.amount
+                                 });
+              }
+          }
+      } catch (x) {
+          console.log(x);
+          this.setState(this.getInitialState());
+      }
+  },
   onChangeAddress: function(e) {
     this.setState({address: e.target.value});
   },
@@ -96,12 +126,6 @@ var Send = React.createClass({
           return;          
       }
 
-      // TODO: temp
-      if (this.props.wallet.temp_mnemonic != undefined) {
-          payment.setMnemonic(this.props.wallet.temp_mnemonic,
-                              this.props.wallet.temp_password);
-      }
-      
       var self = this;
       var app = this.props.app;
       payment.addRecipient(this.state.address,
@@ -110,10 +134,10 @@ var Send = React.createClass({
       payment.send(function (err, txid) {
           if (err) {
               alert('Error when sending coins :(');
-              self.setState({sending: false});
+              self.setState(self.getInitialState());
               return;
           } else {
-              self.setState({sending: false});
+              self.setState(self.getInitialState());
               app.changeTab('History'); // change tab
           }
       });
@@ -184,7 +208,11 @@ var Send = React.createClass({
                    <SendButton sending={this.state.sending} />
                 </div>
               </div>
-                
+              <div className="row">
+                      <div className="ten columns">
+                          <div className="right-button medium primary btn"><a href="#" onClick={this.scanURI}>Scan</a></div>
+                      </div>
+              </div>
             </ul>
           </form>
         </div>

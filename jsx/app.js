@@ -68,7 +68,7 @@ var App = React.createClass({
                       tabs = {this.tabs} />
               <Login wallet={wallet} />
               <div className={show('Overview') }><Overview wallet={wallet}/></div>
-              <div className={show('Receive')} ><Receive /></div>
+              <div className={show('Receive')} ><Receive wallet={wallet} app={this}/></div>
               <div className={show('Send')} ><Send wallet={wallet} app={this}/></div>
               <div className={show('History') }><History wallet={wallet}/></div>
            </div>
