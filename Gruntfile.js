@@ -110,7 +110,60 @@ module.exports = function(grunt) {
                         return content;
                     }
                 }
+            },
+            index_cordova: {
+                src: 'html/demo-ui.html',
+                dest: 'build/index-cordova.html',
+                options: {
+                    process: function (content, srcpath) {
+                        content = content.replace("cw-ui-demo.js", "cw-ui.js");
+
+                        content = content.replace("<!-- load engines here -->",
+                            '<script src="typedarray.js"></script>');
+
+                        content = content.replace("<!-- Place for cordova -->",
+                            '<script type="text/javascript" src="cordova.js"></script>');
+                        // Place for weinre
+                        // http://192.168.0.105:8080/target/target-script-min.js#anonymous
+
+                        return content;
+                    }
+                }
+            },
+
+            bower_to_mobile: {
+                expand: true,
+                src:'bower_components/**',
+                dest: 'mobile/www/'
+            },
+            css_to_mobile: {
+                expand: true,
+                src:'css/**',
+                dest: 'mobile/www/'
+            },
+            img_to_mobile: {
+                expand: true,
+                src:'img/**',
+                dest: 'mobile/www/'
+            },
+            fonts_to_mobile: {
+                expand: true,
+                src:'fonts/**',
+                dest: 'mobile/www/'
+            },
+            code_to_mobile: {
+                src:'dist/cw-ui.js',
+                dest: 'mobile/www/cw-ui.js'
+            },
+            typedarray_to_mobile: {
+                src:'js/typedarray.js',
+                dest: 'mobile/www/typedarray.js'
+            },
+            index_to_mobile: {
+                src:'dist/index-cordova.html',
+                dest: 'mobile/www/index.html'
             }
+
         },
         watch: {
           scripts: {
@@ -144,14 +197,22 @@ module.exports = function(grunt) {
         'copy:build_to_dist', 'copy:bower_to_dist',
         'copy:css_to_dist', 'copy:img_to_dist','copy:fonts_to_dist']);
 
+    grunt.registerTask('cordova', [
+        'copy:index_to_mobile', 'copy:code_to_mobile',
+        'copy:typedarray_to_mobile', 'copy:bower_to_mobile',
+        'copy:css_to_mobile', 'copy:img_to_mobile','copy:fonts_to_mobile']);
+
+
     grunt.registerTask('build', [
                            'compass',
                            'browserify:production',
                            'browserify:demo',
                            'copy:demo_ui',
                            'copy:demo_eng',
+                           'copy:index_cordova',
                            'dist',
-                           'cacheBust'
+                           'cacheBust',
+                           'cordova'
                        ]);
 
     grunt.registerTask('default', [
