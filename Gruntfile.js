@@ -64,7 +64,9 @@ module.exports = function(grunt) {
           assets: {
               files: [{
                   expand: true,
-                  src: ['dist/demo-ui.html', 'dist/demo-eng.html'],
+                  src: ['dist/demo-ui.html', 
+                        'dist/demo-eng.html',
+                        'dist/index-cordova.html'],
                   dest: 'dist/'
               }]
           }
@@ -133,27 +135,33 @@ module.exports = function(grunt) {
 
             bower_to_mobile: {
                 expand: true,
+                cwd: 'dist',
                 src:'bower_components/**',
                 dest: 'mobile/www/'
             },
             css_to_mobile: {
                 expand: true,
+                cwd: 'dist',
                 src:'css/**',
                 dest: 'mobile/www/'
             },
             img_to_mobile: {
                 expand: true,
+                cwd: 'dist',
                 src:'img/**',
                 dest: 'mobile/www/'
             },
             fonts_to_mobile: {
                 expand: true,
+                cwd: 'dist',
                 src:'fonts/**',
                 dest: 'mobile/www/'
             },
             code_to_mobile: {
-                src:'dist/cw-ui.js',
-                dest: 'mobile/www/cw-ui.js'
+                expand: true,
+                cwd: 'dist',
+                src:'cw-ui.*',
+                dest: 'mobile/www/'
             },
             typedarray_to_mobile: {
                 src:'js/typedarray.js',
@@ -164,6 +172,11 @@ module.exports = function(grunt) {
                 dest: 'mobile/www/index.html'
             }
 
+        },
+        clean: {
+            build: 'build/',
+            dist: 'dist/',
+            mobile: 'mobile/www/'
         },
         watch: {
           scripts: {
@@ -187,6 +200,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-react');
     grunt.loadNpmTasks('grunt-subgrunt');
+    grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-compass');
     grunt.loadNpmTasks('grunt-contrib-watch');
