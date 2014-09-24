@@ -178,6 +178,9 @@ module.exports = function(grunt) {
             dist: 'dist/',
             mobile: 'mobile/www/'
         },
+        concurrent: {
+            browserify: ['compass', 'browserify:production', 'browserify:demo']
+        },
         watch: {
           scripts: {
             files: ['jsx/*.js', '!jsx/*_*.js', '!jsx/\.#*'],
@@ -200,6 +203,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-react');
     grunt.loadNpmTasks('grunt-subgrunt');
+    grunt.loadNpmTasks('grunt-concurrent');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-compass');
@@ -217,10 +221,9 @@ module.exports = function(grunt) {
         'copy:css_to_mobile', 'copy:img_to_mobile','copy:fonts_to_mobile']);
 
 
+
     grunt.registerTask('build', [
-                           'compass',
-                           'browserify:production',
-                           'browserify:demo',
+                           'concurrent:browserify',
                            'copy:demo_ui',
                            'copy:demo_eng',
                            'copy:index_cordova',

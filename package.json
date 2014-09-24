@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "devDependencies": {
     "grunt-contrib-watch": "git://github.com/jacksonrayhamilton/grunt-contrib-watch.git",
-    "grunt-contrib-clean": "^0.6.0"
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-concurrent": "^1.0.0"
   },
   "dependencies": {
     "cc-wallet-engine": "git://github.com/chromaway/cc-wallet-engine.git",
