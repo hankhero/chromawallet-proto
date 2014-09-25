@@ -185,14 +185,14 @@ module.exports = function(grunt) {
           scripts: {
             files: ['jsx/*.js', '!jsx/*_*.js', '!jsx/\.#*'],
             //Second is to exclude flymake files, third auto-save emacs files
-            tasks: ['build'],
+            tasks: ['build', 'beep'],
             options: {
               spawn: false
             }
           },
           sass: {
             files: ['sass/*.scss','sass/var/*.scss'],
-            tasks: ['compass'],
+            tasks: ['build'],
             options: {
               spawn: false
             }
@@ -200,6 +200,7 @@ module.exports = function(grunt) {
         }
     });
     
+    grunt.loadNpmTasks('grunt-beep');
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-react');
     grunt.loadNpmTasks('grunt-subgrunt');
