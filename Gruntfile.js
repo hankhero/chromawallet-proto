@@ -192,7 +192,7 @@ module.exports = function(grunt) {
           },
           sass: {
             files: ['sass/*.scss','sass/var/*.scss'],
-            tasks: ['build'],
+            tasks: ['compass', 'dist', 'beep'],
             options: {
               spawn: false
             }
@@ -212,7 +212,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-cache-bust');
 
-    grunt.registerTask('dist', [
+    grunt.registerTask('copy-to-dist', [
         'copy:build_to_dist', 'copy:bower_to_dist',
         'copy:css_to_dist', 'copy:img_to_dist','copy:fonts_to_dist']);
 
@@ -222,15 +222,19 @@ module.exports = function(grunt) {
         'copy:css_to_mobile', 'copy:img_to_mobile','copy:fonts_to_mobile']);
 
 
-
-    grunt.registerTask('build', [
-                           'concurrent:browserify',
+    grunt.registerTask('dist', [
                            'copy:demo_ui',
                            'copy:demo_eng',
                            'copy:index_cordova',
-                           'dist',
+                           'copy-to-dist',
                            'cacheBust',
                            'cordova'
+                       ]);
+
+
+    grunt.registerTask('build', [
+                           'concurrent:browserify',
+                           'dist'
                        ]);
 
     grunt.registerTask('default', [
