@@ -64,7 +64,9 @@ module.exports = function(grunt) {
           assets: {
               files: [{
                   expand: true,
-                  src: ['dist/demo-ui.html', 'dist/demo-eng.html'],
+                  src: ['dist/demo-ui.html', 
+                        'dist/demo-eng.html',
+                        'dist/index-cordova.html'],
                   dest: 'dist/'
               }]
           }
@@ -110,20 +112,87 @@ module.exports = function(grunt) {
                         return content;
                     }
                 }
+            },
+            index_cordova: {
+                src: 'html/demo-ui.html',
+                dest: 'build/index-cordova.html',
+                options: {
+                    process: function (content, srcpath) {
+                        content = content.replace("cw-ui-demo.js", "cw-ui.js");
+
+                        content = content.replace("<!-- load engines here -->",
+                            '<script src="typedarray.js"></script>');
+
+                        content = content.replace("<!-- Place for cordova -->",
+                            '<script type="text/javascript" src="cordova.js"></script>');
+                        // Place for weinre
+                        // http://192.168.0.105:8080/target/target-script-min.js#anonymous
+
+                        return content;
+                    }
+                }
+            },
+
+            bower_to_mobile: {
+                expand: true,
+                cwd: 'dist',
+                src:'bower_components/**',
+                dest: 'mobile/www/'
+            },
+            css_to_mobile: {
+                expand: true,
+                cwd: 'dist',
+                src:'css/**',
+                dest: 'mobile/www/'
+            },
+            img_to_mobile: {
+                expand: true,
+                cwd: 'dist',
+                src:'img/**',
+                dest: 'mobile/www/'
+            },
+            fonts_to_mobile: {
+                expand: true,
+                cwd: 'dist',
+                src:'fonts/**',
+                dest: 'mobile/www/'
+            },
+            code_to_mobile: {
+                expand: true,
+                cwd: 'dist',
+                src:'cw-ui.*',
+                dest: 'mobile/www/'
+            },
+            typedarray_to_mobile: {
+                src:'js/typedarray.js',
+                dest: 'mobile/www/typedarray.js'
+            },
+            index_to_mobile: {
+                src:'dist/index-cordova.html',
+                dest: 'mobile/www/index.html'
             }
+
+        },
+        clean: {
+            build: 'build/',
+            dist: 'dist/',
+            mobile: 'mobile/www/'
+        },
+        concurrent: {
+            browserify: ['compass', 'browserify:production', 'browserify:demo']
         },
         watch: {
           scripts: {
             files: ['jsx/*.js', '!jsx/*_*.js', '!jsx/\.#*'],
             //Second is to exclude flymake files, third auto-save emacs files
-            tasks: ['build'],
+            tasks: ['build', 'beep'],
             options: {
               spawn: false
             }
           },
           sass: {
-            files: ['sass/*.scss','sass/var/*.scss'],
-            tasks: ['compass'],
+            files: ['sass/*.scss','sass/var/*.scss', 'html/*.html'],
+            tasks: ['compass', 'dist', 'beep'],
             options: {
               spawn: false
             }
@@ -131,27 +200,41 @@ module.exports = function(grunt) {
         }
     });
     
+    grunt.loadNpmTasks('grunt-beep');
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-react');
     grunt.loadNpmTasks('grunt-subgrunt');
+    grunt.loadNpmTasks('grunt-concurrent');
+    grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-compass');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-cache-bust');
 
-    grunt.registerTask('dist', [
+    grunt.registerTask('copy-to-dist', [
         'copy:build_to_dist', 'copy:bower_to_dist',
         'copy:css_to_dist', 'copy:img_to_dist','copy:fonts_to_dist']);
 
-    grunt.registerTask('build', [
-                           'compass',
-                           'browserify:production',
-                           'browserify:demo',
+    grunt.registerTask('cordova', [
+        'copy:index_to_mobile', 'copy:code_to_mobile',
+        'copy:typedarray_to_mobile', 'copy:bower_to_mobile',
+        'copy:css_to_mobile', 'copy:img_to_mobile','copy:fonts_to_mobile']);
+
+
+    grunt.registerTask('dist', [
                            'copy:demo_ui',
                            'copy:demo_eng',
-                           'dist',
-                           'cacheBust'
+                           'copy:index_cordova',
+                           'copy-to-dist',
+                           'cacheBust',
+                           'cordova'
+                       ]);
+
+
+    grunt.registerTask('build', [
+                           'concurrent:browserify',
+                           'dist'
                        ]);
 
     grunt.registerTask('default', [

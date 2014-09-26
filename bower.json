@@ -11,7 +11,7 @@
     "tests"
   ],
   "dependencies": {
-    "gumby": "git://github.com/GumbyFramework/Gumby.git#~2.6.3",
+    "gumby": "git://github.com/hankhero/Gumby.git#master",
     "react": "~0.11.0"
   }
 }

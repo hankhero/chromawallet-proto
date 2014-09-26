@@ -11,6 +11,7 @@ var wallet = require('models').wallet, //Aliased by browserify
     History = require('./history');
 
 $ ( document).ready(function() {
+  React.initializeTouchEvents(true);
   React.renderComponent(
     <App />,
     document.getElementById('main')
