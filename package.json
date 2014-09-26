@@ -1,6 +1,10 @@
 {
   "name": "chromawallet-web",
   "version": "0.1.0",
+  "repository": {
+      "type": "git",
+      "url": "git://github.com/chromaway/chromawallet-proto.git"
+  },
   "devDependencies": {
     "grunt-contrib-watch": "git://github.com/jacksonrayhamilton/grunt-contrib-watch.git",
     "grunt-beep": "^0.3.1"
