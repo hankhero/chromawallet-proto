@@ -118,3 +118,12 @@ span.non-desktop {
     opacity: 0.6;
     background-color: $chroma-grey;
 }
+
+
+.overview__address-hash {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    width: calc(100% - 30px);
+}

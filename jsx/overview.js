@@ -47,14 +47,18 @@ var AssetAddressView = React.createClass({
 
     },
     render: function () {
-        var animation;
+        var animation,
+            address = this.props.asset.getAddress();
         if (this.state.clicked) {
             animation =this.getAnimatedStyle("my-custom-animation");
         }
         return (
-            <span style={animation} >{this.props.asset.getAddress()} <img 
+            <div style={animation} className="overview__address-line">
+                <span className="overview__address-hash">{address}</span>
+                <img 
                     src="img/copy.png"
-                    className="copy-icon" onClick={this.copyAddress}/></span>
+                    className="copy-icon" onClick={this.copyAddress}/>
+                </div>
         );
     }
 });
@@ -79,7 +83,7 @@ var Overview = React.createClass({
                      </div>
                      <div className="six columns">
                        <div>Balance: <AssetBalanceView asset={assetModel} /></div>
-                       <div>Address: <AssetAddressView asset={assetModel}/></div>
+                       <div className="overview__address">Address: <AssetAddressView asset={assetModel}/></div>
                      </div>
                    </div>
                 );
