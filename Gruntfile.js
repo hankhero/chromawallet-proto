@@ -191,7 +191,7 @@ module.exports = function(grunt) {
             }
           },
           sass: {
-            files: ['sass/*.scss','sass/var/*.scss'],
+            files: ['sass/*.scss','sass/var/*.scss', 'html/*.html'],
             tasks: ['compass', 'dist', 'beep'],
             options: {
               spawn: false
