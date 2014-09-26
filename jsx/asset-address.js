@@ -34,14 +34,22 @@ var AssetAddressView = React.createClass({
         if (this.state.clicked) {
             animation =this.getAnimatedStyle("my-custom-animation");
         }
-        return (
-            <div style={animation} className="overview__address-line">
-                <span className="overview__address-hash">{address}</span>
-                <img 
-                    src="img/copy.png"
-                    className="copy-icon" onClick={this.copyAddress}/>
-                </div>
-        );
+        if (window.cordova && cordova.plugins.clipboard) {
+            return (
+                    <div style={animation} className="overview__address-line">
+                    <span className="overview__address-hash">{address}</span>
+                    <img 
+                src="img/copy.png"
+                className="copy-icon" onClick={this.copyAddress}/>
+                    </div>
+            );
+        } else {
+            return (
+                    <div className="overview__address-line">
+                        <span className="overview__address-hash">{address}</span>
+                    </div>
+            );
+        }
     }
 });
 
