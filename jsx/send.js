@@ -35,19 +35,6 @@ var send_style = {
   padding: '0 18px !important'
 };
 
-var SendButton = React.createClass({
-        render: function () {
-            var sending = this.props.sending;
-            var text = sending ? 'Sending...' : 'Send';
-            var disabled = sending;
-                return (<li className="field">
-                    <button className="medium primary btn" style={send_style} disabled={disabled}>
-                        {text}
-                    </button>
-                </li>);            
-        }
-});
-
 var Send = React.createClass({
   getInitialState: function() {
     return {
@@ -102,122 +89,138 @@ var Send = React.createClass({
   },
 
   handleSubmit: function(e) {
+      var self = this;
+
       e.preventDefault();
 
-      var assets = this.props.wallet.getAssetModels();
+      var assets = self.props.wallet.getAssetModels();
       var asset = null;
       for (var i = 0; i < assets.length; i++) {
-          if (assets[i].getMoniker() === this.state.asset){
+          if (assets[i].getMoniker() === self.state.asset){
               asset = assets[i];
           }
       }
       if (asset == null) {
-          this.setState({asset_error: "No asset selected"});
+          self.setState({asset_error: "No asset selected"});
           return;
       }
 
       var payment = asset.makePayment();
-      if (!payment.checkAddress(this.state.address)) {
-          this.setState({address_error: "Invalid address"});
+      if (!payment.checkAddress(self.state.address)) {
+          self.setState({address_error: "Invalid address"});
           return;         
       }
-      if (!payment.checkAmount(this.state.amount)) {
-          this.setState({amount_error: "Wrong amount"});
+      if (!payment.checkAmount(self.state.amount)) {
+          self.setState({amount_error: "Wrong amount"});
           return;          
       }
 
-      var self = this;
-      var app = this.props.app;
-      payment.addRecipient(this.state.address,
-                           this.state.amount);
-      this.setState({sending: true});
+      payment.addRecipient(self.state.address, self.state.amount);
+      self.setState({sending: true});
       payment.send(function (err, txid) {
           if (err) {
               alert('Error when sending coins :(');
-              self.setState(self.getInitialState());
-              return;
+              self.setState(self.getInitialState()); // for next use
           } else {
-              self.setState(self.getInitialState());
-              app.changeTab('History'); // change tab
+              setTimeout(
+                  function () { 
+                    self.setState(self.getInitialState()); // for next use
+                    self.props.app.changeTab('History'); // change tab
+                  }, 
+                  8000 // wait until transaction propagates
+              );
           }
       });
+
   },
 
   render: function () {
     var assets = this.props.wallet.getAssetModels();
-    return (
-      <div className="send">
-        <div className="row module-heading">
-          <h2>Send</h2>
-        </div>
-        <div className="recipient-form row">
-          <form onSubmit={this.handleSubmit}>
-            <ul>
+    if (this.state.sending) {
+return (
+  <div className="send">
+    <div className="row module-heading">
+      <h2>Sending ...</h2>
+    </div>
+  </div>
+);
+    } else {
+return (
+  <div className="send">
+    <div className="row module-heading">
+      <h2>Send</h2>
+    </div>
+    <div className="recipient-form row">
+      <form onSubmit={this.handleSubmit}>
+        <ul>
 
-              <div className="row">
-                <div className="ten columns">
-                  <li className="field">
-                    <label className="inline" for="address">Address</label>
-                    <input className="xxwide input" type="text" id="address"
-                           placeholder="Address of the recipient."
-                           onChange={this.onChangeAddress} 
-                           value={this.state.address}
-                    />
-                    <FormFieldError message={this.state.address_error} />
-                  </li>
-                </div>
-              </div>
+          <div className="row">
+            <div className="ten columns">
+              <li className="field">
+                <label className="inline" for="address">Address</label>
+                <input className="xxwide input" type="text" id="address"
+                       placeholder="Address of the recipient."
+                       onChange={this.onChangeAddress} 
+                       value={this.state.address}
+                />
+                <FormFieldError message={this.state.address_error} />
+              </li>
+            </div>
+          </div>
 
-              <div className="row">
-                <div className="five columns">
+          <div className="row">
+            <div className="five columns">
 
-                  <li className="field">
-                    <label className="inline" for="amount">Amount</label>
-                    <input className="xxwide input" type="text" id="amount"
-                           placeholder="Amount to send." 
-                           onChange={this.onChangeAmount} 
-                           value={this.state.amount}
-                    />
-                    <FormFieldError message={this.state.amount_error} />
-                  </li>
+              <li className="field">
+                <label className="inline" for="amount">Amount</label>
+                <input className="xxwide input" type="text" id="amount"
+                       placeholder="Amount to send." 
+                       onChange={this.onChangeAmount} 
+                       value={this.state.amount}
+                />
+                <FormFieldError message={this.state.amount_error} />
+              </li>
 
-                </div>
-                <div className="five columns">
+            </div>
+            <div className="five columns">
 
-                  <li className="field">
-                    <label className="inline" for="asset">Asset</label>
-                    <select className="xxwide input" id="asset" 
-                            onChange={this.onChangeAsset}>
-                      <option value="#">Select asset</option>
-                      {
-                        assets.map(function (asset) {
-                          return (
-                              <AssetOption asset={asset} />
-                          )
-                        })
-                      }
-                    </select>
-                    <FormFieldError message={this.state.asset_error} />
-                  </li>
+              <li className="field">
+                <label className="inline" for="asset">Asset</label>
+                <select className="xxwide input" id="asset" 
+                        onChange={this.onChangeAsset}>
+                  <option value="#">Select asset</option>
+                  {
+                    assets.map(function (asset) {
+                      return (
+                          <AssetOption asset={asset} />
+                      )
+                    })
+                  }
+                </select>
+                <FormFieldError message={this.state.asset_error} />
+              </li>
 
-                </div>
-              </div>
+            </div>
+          </div>
 
-              <div className="row">
-                <div className="ten columns">
-                   <SendButton sending={this.state.sending} />
-                </div>
-              </div>
-              <div className="row">
-                      <div className="ten columns">
-                          <div className="right-button medium primary btn"><a href="#" onClick={this.scanURI}>Scan</a></div>
-                      </div>
-              </div>
-            </ul>
-          </form>
-        </div>
-      </div>
-    );
+          <div className="row">
+            <div className="ten columns">
+              <button className="medium primary btn" style={send_style}>
+                Send
+              </button>
+            </div>
+          </div>
+          <div className="row">
+            <div className="ten columns">
+                <div className="right-button medium primary btn"><a href="#" onClick={this.scanURI}>Scan</a></div>
+            </div>
+          </div>
+        </ul>
+      </form>
+    </div>
+  </div>
+);
+    }
   }
 });
 
