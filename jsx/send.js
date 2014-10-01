@@ -157,7 +157,7 @@ var Send = React.createClass({
               <div className="row">
                 <div className="ten columns">
                   <li className="field">
-                    <label className="inline" for="address">Address</label>
+                    <label className="inline" htmlFor="address">Address</label>
                     <input className="xxwide input" type="text" id="address"
                            placeholder="Address of the recipient."
                            onChange={this.onChangeAddress} 
@@ -172,7 +172,7 @@ var Send = React.createClass({
                 <div className="five columns">
 
                   <li className="field">
-                    <label className="inline" for="amount">Amount</label>
+                    <label className="inline" htmlFor="amount">Amount</label>
                     <input className="xxwide input" type="text" id="amount"
                            placeholder="Amount to send." 
                            onChange={this.onChangeAmount} 
@@ -185,7 +185,7 @@ var Send = React.createClass({
                 <div className="five columns">
 
                   <li className="field">
-                    <label className="inline" for="asset">Asset</label>
+                    <label className="inline" htmlFor="asset">Asset</label>
                     <select className="xxwide input" id="asset" 
                             onChange={this.onChangeAsset}>
                       <option value="#">Select asset</option>
