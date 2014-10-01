@@ -186,7 +186,8 @@ var Send = React.createClass({
 
                   <li className="field">
                     <label className="inline" htmlFor="asset">Asset</label>
-                    <select className="xxwide input" id="asset" 
+                    <select className="xxwide input" id="asset"
+                            value={this.state.asset}
                             onChange={this.onChangeAsset}>
                       <option value="#">Select asset</option>
                       {
