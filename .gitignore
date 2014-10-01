@@ -36,3 +36,6 @@ mobile/plugins
 
 # gumby.css is built with compass
 css/gumby.css
+
+# test wallets
+testwallets.txt

@@ -11,27 +11,58 @@ var Login = React.createClass({
     },
     getInitialState: function () {
         return {
+            initializing: false,
             passphrase: '',
             errorMessage: null
         };
     },
     handleChange: function(event) {
         this.setState({
+            initializing: false,
             passphrase: event.target.value,
             errorMessage: null
         });
     },
     handleLoginClick: function (event) {
-        this.props.wallet.initialize(this.getPassPhrase(), 'nothing');
+        self = this
+        self.setState({
+            initializing: true,
+            passphrase: self.getPassPhrase(),
+            errorMessage: null
+        });
+        setTimeout(
+            function () { 
+                self.props.wallet.initialize(self.getPassPhrase(), 'nothing');
+                self.setState({
+                    initializing: false,
+                    passphrase: self.getPassPhrase(),
+                    errorMessage: null
+                });
+            }, 
+            100 // allow component to update
+        );
     },
     handleCreateWalletClick: function (event) {
         this.setState({
-                passphrase: this.props.wallet.generateMnemonic(),
-                errorMessage: null
+            initializing: false,
+            passphrase: this.props.wallet.generateMnemonic(),
+            errorMessage: null
         });
     },
     render: function () {
-        if (this.props.wallet.isInitialized()) {
+        if (this.state.initializing) {
+      return (
+<div className="modal active" id="login-dialogue">
+  <div className="content">
+    <div className="row">
+      <div className="ten columns centered text-center">
+        <h2>Initializing Wallet ...</h2>
+      </div>
+    </div>
+  </div>
+</div>
+      );
+        } else if (this.props.wallet.isInitialized()) {
             return <div/>;
         } else {
             var passphrase = this.getPassPhrase(),
