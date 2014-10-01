@@ -15,6 +15,12 @@ EMFILE, open error (on Mac), [change ulimit -n](http://stackoverflow.com/questio
 
 Build statuses
 --------------
+ChromaWay (master):
+
+[![Build Status](https://travis-ci.org/chromaway/chromawallet-proto.svg)](https://travis-ci.org/chromaway/chromawallet-proto)
+
+Developer forks:
+
 Hankhero master:
 [![Build status](https://travis-ci.org/hankhero/chromawallet-proto.svg?branch=master)](https://travis-ci.org/hankhero/chromawallet-proto)
 
