@@ -35,7 +35,7 @@ var Overview = React.createClass({
              assets.map(function (assetModel) {
                 var moniker = assetModel.getMoniker();
                 return (
-                   <div className="row">
+                   <div key={assetModel.getAddress()} className="row">
                      <div className="six columns">
                        <h3>{moniker}</h3>
                      </div>

@@ -90,12 +90,13 @@ var History = React.createClass({
 		  <th>Asset</th>
 		</tr>
 	  </thead>
-              {
-                  entries.map(function (historyEntryModel) {
-
-                      return <HistoryEntry entry={historyEntryModel} />;
-                  })
-              }
+      {
+          entries.map(function (historyEntryModel) {
+              return <HistoryEntry
+                          key={historyEntryModel.getTxId()} 
+                          entry={historyEntryModel} />;
+          })
+      }
 
     </table>
   </div>

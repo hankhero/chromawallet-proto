@@ -41,7 +41,7 @@ var NavBar = React.createClass({
                     var activeClass = 
                         tab === self.props.selected ? 'active': null,
                         clickHandler = self.handleClick.bind(self,tab);
-                    return <li className={activeClass}>
+                    return <li key={tab} className={activeClass}>
                       <a href={ '#' + tab.toLowerCase() }
                           onTouchStart={clickHandler}
                           onClick={clickHandler}>

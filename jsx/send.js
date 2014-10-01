@@ -192,7 +192,7 @@ var Send = React.createClass({
                       {
                         assets.map(function (asset) {
                           return (
-                              <AssetOption asset={asset} />
+                              <AssetOption key={asset.getAddress()} asset={asset} />
                           )
                         })
                       }
