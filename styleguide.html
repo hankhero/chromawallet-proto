@@ -65,6 +65,113 @@
     <h2>Style guide, work-in-progress design</h2>  
 </div>
 
+    <div class="row module-heading">
+        <h2>Login / Passphrase dialogs</h2>
+        <p class="btn primary medium"><a href="#" class="switch active" gumby-trigger="#passphrase-dialogue">Open Passphrase window</a></p>
+    </div>
+
+<div class="modal" id="passphrase-dialogue">
+  <div class="content">
+    <section class="pill tabs">
+      <ul class="tab-nav">
+        <li class="active welcome-tab"><a href="#">1</a></li>
+        <li class="m-tab"><a href="#">2</a></li>
+        <li class="password-tab"><a href="#">3</a></li>
+        <li class="pin-tab"><a href="#">4</a></li>
+      </ul>
+
+      <div class="tab-content welcome-tab active">
+        <div class="row">
+          <div class="ten columns centered text-center">
+            <h2>Welcome</h2>
+            <p>To a combined wallet for bitcoins and colored-coins such as gold, art and well basically anything.</p>
+            <h3>Setup and security</h3>
+            <p>We will now ask for three types of passwords. This is necessary for your own security. It does not take long. It is not difficult.</p>
+            <p><em>It is very important!</em></p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="push_eight two columns">
+            <div class="medium secondary btn">
+              <a href="#" class="switch" gumby-trigger=".m-tab | .welcome-tab">Next</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-content m-tab">
+        <div class="row">
+          <div class="ten columns centered text-center">
+            <h2>Mnemonic</h2>
+            <p>The first password you need should be the longest. You don't need it on a daily basis, but make sure you <em>write it down</em> and store it in a safe place.</p>
+            <p>Please provide a long and difficult passphrase.</p>
+            <form>
+              <div class="field">
+                <input class="input" placeholder="20 letters or digits" type="password" />
+              </div>
+            </form>
+            <p class="warning alert">I am an error message</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="push_eight two columns">
+            <div class="medium secondary btn">
+              <a href="#" class="switch" gumby-trigger=".password-tab | .m-tab">Next</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-content password-tab">
+        <div class="row">
+          <div class="ten columns centered text-center">
+            <h2>Password</h2>
+            <p>The second password is used every time you open your wallet. It should be difficult but possible to remember.</p>
+            <p>Please provide a password for daily use. Don't reuse an existing password.</p>
+            <form>
+              <div class="field">
+                <input class="input" placeholder="At least eight letters, not too easy." type="password" />
+              </div>
+            </form>
+            <p class="warning alert">I am an error message</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="push_eight two columns">
+            <div class="medium secondary btn">
+              <a href="#" class="switch" gumby-trigger=".pin-tab | .password-tab">Next</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-content pin-tab">
+        <div class="row">
+          <div class="ten columns centered text-center">
+            <h2>PIN</h2>
+            <p>The PIN is a number sequence you use every time you send an asset.</p>
+            <p>Please provide a PIN-code for daily use.</p>
+            <form>
+              <div class="field">
+                <input class="input" placeholder="At least four digits." type="password" />
+              </div>
+            </form>
+            <p class="warning alert">I am an error message</p>
+
+        </div>
+        <div class="row">
+          <div class="push_eight two columns">
+            <div class="medium secondary btn"><a href="#">Next</a></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </div>
+</div>
+
+
+
 <div class="row" style="background-color: silver">
   <p class="btn primary medium"><a href="#" class="switch active" gumby-trigger="#login-dialogue">Open Login window</a></p>
 </div>
@@ -511,7 +618,7 @@
 	<!--
 	Include gumby.js followed by UI modules followed by gumby.init.js
 	Or concatenate and minify into a single file -->
-	<script gumby-touch="js/libs" src="bower_components/gumby/js/libs/gumby.js"></script>
+	<script gumby-debug gumby-touch="js/libs" src="bower_components/gumby/js/libs/gumby.js"></script>
 	<script src="bower_components/gumby/js/libs/ui/gumby.retina.js"></script>
 	<script src="bower_components/gumby/js/libs/ui/gumby.fixed.js"></script>
 	<script src="bower_components/gumby/js/libs/ui/gumby.skiplink.js"></script>
