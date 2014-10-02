@@ -88,7 +88,7 @@
             <h3>Setup and security</h3>
             <p>We will now take you through some steps to secure your wallet. This is necessary for your own security. It does not take long.</p>
             <p><em>It is very important!</em></p>
-            <p>(If you need need to <a href="#">restore a wallet, click here</a>)</p>
+            <p>(If you instead need to <a href="#" class="switch active" gumby-trigger="#restore-dialogue | #passphrase-dialogue">restore a wallet, click here</a>)</p>
           </div>
         </div>
         <div class="row">
@@ -150,6 +150,105 @@
             <form>
               <div class="field">
                 <input class="input" placeholder="At least four digits." type="password" />
+              </div>
+            </form>
+            <p class="warning alert">I am an error message</p>
+
+        </div>
+        <div class="row">
+          <div class="push_eight two columns">
+            <div class="medium secondary btn"><a href="#">Next</a></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </div>
+</div>
+
+
+
+<div class="modal" id="restore-dialogue">
+  <div class="content">
+    <section class="pill tabs">
+      <ul class="tab-nav">
+        <li class="active welcome-tab"><a href="#">1</a></li>
+        <li class="m-tab"><a href="#">2</a></li>
+        <li class="password-tab"><a href="#">3</a></li>
+        <li class="pin-tab"><a href="#">4</a></li>
+      </ul>
+
+      <div class="tab-content welcome-tab active">
+        <div class="row">
+          <div class="ten columns centered text-center">
+            <h2>Restore wallet</h2>
+            <p>If you have your mnemonic and password this is not difficult.</p>
+            <p>(If you instead need to <a href="#" class="switch active" gumby-trigger="#passphrase-dialogue | #restore-dialogue">create a wallet, click here</a>)</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="push_eight two columns">
+            <div class="medium secondary btn">
+              <a href="#" class="switch" gumby-trigger=".m-tab | .welcome-tab">Next</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-content m-tab">
+        <div class="row">
+          <div class="ten columns centered text-center">
+            <h2>Mnemonic</h2>
+<p>Please enter the words of your mnemonic phrase that you wrote down when you created your wallet.</p>
+            <form>
+              <div class="field">
+                <textarea style="border: 1px solid black" placeholder="Enter the phrase here"/></textarea>
+              </div>
+            </form>
+
+          </div>
+        </div>
+        <div class="row">
+          <div class="push_eight two columns">
+            <div class="medium secondary btn">
+              <a href="#" class="switch" gumby-trigger=".password-tab | .m-tab">Next</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-content password-tab">
+        <div class="row">
+          <div class="ten columns centered text-center">
+            <h2>Password</h2>
+            <p>Please enter your existing password.</p>
+            <form>
+              <div class="field">
+                <input class="input" placeholder="Password" type="password" />
+              </div>
+            </form>
+            <p class="warning alert">I am an error message</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="push_eight two columns">
+            <div class="medium secondary btn">
+              <a href="#" class="switch" gumby-trigger=".pin-tab | .password-tab">Next</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-content pin-tab">
+        <div class="row">
+          <div class="ten columns centered text-center">
+            <h2>PIN</h2>
+            <p>We don't care about your old PIN, you can create a new:</p>
+            <p>The PIN is a number sequence you use every time you send an asset.</p>
+            <p>Please provide a PIN-code for daily use.</p>
+            <form>
+              <div class="field">
+                <input class="input" placeholder="At least four digits." type="password" /
               </div>
             </form>
             <p class="warning alert">I am an error message</p>
