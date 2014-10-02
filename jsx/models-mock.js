@@ -10,7 +10,7 @@ var MockPaymentModel = function (props) {
     return {
         checkAddress: function (address)  { return true; },
         checkAmount: function (amount) { return true; },
-        addRecipeint: function (address, amount) {
+        addRecipient: function (address, amount) {
             if (read_only) throw "read-only";
             recipients.push({address: address, amount: amount});
         },
@@ -21,7 +21,9 @@ var MockPaymentModel = function (props) {
             alert("sending " + recipients[0].amount + " to " + 
                 recipients[0].address);
             read_only = true;
-            callback(this);
+            err = false;
+            txid = '049bd47af99c347698fe416736c7315f73563f72d612d89a288a1485271aad91'
+            callback(err, txid);
         },
         getStatus: function () {
             if (read_only)
@@ -92,6 +94,9 @@ var MockHistoryEntryModel = function(props) {
         getAddress: function () {
             return props.address;
         },
+        getTxId: function () {
+            return props.txId;
+        },
         getDate: function () {
             //datetime = QtCore.QDateTime.fromTime_t(ent.txtime)
             return props.date;
@@ -130,6 +135,7 @@ var MockWallet = function () {
         MockHistoryEntryModel({
             date: '2014-07-20',
             address: 'fasdf9fnasdfasdf9rfad@asdasdbe134bje',
+            txId : '64dd5fc37a22ce15957565d0673c4f948160a6bf0a2f54bfc0035ed769e70368',
             txType: 'send',
             targets: [
                 MockAssetTarget('fasdf9fnasdfasdf9rfad@asdasdbe134bje', 
@@ -139,6 +145,7 @@ var MockWallet = function () {
         MockHistoryEntryModel({
             date: '2014-07-21',
             address: 'fasdf9fnasdfasdf9rfad@asdasdbe134bje',
+            txId : '049bd47af99c347698fe416736c7315f73563f72d612d89a288a1485271aad91',
             txType: 'receive',
             targets: [
                 MockAssetTarget('fasdf9fnasdfasdf9rfad@asdasdbe134bje',
@@ -170,9 +177,15 @@ var MockWallet = function () {
     },
     getHistory = function () {return historyEntries;},
     isInitializedFlag = false,
+    initialize = function(mnemonic, password) {
+       isInitializedFlag = true;
+    }
     isInitialized = function () {
         return isInitializedFlag;
     },
+    generateMnemonic = function() {
+        return "tag capable scheme february vague first unfair mouse lift marriage salmon riot";
+    }
     initializeFromSeed = function (seed) {
         isInitializedFlag = true;
         updateCallback();
@@ -188,6 +201,8 @@ var MockWallet = function () {
         setCallback: setCallback,
         getAssetModels: getAssetModels,
         getHistory: getHistory,
+        initialize : initialize,
+        generateMnemonic : generateMnemonic,
         isInitialized: isInitialized,
         initializeFromSeed: initializeFromSeed,
         generateRandomSeed: generateRandomSeed,
