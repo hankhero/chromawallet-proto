@@ -22,12 +22,14 @@ var Panel = {
          </div>
 	     );
     },
-    renderNextButton: function () {
+    renderNextButton: function (options) {
+        options = options || {};
+        var onClick = options.onClick || this.nextClick;
         return (
 	        <div className="row">
 	          <div className="push_eight two columns">
 	            <div className="medium secondary btn">
-	              <a href="#" className="switch" onClick={this.nextClick.bind(this)}>Next</a>
+	              <a href="#" className="switch" onClick={onClick}>Next</a>
 	            </div>
 	          </div>
 	        </div>
@@ -61,14 +63,15 @@ var WelcomePanel = React.createClass({
 var MnemonicPanel = React.createClass({
     mixins: [Panel],
     renderContent: function () {
+        var passphrase = this.props.passphrase;
         return (
           <div>
             <div className="row">
               <div className="ten columns centered text-center">
-                <h2>Mnemonic</h2>
+                <h2>Secret phrase</h2>
                 <p>We have created some random words that represent the secret key to you wallet. It is very important you<em>write it down</em> and store it in a safe and secret place.</p>
 <p>Please store this phrase somewhere safe and secret.</p>
-                <p className="warning alert">Lorem ipsum dolor sit amet, consectetuer adipiscing elit.&nbsp;&nbsp;Etiam laoreet quam sed arcu.&nbsp;&nbsp;Pellentesque tristique imperdiet tortor.&nbsp;&nbsp;Nam vestibulum accumsan nisl.&nbsp;&nbsp;</p>
+                <p className="warning alert">{passphrase}</p>
               </div>
             </div>
             {
@@ -81,25 +84,93 @@ var MnemonicPanel = React.createClass({
 
 var PasswordPanel = React.createClass({
     mixins: [Panel],
+    getInitialState: function () {
+        return {
+            password: '',
+            repeat: '',
+            lengthValid: false,
+            mismatch: false,
+            showError: false,
+            everythingOk: false,
+            errorMessage: ''
+        };
+    },
+    validate: function () {
+        var lengthValid = (this.state.password.length >= 8),
+            mismatch = this.state.password !== this.state.repeat,
+            everythingOk = (lengthValid && !mismatch),
+            errorMessage = '';
+        if (mismatch) {
+            errorMessage = 'Passwords do not match';
+        }
+
+        if (!lengthValid) {
+            errorMessage = 'Password is too short';
+        }
+    
+        this.setState({
+            lengthValid: lengthValid,
+            errorMessage: errorMessage,
+            everythingOk: everythingOk
+        });
+    },
+    handlePasswordChange: function(event) {
+        this.setState({password: event.target.value, showError: false});
+        this.validate();
+    },
+    handleRepeatChange: function(event) {
+        this.setState({repeat: event.target.value, showError: false});
+        this.validate();
+    },
+    showError: function (event) {
+        this.setState({showError: true});
+    },
     renderContent: function () {
+        var password = this.state.password,
+            repeat = this.state.repeat,
+            nextOptions = {
+            };
+        if (! this.state.everythingOk) {
+            nextOptions.onClick = this.showError;            
+        }
         return (
           <div>
             <div className="row">
               <div className="ten columns centered text-center">
                  <h2>Password</h2>
-                 <p>The password is used every time you open your wallet. It should be difficult but possible to remember.</p>
-                 <p>Please provide a password for daily use. Do not reuse an existing password.</p>
+                 <p>The password is used every time you open your wallet.
+                         It should be difficult but possible to remember.</p>
                  <form>
                    <div className="field">
-                     <input className="input" placeholder="At least eight letters, not too easy." type="password" />
+                     <input className="input" value={password}
+                      onChange={this.handlePasswordChange}
+                       placeholder="At least eight letters."
+                      type="password" />
                    </div>
+          {
+                    this.state.lengthValid &&
+                    <div>
+                       <label htmlFor="repeat-password">Please repeat the password</label>
+                       <div className="field">
+                         <input className="input" value={repeat}
+                          onChange={this.handleRepeatChange}
+                           placeholder="Please repeat the password."
+                          type="password" />
+                       </div>
+                    </div>
+    
+          }
                  </form>
-                 <p className="warning alert">I am an error message</p>
+          {
+                  this.state.showError && this.state.errorMessage &&
+                    <p className="warning alert">{this.state.errorMessage}</p>
+          }
+    
               </div>
             </div>
-            {
-                this.renderNextButton()
-            }
+          {
+                this.renderNextButton(nextOptions)
+          }
           </div>
         );
     }
@@ -142,22 +213,22 @@ var Login = React.createClass({
         return this.state.passphrase; 
     },
     getInitialState: function () {
+        var generatedPassphrase = this.props.wallet && this.props.wallet.generateMnemonic();
         return {
             activeTab: 'welcome',
+            passphrase: generatedPassphrase,
             initializing: false,
-            passphrase: '',
             errorMessage: null
         };
     },
     handleChange: function(event) {
         this.setState({
             initializing: false,
-            passphrase: event.target.value,
             errorMessage: null
         });
     },
     handleLoginClick: function (event) {
-        self = this
+        self = this;
         self.setState({
             initializing: true,
             passphrase: self.getPassPhrase(),
@@ -171,7 +242,7 @@ var Login = React.createClass({
                     passphrase: self.getPassPhrase(),
                     errorMessage: null
                 });
-            }, 
+            },
             100 // allow component to update
         );
     },
@@ -192,7 +263,6 @@ var Login = React.createClass({
         this.setState({activeTab: this.tabNames[i]});
     },
     render: function () {
-        console.log('New login');
         if (this.state.initializing) {
             return (
                     <div className="modal active" id="login-dialogue">
@@ -239,7 +309,9 @@ var Login = React.createClass({
                       }
                       </ul>
                       <WelcomePanel parent={self} active={activeTab === tabNames[0]} />
-                      <MnemonicPanel parent={self} active={activeTab === tabNames[1]} />
+                      <MnemonicPanel parent={self}
+                          passphrase={passphrase}
+                          active={activeTab === tabNames[1]} />
                       <PasswordPanel parent={self} active={activeTab === tabNames[2]} />
                       <PinPanel parent={self} active={activeTab === tabNames[3]} />
                     </section>
