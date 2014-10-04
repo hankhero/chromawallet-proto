@@ -95,9 +95,11 @@ var PasswordPanel = React.createClass({
             errorMessage: ''
         };
     },
-    validate: function () {
-        var lengthValid = (this.state.password.length >= 8),
-            mismatch = this.state.password !== this.state.repeat,
+    validate: function (newPassword, newRepeat) {
+        var password = newPassword !== undefined ? newPassword: this.state.password,
+            repeat = newRepeat !== undefined ? newRepeat: this.state.repeat,
+            lengthValid = (password.length >= 8),
+            mismatch = password !== repeat,
             everythingOk = (lengthValid && !mismatch),
             errorMessage = '';
         if (mismatch) {
@@ -115,12 +117,14 @@ var PasswordPanel = React.createClass({
         });
     },
     handlePasswordChange: function(event) {
-        this.setState({password: event.target.value, showError: false});
-        this.validate();
+        var password = event.target.value;
+        this.setState({password: password, showError: false});
+        this.validate(password);
     },
     handleRepeatChange: function(event) {
-        this.setState({repeat: event.target.value, showError: false});
-        this.validate();
+        var repeat = event.target.value;
+        this.setState({repeat: repeat, showError: false});
+        this.validate(undefined, repeat);
     },
     showError: function (event) {
         this.setState({showError: true});
@@ -178,10 +182,64 @@ var PasswordPanel = React.createClass({
 
 var PinPanel = React.createClass({
     mixins: [Panel],
+    getInitialState: function () {
+        return {
+            pin: '',
+            repeat: '',
+            lengthValid: false,
+            mismatch: false,
+            showError: false,
+            everythingOk: false,
+            errorMessage: ''
+        };
+    },
+    validate: function (newPin, newRepeat) {
+        var pin = newPin !== undefined ? newPin : this.state.pin,
+            repeat = newRepeat !== undefined ? newRepeat : this.state.repeat,
+            lengthValid = (pin.length >= 4),
+            mismatch = pin !== repeat,
+            onlyDigits = /^[0-9]+$/.test(pin),
+            everythingOk = (lengthValid && !mismatch && onlyDigits),
+            errorMessage = '';
+        if (mismatch) {
+            errorMessage = 'PIN:s do not match';
+        }
+
+        if (!lengthValid) {
+            errorMessage = 'The PIN code is too short (at least 4 digits)';
+        }
+        if (! onlyDigits) {
+            errorMessage = 'Only digits allowed for PIN-code';
+        }
+        this.setState({
+            lengthValid: lengthValid,
+            errorMessage: errorMessage,
+            everythingOk: everythingOk
+        });
+    },
+    handlePinChange: function(event) {
+        var pin = event.target.value;
+        this.setState({pin: pin, showError: false});
+        this.validate(pin);
+    },
+    handleRepeatChange: function(event) {
+        var repeat = event.target.value;
+        this.setState({repeat: repeat, showError: false});
+        this.validate(undefined, repeat);
+    },
+    showError: function (event) {
+        this.setState({showError: true});
+    },
     renderContent: function () {
+        var pin = this.state.pin,
+            repeat = this.state.repeat,
+            nextOptions = {
+            };
+        if (! this.state.everythingOk) {
+            nextOptions.onClick = this.showError;            
+        }
         return (
           <div>
-
             <div className="row">
               <div className="ten columns centered text-center">
                  <h2>PIN</h2>
@@ -189,16 +247,35 @@ var PinPanel = React.createClass({
                  <p>Please provide a PIN-code for daily use.</p>
                  <form>
                    <div className="field">
-                     <input className="input" placeholder="At least four digits." type="password" />
+                     <input className="input" value={pin}
+                      onChange={this.handlePinChange}
+                       placeholder="At least four digits."
+                      type="password" />
                    </div>
+          {
+                    this.state.lengthValid &&
+                    <div>
+                       <label htmlFor="repeat-password">Please repeat the PIN-code</label>
+                       <div className="field">
+                         <input className="input" value={repeat}
+                          onChange={this.handleRepeatChange}
+                           placeholder="Please repeat the PIN-code."
+                          type="password" />
+                       </div>
+                    </div>
+    
+          }
                  </form>
-                 <p className="warning alert">I am an error message</p>
+          {
+                  this.state.showError && this.state.errorMessage &&
+                    <p className="warning alert">{this.state.errorMessage}</p>
+          }
+    
               </div>
             </div>
-
-            {
-                this.renderNextButton()
-            }
+          {
+                this.renderNextButton(nextOptions)
+          }
           </div>
         );
     }
