@@ -2,14 +2,28 @@
 
 var React = require('react/addons'); //With addons
 
+
+var NextButton = React.createClass({
+    //Props = onClick
+    render: function () {
+        var onClick = this.props.onClick;
+        return (
+	        <div className="row">
+	          <div className="push_eight two columns">
+	            <div className="medium secondary btn">
+	              <a href="#" className="switch" onClick={onClick}>Next</a>
+	            </div>
+	          </div>
+	        </div>
+        );
+    }
+});
+
 var Panel = {
     getDefaultProps: function () {
         return {
             active: false
         };
-    },
-    nextClick: function () {
-        this.props.parent.nextTab();
     },
     render: function () {
         var active = this.props.active ? ' active': '',
@@ -21,19 +35,6 @@ var Panel = {
 
          </div>
 	     );
-    },
-    renderNextButton: function (options) {
-        options = options || {};
-        var onClick = options.onClick || this.nextClick;
-        return (
-	        <div className="row">
-	          <div className="push_eight two columns">
-	            <div className="medium secondary btn">
-	              <a href="#" className="switch" onClick={onClick}>Next</a>
-	            </div>
-	          </div>
-	        </div>
-        );
     }
 };
 
@@ -52,9 +53,7 @@ var WelcomePanel = React.createClass({
 	            <p>(If you instead need to <a href="#" className="switch active" gumby-trigger="#restore-dialogue | #passphrase-dialogue">restore a wallet, click here</a>)</p>
 	          </div>
 	        </div>
-            {
-                this.renderNextButton()
-            }
+            <NextButton onClick={this.props.nextClick} />
           </div>
 	     );
     }
@@ -74,169 +73,107 @@ var MnemonicPanel = React.createClass({
                 <p className="warning alert">{passphrase}</p>
               </div>
             </div>
-            {
-                this.renderNextButton()
-            }
+            <NextButton onClick={this.props.nextClick} />
           </div>
 	     );
     }
 });
 
-var PasswordPanel = React.createClass({
-    mixins: [Panel],
-    getInitialState: function () {
-        return {
-            password: '',
-            repeat: '',
-            lengthValid: false,
-            mismatch: false,
-            showError: false,
-            everythingOk: false,
-            errorMessage: ''
-        };
-    },
-    validate: function (newPassword, newRepeat) {
-        var password = newPassword !== undefined ? newPassword: this.state.password,
-            repeat = newRepeat !== undefined ? newRepeat: this.state.repeat,
-            lengthValid = (password.length >= 8),
-            mismatch = password !== repeat,
-            everythingOk = (lengthValid && !mismatch),
+
+
+var makeSecretValidatorForm = function (options) {
+    var form = {},
+        prefix = options.prefix;
+
+    form.stateChangeCallback = options.stateChangeCallback;
+    form.minLength = options.minLength;
+    form.maxLength = options.maxLength;
+
+
+    form.lengthValid = false;
+    form.errorMessage = '';
+    form.everythingOk = false;
+
+    form.validate = function () {
+        var secret = form.secret,
+            repeat = form.repeat,
+            lengthValid = (secret.length >= form.minLength),
+            lengthTooLong = (secret.length > form.maxLength),
+            mismatch = secret !== repeat,
+            valueError = form.secretErrorCheck(secret),
+            everythingOk = (lengthValid && !mismatch && 
+                            !valueError && !lengthTooLong),
             errorMessage = '';
+    
         if (mismatch) {
-            errorMessage = 'Passwords do not match';
+            errorMessage = prefix + 's do not match';
+        }
+    
+        if (!lengthValid) {
+            errorMessage = prefix + ' is too short';
         }
 
-        if (!lengthValid) {
-            errorMessage = 'Password is too short';
+        if (lengthTooLong) {
+            errorMessage = prefix + ' is too long (max ' + form.maxLength + ')';
         }
-    
-        this.setState({
-            lengthValid: lengthValid,
-            errorMessage: errorMessage,
-            everythingOk: everythingOk
-        });
-    },
-    handlePasswordChange: function(event) {
-        var password = event.target.value;
-        this.setState({password: password, showError: false});
-        this.validate(password);
-    },
-    handleRepeatChange: function(event) {
-        var repeat = event.target.value;
-        this.setState({repeat: repeat, showError: false});
-        this.validate(undefined, repeat);
-    },
-    showError: function (event) {
-        this.setState({showError: true});
-    },
-    renderContent: function () {
-        var password = this.state.password,
-            repeat = this.state.repeat,
-            nextOptions = {
-            };
-        if (! this.state.everythingOk) {
-            nextOptions.onClick = this.showError;            
+
+        if (valueError) {
+            errorMessage = valueError;
         }
-        return (
-          <div>
-            <div className="row">
-              <div className="ten columns centered text-center">
-                 <h2>Password</h2>
-                 <p>The password is used every time you open your wallet.
-                         It should be difficult but possible to remember.</p>
-                 <form>
-                   <div className="field">
-                     <input className="input" value={password}
-                      onChange={this.handlePasswordChange}
-                       placeholder="At least eight letters."
-                      type="password" />
-                   </div>
-          {
-                    this.state.lengthValid &&
-                    <div>
-                       <label htmlFor="repeat-password">Please repeat the password</label>
-                       <div className="field">
-                         <input className="input" value={repeat}
-                          onChange={this.handleRepeatChange}
-                           placeholder="Please repeat the password."
-                          type="password" />
-                       </div>
-                    </div>
+
+        form.lengthValid = lengthValid;
+        form.errorMessage = errorMessage;
+        form.everythingOk = everythingOk;
+    };
     
-          }
-                 </form>
-          {
-                  this.state.showError && this.state.errorMessage &&
-                    <p className="warning alert">{this.state.errorMessage}</p>
-          }
+    form.secretErrorCheck = options.secretErrorCheck || function (secret) {
+        //Override and return an error message 
+        return false;
+    };
     
-              </div>
-            </div>
-          {
-                this.renderNextButton(nextOptions)
-          }
-          </div>
-        );
-    }
-});
+    form.handleSecretChange= function (event) {
+        form.secret = event.target.value;
+        form.showError = false;
+        form.validate();
+        form.stateChangeCallback(form);
+    };
+    
+    
+    form.handleRepeatChange = function (event) {
+        form.repeat = event.target.value;
+        form.showError = false;
+        form.validate();
+        form.stateChangeCallback(form);
+    };
+    
+    // When you click on the Next button, error messages are show
+    form.clickValidateHandler = function (event) {
+        form.showError = true;
+        form.stateChangeCallback(form);
+    };
+    return form;
+};
+
+
 
 var PinPanel = React.createClass({
     mixins: [Panel],
-    getInitialState: function () {
-        return {
-            pin: '',
-            repeat: '',
-            lengthValid: false,
-            mismatch: false,
-            showError: false,
-            everythingOk: false,
-            errorMessage: ''
-        };
-    },
-    validate: function (newPin, newRepeat) {
-        var pin = newPin !== undefined ? newPin : this.state.pin,
-            repeat = newRepeat !== undefined ? newRepeat : this.state.repeat,
-            lengthValid = (pin.length >= 4),
-            mismatch = pin !== repeat,
-            onlyDigits = /^[0-9]+$/.test(pin),
-            everythingOk = (lengthValid && !mismatch && onlyDigits),
-            errorMessage = '';
-        if (mismatch) {
-            errorMessage = 'PIN:s do not match';
-        }
-
-        if (!lengthValid) {
-            errorMessage = 'The PIN code is too short (at least 4 digits)';
-        }
-        if (! onlyDigits) {
-            errorMessage = 'Only digits allowed for PIN-code';
-        }
-        this.setState({
-            lengthValid: lengthValid,
-            errorMessage: errorMessage,
-            everythingOk: everythingOk
-        });
-    },
-    handlePinChange: function(event) {
-        var pin = event.target.value;
-        this.setState({pin: pin, showError: false});
-        this.validate(pin);
-    },
-    handleRepeatChange: function(event) {
-        var repeat = event.target.value;
-        this.setState({repeat: repeat, showError: false});
-        this.validate(undefined, repeat);
-    },
-    showError: function (event) {
-        this.setState({showError: true});
-    },
     renderContent: function () {
-        var pin = this.state.pin,
-            repeat = this.state.repeat,
-            nextOptions = {
-            };
-        if (! this.state.everythingOk) {
-            nextOptions.onClick = this.showError;            
+        var form = this.props.form,
+            handleSecretChange = form.handleSecretChange,
+            handleRepeatChange = form.handleRepeatChange,
+            clickValidateHandler = form.clickValidateHandler,
+            secret = form.secret,
+            repeat = form.repeat,
+            everythingOk = form.everythingOk,
+            lengthValid = form.lengthValid,
+            errorMessage = form.errorMessage,
+            showError = form.showError,
+
+            nextClick = this.props.nextClick;
+
+        if (! everythingOk) {
+            nextClick = clickValidateHandler;            
         }
         return (
           <div>
@@ -247,18 +184,18 @@ var PinPanel = React.createClass({
                  <p>Please provide a PIN-code for daily use.</p>
                  <form>
                    <div className="field">
-                     <input className="input" value={pin}
-                      onChange={this.handlePinChange}
+                     <input className="input" value={secret}
+                      onChange={handleSecretChange}
                        placeholder="At least four digits."
                       type="password" />
                    </div>
           {
-                    this.state.lengthValid &&
+                    lengthValid &&
                     <div>
                        <label htmlFor="repeat-password">Please repeat the PIN-code</label>
                        <div className="field">
                          <input className="input" value={repeat}
-                          onChange={this.handleRepeatChange}
+                          onChange={handleRepeatChange}
                            placeholder="Please repeat the PIN-code."
                           type="password" />
                        </div>
@@ -267,15 +204,73 @@ var PinPanel = React.createClass({
           }
                  </form>
           {
-                  this.state.showError && this.state.errorMessage &&
-                    <p className="warning alert">{this.state.errorMessage}</p>
+                  showError && errorMessage &&
+                    <p className="warning alert">{errorMessage}</p>
           }
     
               </div>
             </div>
+             <NextButton onClick={nextClick} />
+          </div>
+        );
+    }
+});
+
+var PasswordPanel = React.createClass({
+    mixins: [Panel],
+    renderContent: function () {
+        var form = this.props.form,
+            handleSecretChange = form.handleSecretChange,
+            handleRepeatChange = form.handleRepeatChange,
+            clickValidateHandler = form.clickValidateHandler,
+            secret = form.secret,
+            repeat = form.repeat,
+            everythingOk = form.everythingOk,
+            lengthValid = form.lengthValid,
+            errorMessage = form.errorMessage,
+            showError = form.showError,
+            
+            nextClick = this.props.nextClick;
+
+        if (! everythingOk) {
+            nextClick = clickValidateHandler;
+        }
+        return (
+          <div>
+            <div className="row">
+              <div className="ten columns centered text-center">
+                 <h2>Password</h2>
+                 <p>The password is used every time you open your wallet.
+                         It should be difficult but possible to remember.</p>
+                 <form>
+                   <div className="field">
+                     <input className="input" value={secret}
+                      onChange={handleSecretChange}
+                       placeholder="At least eight letters."
+                      type="password" />
+                   </div>
           {
-                this.renderNextButton(nextOptions)
+                    lengthValid &&
+                    <div>
+                       <label htmlFor="repeat-password">Please repeat the password</label>
+                       <div className="field">
+                         <input className="input" value={repeat}
+                          onChange={handleRepeatChange}
+                           placeholder="Please repeat the password."
+                          type="password" />
+                       </div>
+                    </div>
+    
           }
+                 </form>
+          {
+                  showError && errorMessage &&
+                    <p className="warning alert">{errorMessage}</p>
+          }
+    
+              </div>
+            </div>
+            <NextButton onClick={nextClick} />
           </div>
         );
     }
@@ -283,52 +278,84 @@ var PinPanel = React.createClass({
 
 
 var Login = React.createClass({
-    setErrorMessage: function (text) {
-        this.setState({errorMessage: text});
+    getInitialState: function () {
+        var self = this,
+            generatedPassphrase = this.props.wallet && this.props.wallet.generateMnemonic(),
+            passwordForm = makeSecretValidatorForm({
+                prefix: 'Password',
+                stateChangeCallback: function (form) {
+                    self.setState({passwordForm: form});
+                },
+                minLength: 8,
+                maxLength: 100
+            }),
+            pinForm = makeSecretValidatorForm({
+                prefix: 'PIN-code',
+                stateChangeCallback: function (form) {
+                    self.setState({pinForm: form});
+                },
+                minLength: 4,
+                maxLength: 10,
+                secretErrorCheck: function (secret) {
+                    var onlyDigits = /^[0-9]+$/.test(secret);
+                    if (! onlyDigits) {
+                        return 'Only digits allowed for PIN-code';
+                    }
+                }
+            });
+        return {
+            activeTab: 'welcome',
+            passphrase: generatedPassphrase,
+            passwordForm: passwordForm,
+            pinForm: pinForm,
+            verifyPassphraseMode: false,
+            showVerifyError: false,
+            initializing: false
+        };
     },
     getPassPhrase: function () {
         return this.state.passphrase; 
     },
-    getInitialState: function () {
-        var generatedPassphrase = this.props.wallet && this.props.wallet.generateMnemonic();
-        return {
-            activeTab: 'welcome',
-            passphrase: generatedPassphrase,
-            initializing: false,
-            errorMessage: null
-        };
+    validateWizard: function () {
+        if (this.state.passwordForm.everythingOk && this.state.pinForm.everythingOk) {
+            this.setState({verifyPassphraseMode: true});
+        }
     },
-    handleChange: function(event) {
+    handleVerifyChange: function (event) {
         this.setState({
-            initializing: false,
-            errorMessage: null
+            verifyValue: event.target.value,
+            showVerifyError: false
         });
     },
-    handleLoginClick: function (event) {
-        self = this;
-        self.setState({
+    hardRestart: function () {
+        this.setState(this.getInitialState());
+    },
+    startInitializeWallet: function () {
+        var self = this,
+            passPhrase = this.getPassPhrase(),
+            password = this.state.passwordForm.secret,
+            pin = this.state.pinForm.secret;
+        this.setState({
             initializing: true,
-            passphrase: self.getPassPhrase(),
+            verifyPassphraseMode: false,
             errorMessage: null
+        }, function () {
+            try {
+                self.props.wallet.initialize(passPhrase, password);
+                self.props.wallet.pin = pin; //TODO Where should we put pin-code?
+            } catch (e) {
+                alert('Could not initialize wallet. This is not supposed to happen. Restarting, sorry');
+                self.hardRestart();
+            }
         });
-        setTimeout(
-            function () { 
-                self.props.wallet.initialize(self.getPassPhrase(), 'nothing');
-                self.setState({
-                    initializing: false,
-                    passphrase: self.getPassPhrase(),
-                    errorMessage: null
-                });
-            },
-            100 // allow component to update
-        );
     },
-    handleCreateWalletClick: function (event) {
-        this.setState({
-            initializing: false,
-            passphrase: this.props.wallet.generateMnemonic(),
-            errorMessage: null
-        });
+    clickValidateVerify: function (event) {
+        var thirdWord = this.getPassPhrase().split(' ')[2];
+        if (this.state.verifyValue === thirdWord) {
+            this.startInitializeWallet();
+        } else {
+            this.setState({showVerifyError: true});
+        }
     },
     tabNames: ['welcome','mnemonic', 'password','pin'],
     nextTab: function () {
@@ -338,169 +365,112 @@ var Login = React.createClass({
             i = 0;
         }
         this.setState({activeTab: this.tabNames[i]});
+        this.validateWizard();
     },
     render: function () {
-        if (this.state.initializing) {
-            return (
-                    <div className="modal active" id="login-dialogue">
-                    <div className="content">
-                    <div className="row">
-                    <div className="ten columns centered text-center">
-                    <h2>Initializing Wallet ...</h2>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-            );
-// TEMP REMOVED
-//        } else if (this.props.wallet.isInitialized()) {
-//            return <div/>;
+        if (this.props.wallet.isInitialized()) {
+            return <div/>;
         } else {
-            var passphrase = this.getPassPhrase(),
-                errorMessage = this.state.errorMessage,
-                warningClasses = errorMessage ? 'warning alert': '',
-                tabNames = this.tabNames,
-                activeTab = this.state.activeTab,
-                self = this;
             return (
                 <div className="modal active" id="passphrase-dialogue">
                   <div className="content">
-                    <section className="pill tabs">
-                      <ul className="tab-nav">
-                      {
-                          tabNames.map(function (tab, i) {
-                              var cx = React.addons.classSet,
-                              c = {
-                                  active: tab === activeTab
-                              },
-                              changeTab = function () {
-                                  self.setState({activeTab:tab});
-                              }
-                              c['tab-' + tab] = true;
-                              return (
-                                  <li className={cx(c)}><a href="#"
-                                      onClick={changeTab}
-                                  >{i}</a></li>
-                              );
-                          })
-                      }
-                      </ul>
-                      <WelcomePanel parent={self} active={activeTab === tabNames[0]} />
-                      <MnemonicPanel parent={self}
-                          passphrase={passphrase}
-                          active={activeTab === tabNames[1]} />
-                      <PasswordPanel parent={self} active={activeTab === tabNames[2]} />
-                      <PinPanel parent={self} active={activeTab === tabNames[3]} />
-                    </section>
-
+                    {
+                        this.state.initializing ?
+                            this.renderInitializing() :
+                            this.state.verifyPassphraseMode ? 
+                                this.renderVerify() :
+                                this.renderWizard()
+                    }
                   </div>
                 </div>
             );     
         }
+    },
+    renderInitializing: function () {
+        return (
+          <div className="row">
+             <div className="ten columns centered text-center">
+                <h2>Initializing Wallet ...</h2>
+             </div>
+          </div>
+        );
+    },
+    renderVerify: function () {
+        var value = this.state.verifyValue,
+            handleVerifyChange = this.handleVerifyChange,
+            showError = this.state.showVerifyError,
+            errorMessage = 'Wrong word';
+        return (
+          <div>
+            <div className="row">
+              <div className="ten columns centered text-center">
+                 <h2>Verify passphrase</h2>
+                 <p>Please verify that you wrote down the passphrase earlier.</p>
+                 <p>As explained, it is cruical that this information is saved.</p>
+                 <p>Please write the third word in the passphrase:</p>
+                 <form>
+                   <div className="field">
+                     <input className="input" value={value}
+                      onChange={handleVerifyChange}
+                       placeholder="The third word of the passphrase"
+                      type="text" />
+                   </div>
+                 </form>
+          {
+                  showError && errorMessage &&
+                    <p className="warning alert">{errorMessage}</p>
+          }
+              </div>
+            </div>
+            <NextButton onClick={this.clickValidateVerify} />
+
+            <div className="row push-row-three">
+                <p>(If you never wrote it down,  <a href="#" className="active" onClick={this.hardRestart}>click here to restart</a>)</p>
+            </div>
+          </div>
+        );
+    },
+    renderWizard: function () {
+        var passphrase = this.getPassPhrase(),
+        errorMessage = this.state.errorMessage,
+        warningClasses = errorMessage ? 'warning alert': '',
+        tabNames = this.tabNames,
+        activeTab = this.state.activeTab,
+        self = this;
+        return (
+            <section className="pill tabs">
+              <ul className="tab-nav">
+              {
+                  tabNames.map(function (tab, i) {
+                      var cx = React.addons.classSet,
+                      c = {
+                          active: tab === activeTab
+                      },
+                      changeTab = function () {
+                          self.setState({activeTab:tab});
+                      };
+                      c['tab-' + tab] = true;
+                      return (
+                          <li className={cx(c)}><a href="#"
+                              onClick={changeTab}
+                          >{i}</a></li>
+                      );
+                  })
+              }
+              </ul>
+              <WelcomePanel nextClick={this.nextTab} active = {activeTab === tabNames[0]} />
+              <MnemonicPanel nextClick={this.nextTab}
+                  passphrase = {passphrase}
+                  active = {activeTab === tabNames[1]} />
+              <PasswordPanel nextClick={this.nextTab}
+                  form = {this.state.passwordForm}
+                  active = {activeTab === tabNames[2]} />
+              <PinPanel nextClick={this.nextTab}
+                  form = {this.state.pinForm}
+                  active = {activeTab === tabNames[3]} />
+            </section>
+        );
     }
 });
 
-
-
-
-var OLDOLDOLDOLDLogin = React.createClass({
-          setErrorMessage: function (text) {
-              this.setState({errorMessage: text});
-          },
-          getPassPhrase: function () {
-              return this.state.passphrase; 
-          },
-          getInitialState: function () {
-              return {
-                  initializing: false,
-                  passphrase: '',
-                  errorMessage: null
-              };
-          },
-          handleChange: function(event) {
-              this.setState({
-                  initializing: false,
-                  passphrase: event.target.value,
-                  errorMessage: null
-              });
-          },
-          handleLoginClick: function (event) {
-              self = this
-              self.setState({
-                  initializing: true,
-                  passphrase: self.getPassPhrase(),
-                  errorMessage: null
-              });
-              setTimeout(
-                  function () { 
-                      self.props.wallet.initialize(self.getPassPhrase(), 'nothing');
-                      self.setState({
-                          initializing: false,
-                          passphrase: self.getPassPhrase(),
-                          errorMessage: null
-                      });
-                  }, 
-                  100 // allow component to update
-              );
-          },
-          handleCreateWalletClick: function (event) {
-              this.setState({
-                  initializing: false,
-                  passphrase: this.props.wallet.generateMnemonic(),
-                  errorMessage: null
-              });
-          },
-          render: function () {
-              if (this.state.initializing) {
-            return (
-      <div className="modal active" id="login-dialogue">
-        <div className="content">
-          <div className="row">
-            <div className="ten columns centered text-center">
-              <h2>Initializing Wallet ...</h2>
-            </div>
-          </div>
-        </div>
-      </div>
-            );
-              } else if (this.props.wallet.isInitialized()) {
-                  return <div/>;
-              } else {
-                  var passphrase = this.getPassPhrase(),
-                  errorMessage = this.state.errorMessage,
-                  warningClasses = errorMessage ? 'warning alert': '';
-            return (
-
-
-      <div className="modal active" id="login-dialogue">
-        <div className="content">
-          <div className="row">
-            <div className="ten columns centered text-center">
-              <h2>Login</h2>
-              <p>Enter your passphrase to login or a new one to create a wallet.</p>
-
-              <form>
-                <div className="field">
-                  <input className="input" placeholder="Mnemonic"
-                     type="text" value={passphrase} onChange={this.handleChange}/>
-                </div>
-              </form>
-              <p className="btn primary medium">
-                <button onClick={this.handleLoginClick} >Login</button>
-              </p>
-              <p className="btn primary medium">
-                <button onClick={this.handleCreateWalletClick} >Create wallet</button>
-              </p>
-              <p/>
-              <p className={warningClasses}>{errorMessage}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-            );
-
-              }
-  }
-});
-
-module.exports = OLDOLDOLDOLDLogin;
+module.exports = Login;

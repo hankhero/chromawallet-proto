@@ -67,7 +67,8 @@
 
     <div class="row module-heading">
         <h2>Login / Passphrase dialogs</h2>
-        <p class="btn primary medium"><a href="#" class="switch active" gumby-trigger="#passphrase-dialogue">Open Passphrase window</a></p>
+        <p class="btn primary medium"><a href="#" class="switch active" gumby-trigger="#passphrase-dialogue">Open Setup wizard window</a></p>
+        <p class="btn primary medium"><a href="#" class="switch active" gumby-trigger="#verify-dialogue">Open Verify passphrase window</a></p>
     </div>
 
 <div class="modal" id="passphrase-dialogue">
@@ -265,6 +266,35 @@
   </div>
 </div>
 
+
+<div class="modal" id="verify-dialogue">
+  <div class="content">
+        <div class="row">
+          <div class="ten columns centered text-center">
+            <h2>Verify passphrase</h2>
+            <p>Please verify that you wrote down the passphrase earlier.</p>
+            <p>As explained, it is cruical that this information is saved.</p>
+            <p>Please write the third word in the passphrase:</p>
+            <form>
+              <div class="field">
+                <input class="input" placeholder="The third word of the passphrase" type="text" />
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="row">
+          <div class="push_eight two columns">
+            <div class="medium secondary btn">
+              <a href="#" class="switch">Next</a>
+            </div>
+          </div>
+        </div>
+        <div class="row push-row-three">
+            <p>(If you never wrote it down,  <a href="#" class="switch active" gumby-trigger="#restore-dialogue | #passphrase-dialogue">click here to restart</a>)</p>
+        </div>
+      </div>
+  </div>
+</div>
 
 
 <div class="row" style="background-color: silver">
