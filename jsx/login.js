@@ -50,7 +50,7 @@ var WelcomePanel = React.createClass({
 	            <h3>Setup and security</h3>
 	            <p>We will now take you through some steps to secure your wallet. This is necessary for your own security. It does not take long.</p>
 	            <p><em>It is very important!</em></p>
-	            <p>(If you instead need to <a href="#" className="switch active" gumby-trigger="#restore-dialogue | #passphrase-dialogue">restore a wallet, click here</a>)</p>
+	            <p>(If you instead need to <a href="#" className="switch active" onClick={this.props.recoverClick}>recover a wallet, click here</a>)</p>
 	          </div>
 	        </div>
             <NextButton onClick={this.props.nextClick} />
@@ -58,6 +58,8 @@ var WelcomePanel = React.createClass({
 	     );
     }
 });
+
+
 
 var MnemonicPanel = React.createClass({
     mixins: [Panel],
@@ -276,6 +278,52 @@ var PasswordPanel = React.createClass({
     }
 });
 
+var RecoverWelcomePanel = React.createClass({
+    mixins: [Panel],
+    renderContent: function () {
+        return (
+          <div>
+	        <div className="row">
+	          <div className="ten columns centered text-center">
+            <h2>Restore wallet</h2>
+            <p>If you have your mnemonic and password this is not difficult.</p>
+            <p>(If you instead need to <a href="#" className="switch active" gumby-trigger="#passphrase-dialogue | #recover-dialogue">create a wallet, click here</a>)</p>
+	          </div>
+	        </div>
+            <NextButton onClick={this.props.nextClick} />
+          </div>
+	     );
+    }
+});
+
+
+var RecoverMnemonicPanel = React.createClass({
+    mixins: [Panel],
+    renderContent: function () {
+        var passphrase = this.props.passphrase,
+            change = this.props.onChange;
+        return (
+          <div>
+            <div className="row">
+              <div className="ten columns centered text-center">
+                <h2>Secret phrase</h2>
+                <p>Please enter the words of your secret phrase that you wrote down when you created your wallet.</p>
+                <form>
+                  <div className="field">
+                    <textarea className="passphrase-textarea"
+                            placeholder="Enter the phrase here"
+                            value={passphrase}
+                            onChange={change} />
+                  </div>
+                </form>
+              </div>
+            </div>
+            <NextButton onClick={this.props.nextClick} />
+          </div>
+	     );
+    }
+});
+
 
 var Login = React.createClass({
     getInitialState: function () {
@@ -366,6 +414,9 @@ var Login = React.createClass({
         }
         this.setState({activeTab: this.tabNames[i]});
         this.validateWizard();
+    },
+    recoverClick: function () {
+        alert("TODO, not implemented yet");
     },
     render: function () {
         if (this.props.wallet.isInitialized()) {
@@ -458,7 +509,7 @@ var Login = React.createClass({
                   })
               }
               </ul>
-              <WelcomePanel nextClick={this.nextTab} active = {activeTab === tabNames[0]} />
+              <WelcomePanel nextClick={this.nextTab} recoverClick={this.recoverClick} active = {activeTab === tabNames[0]} />
               <MnemonicPanel nextClick={this.nextTab}
                   passphrase = {passphrase}
                   active = {activeTab === tabNames[1]} />
