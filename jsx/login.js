@@ -59,8 +59,6 @@ var WelcomePanel = React.createClass({
     }
 });
 
-
-
 var MnemonicPanel = React.createClass({
     mixins: [Panel],
     renderContent: function () {
@@ -80,8 +78,6 @@ var MnemonicPanel = React.createClass({
 	     );
     }
 });
-
-
 
 var makeSecretValidatorForm = function (options) {
     var form = {},
@@ -156,8 +152,6 @@ var makeSecretValidatorForm = function (options) {
     return form;
 };
 
-
-
 var PinPanel = React.createClass({
     mixins: [Panel],
     renderContent: function () {
@@ -171,7 +165,8 @@ var PinPanel = React.createClass({
             lengthValid = form.lengthValid,
             errorMessage = form.errorMessage,
             showError = form.showError,
-
+            message = this.props.message || 
+                          'The PIN is a number sequence you use every time you send an asset.',
             nextClick = this.props.nextClick;
 
         if (! everythingOk) {
@@ -182,7 +177,7 @@ var PinPanel = React.createClass({
             <div className="row">
               <div className="ten columns centered text-center">
                  <h2>PIN</h2>
-                 <p>The PIN is a number sequence you use every time you send an asset.</p>
+                 <p>{message}</p>
                  <p>Please provide a PIN-code for daily use.</p>
                  <form>
                    <div className="field">
@@ -202,7 +197,6 @@ var PinPanel = React.createClass({
                           type="password" />
                        </div>
                     </div>
-    
           }
                  </form>
           {
@@ -231,7 +225,9 @@ var PasswordPanel = React.createClass({
             lengthValid = form.lengthValid,
             errorMessage = form.errorMessage,
             showError = form.showError,
-            
+            message = this.props.message || 
+                'The password is used every time you open your wallet. ' + 
+                'It should be difficult but possible to remember.',
             nextClick = this.props.nextClick;
 
         if (! everythingOk) {
@@ -242,8 +238,7 @@ var PasswordPanel = React.createClass({
             <div className="row">
               <div className="ten columns centered text-center">
                  <h2>Password</h2>
-                 <p>The password is used every time you open your wallet.
-                         It should be difficult but possible to remember.</p>
+                 <p>{message}</p>
                  <form>
                    <div className="field">
                      <input className="input" value={secret}
@@ -278,6 +273,7 @@ var PasswordPanel = React.createClass({
     }
 });
 
+
 var RecoverWelcomePanel = React.createClass({
     mixins: [Panel],
     renderContent: function () {
@@ -287,7 +283,7 @@ var RecoverWelcomePanel = React.createClass({
 	          <div className="ten columns centered text-center">
             <h2>Restore wallet</h2>
             <p>If you have your mnemonic and password this is not difficult.</p>
-            <p>(If you instead need to <a href="#" className="switch active" gumby-trigger="#passphrase-dialogue | #recover-dialogue">create a wallet, click here</a>)</p>
+            <p>(If you instead need to <a href="#" className="switch active" onClick={this.props.normalClick}>create a wallet, click here</a>)</p>
 	          </div>
 	        </div>
             <NextButton onClick={this.props.nextClick} />
@@ -326,9 +322,10 @@ var RecoverMnemonicPanel = React.createClass({
 
 
 var Login = React.createClass({
+    normalTabNames: ['welcome','mnemonic', 'password','pin'],
     getInitialState: function () {
         var self = this,
-            generatedPassphrase = this.props.wallet && this.props.wallet.generateMnemonic(),
+            generatedPassphrase = this.props.wallet.generateMnemonic(),
             passwordForm = makeSecretValidatorForm({
                 prefix: 'Password',
                 stateChangeCallback: function (form) {
@@ -352,7 +349,9 @@ var Login = React.createClass({
                 }
             });
         return {
-            activeTab: 'welcome',
+            activeTab: this.normalTabNames[0],
+            tabNames: this.normalTabNames,
+            recoverMode: false,
             passphrase: generatedPassphrase,
             passwordForm: passwordForm,
             pinForm: pinForm,
@@ -361,12 +360,36 @@ var Login = React.createClass({
             initializing: false
         };
     },
+    setRecoverMode: function () {
+        this.setState({
+            activeTab: this.normalTabNames[0],
+            passphrase: '',
+            recoverMode: true
+        });
+    },
+    setNormalMode: function () {
+        this.setState({
+            activeTab: this.normalTabNames[0],
+            passphrase: this.props.wallet.generateMnemonic(),
+            recoverMode: false
+        });
+    },
+    recoverPassphraseChange: function (event) {
+        var pp = event.target.value;
+        this.setState({passphrase: pp});
+    },
     getPassPhrase: function () {
         return this.state.passphrase; 
     },
     validateWizard: function () {
-        if (this.state.passwordForm.everythingOk && this.state.pinForm.everythingOk) {
-            this.setState({verifyPassphraseMode: true});
+        if (this.state.recoverMode) {
+            if (this.state.passwordForm.everythingOk && this.state.pinForm.everythingOk) {
+                this.startInitializeWallet();
+            }
+        } else {
+            if (this.state.passwordForm.everythingOk && this.state.pinForm.everythingOk) {
+                this.setState({verifyPassphraseMode: true});
+            }
         }
     },
     handleVerifyChange: function (event) {
@@ -375,7 +398,7 @@ var Login = React.createClass({
             showVerifyError: false
         });
     },
-    hardRestart: function () {
+    restart: function () {
         this.setState(this.getInitialState());
     },
     startInitializeWallet: function () {
@@ -393,7 +416,7 @@ var Login = React.createClass({
                 self.props.wallet.pin = pin; //TODO Where should we put pin-code?
             } catch (e) {
                 alert('Could not initialize wallet. This is not supposed to happen. Restarting, sorry');
-                self.hardRestart();
+                self.restart();
             }
         });
     },
@@ -405,18 +428,17 @@ var Login = React.createClass({
             this.setState({showVerifyError: true});
         }
     },
-    tabNames: ['welcome','mnemonic', 'password','pin'],
     nextTab: function () {
-        var i = this.tabNames.indexOf(this.state.activeTab);
+        var i = this.state.tabNames.indexOf(this.state.activeTab);
         i = i + 1;
-        if (i >= this.tabNames.length) {
+        if (i >= this.state.tabNames.length) {
             i = 0;
         }
-        this.setState({activeTab: this.tabNames[i]});
+        this.setState({activeTab: this.state.tabNames[i]});
         this.validateWizard();
     },
     recoverClick: function () {
-        alert("TODO, not implemented yet");
+        this.setRecoverMode();
     },
     render: function () {
         if (this.props.wallet.isInitialized()) {
@@ -476,17 +498,17 @@ var Login = React.createClass({
             <NextButton onClick={this.clickValidateVerify} />
 
             <div className="row push-row-three">
-                <p>(If you never wrote it down,  <a href="#" className="active" onClick={this.hardRestart}>click here to restart</a>)</p>
+                <p>(If you never wrote it down,  <a href="#" className="active" onClick={this.restart}>click here to restart</a>)</p>
             </div>
           </div>
         );
     },
     renderWizard: function () {
         var passphrase = this.getPassPhrase(),
-        errorMessage = this.state.errorMessage,
-        warningClasses = errorMessage ? 'warning alert': '',
-        tabNames = this.tabNames,
+        tabNames = this.state.tabNames,
         activeTab = this.state.activeTab,
+        recoverMode = this.state.recoverMode,
+        normalMode = ! recoverMode,
         self = this;
         return (
             <section className="pill tabs">
@@ -509,16 +531,41 @@ var Login = React.createClass({
                   })
               }
               </ul>
-              <WelcomePanel nextClick={this.nextTab} recoverClick={this.recoverClick} active = {activeTab === tabNames[0]} />
-              <MnemonicPanel nextClick={this.nextTab}
-                  passphrase = {passphrase}
-                  active = {activeTab === tabNames[1]} />
-              <PasswordPanel nextClick={this.nextTab}
-                  form = {this.state.passwordForm}
-                  active = {activeTab === tabNames[2]} />
-              <PinPanel nextClick={this.nextTab}
-                  form = {this.state.pinForm}
-                  active = {activeTab === tabNames[3]} />
+              {
+                  normalMode && 
+                      <div>
+                     <WelcomePanel nextClick={this.nextTab} recoverClick={this.recoverClick} active = {activeTab === tabNames[0]} />
+                     <MnemonicPanel nextClick={this.nextTab}
+                         passphrase = {passphrase}
+                         active = {activeTab === tabNames[1]} />
+                     <PasswordPanel nextClick={this.nextTab}
+                         form = {this.state.passwordForm}
+                         active = {activeTab === tabNames[2]} />
+                     <PinPanel nextClick={this.nextTab}
+                         form = {this.state.pinForm}
+                         active = {activeTab === tabNames[3]} />
+                      </div>
+              }
+              {
+                  recoverMode && 
+                      <div>
+                     <RecoverWelcomePanel nextClick={this.nextTab} normalClick={this.setNormalMode} active = {activeTab === tabNames[0]} />
+                     <RecoverMnemonicPanel nextClick={this.nextTab}
+                         onChange={this.recoverPassphraseChange}
+
+                         passphrase = {passphrase}
+                         active = {activeTab === tabNames[1]} />
+                     <PasswordPanel nextClick={this.nextTab}
+                         message={'Please enter your existing password'}
+                         form = {this.state.passwordForm}
+                         active = {activeTab === tabNames[2]} />
+                     <PinPanel nextClick={this.nextTab}
+                         message="We don't care about your old PIN, you can create a new:"
+                         form = {this.state.pinForm}
+                         active = {activeTab === tabNames[3]} />
+</div>
+              }
+
             </section>
         );
     }
