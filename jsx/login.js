@@ -394,7 +394,7 @@ var Login = React.createClass({
             errorMessage: null
         }, function () {
             try {
-                if (this.state.reseeding){
+                if (self.state.reseeding){
                   self.props.wallet.setSeed(mnemonic, password);
                   self.props.wallet.setPin(pin);
                 } else {
@@ -402,7 +402,7 @@ var Login = React.createClass({
                   self.props.wallet.setPin(pin);
                   store.set('cwp_mnemonic', mnemonic);
                 }
-                self.setState({ loading: false }); // FIXME someone fucked up async loading
+                self.setState({ loading: false }); // FIXME async loading broken
             } catch (e) {
                 alert('Could not initialize wallet. This is not supposed to happen. Restarting, sorry');
                 self.hardRestart();
