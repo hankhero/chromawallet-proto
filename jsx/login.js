@@ -322,14 +322,10 @@ var RecoverMnemonicPanel = React.createClass({
     }
 });
 
-
-var Login = React.createClass({
+var CreateWallet = React.createClass({
     getInitialState: function () {
         var self = this,
-            wallet = this.props.wallet,
-            mnemonic = store.get('cwp_mnemonic'),
-            reseeding = !!mnemonic && wallet.canResetSeed(),
-
+            mnemonic = this.props.wallet.generateMnemonic(),
             passwordForm = makeSecretValidatorForm({
                 prefix: 'Password',
                 stateChangeCallback: function (form) {
@@ -338,7 +334,6 @@ var Login = React.createClass({
                 minLength: 8,
                 maxLength: 100
             }),
-
             pinForm = makeSecretValidatorForm({
                 prefix: 'PIN-code',
                 stateChangeCallback: function (form) {
@@ -353,15 +348,13 @@ var Login = React.createClass({
                     }
                 }
             });
-
         return {
-            activeTab: reseeding ? 'password' : 'welcome',
-            mnemonic: reseeding ? mnemonic : wallet.generateMnemonic(),
+            activeTab: 'welcome',
+            mnemonic: mnemonic,
             passwordForm: passwordForm,
             pinForm: pinForm,
             verifyMnemonicMode: false,
             showVerifyError: false,
-            reseeding: reseeding,
             loading: false
         };
     },
@@ -384,30 +377,30 @@ var Login = React.createClass({
         this.setState(this.getInitialState());
     },
     startInitializeWallet: function () {
-        var self = this,
-            mnemonic = this.getMnemonic(),
-            password = this.state.passwordForm.secret,
-            pin = this.state.pinForm.secret;
+        var self = this;
+        var mnemonic = this.getMnemonic();
+        var password = this.state.passwordForm.secret;
+        var pin = this.state.pinForm.secret;
         this.setState({
             loading: true,
             verifyMnemonicMode: false,
             errorMessage: null
-        }, function () {
-            try {
-                if (self.state.reseeding){
-                  self.props.wallet.setSeed(mnemonic, password);
-                  self.props.wallet.setPin(pin);
-                } else {
+        })
+        setTimeout(
+          function () {
+              try {
                   self.props.wallet.initialize(mnemonic, password);
                   self.props.wallet.setPin(pin);
                   store.set('cwp_mnemonic', mnemonic);
-                }
-                self.setState({ loading: false }); // FIXME async loading broken
-            } catch (e) {
-                alert('Could not initialize wallet. This is not supposed to happen. Restarting, sorry');
-                self.hardRestart();
-            }
-        });
+                  // TODO store encrypted pin
+                  self.setState({ loading: false });
+              } catch (e) {
+                  alert('Could not initialize wallet. This is not supposed to happen. Restarting, sorry');
+                  self.hardRestart();
+              }
+          }, 
+          100 // allow component to update
+        );
     },
     clickValidateVerify: function (event) {
         var thirdWord = this.getMnemonic().split(' ')[2];
@@ -535,6 +528,51 @@ var Login = React.createClass({
             </section>
         );
     }
+});
+
+var ConfirmPassword = React.createClass({
+                  //self.props.wallet.setSeed(mnemonic, password);
+                  //self.props.wallet.setPin(pin);
+  render: function () {
+    return (
+      <div className="modal active" id="mnemonic-dialogue">
+        <div className="content">
+          <div className="row">
+            <div className="ten columns centered text-center">
+              <h2>TODO ConfirmPassword ...</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+});
+
+var Login = React.createClass({
+  // TODO handle recover wallet
+  getInitialState: function () {
+    var mnemonic = store.get('cwp_mnemonic');
+    var encryptedpin = store.get('cwp_encryptedpin');
+    var canresetseed = this.props.wallet.canResetSeed();
+    return {
+      mnemonic: mnemonic,
+      encryptedpin: encryptedpin,
+      reseeding: !!mnemonic && !!encryptedpin && canresetseed
+    }
+  },
+  render: function () {
+      if (this.state.reseeding){
+        return (
+          <ConfirmPassword wallet={this.props.wallet} 
+                           mnemonic={this.state.mnemonic} 
+                           encryptedpin={this.state.encryptedpin} />
+        );
+      } else {
+        return (
+          <CreateWallet wallet={this.props.wallet} />
+        );
+      }
+  }
 });
 
 module.exports = Login;
