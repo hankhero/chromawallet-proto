@@ -36,16 +36,16 @@ var send_style = {
 };
 
 var SendButton = React.createClass({
-        render: function () {
-            var sending = this.props.sending;
-            var text = sending ? 'Sending...' : 'Send';
-            var disabled = sending;
-                return (<li className="field">
-                    <button className="medium primary btn" style={send_style} disabled={disabled}>
-                        {text}
-                    </button>
-                </li>);            
-        }
+    render: function () {
+        var text = 'Send';
+        return (
+          <li className="field">
+            <button className="medium primary btn" style={send_style}>
+                {text}
+            </button>
+          </li>
+        );            
+    }
 });
 
 var Send = React.createClass({
@@ -118,7 +118,7 @@ var Send = React.createClass({
           return;
       }
 
-      var payment = asset.makePayment();
+      var payment = asset.makePayment(self.props.wallet.getSeed());
       if (!payment.checkAddress(self.state.address)) {
           self.setState({address_error: "Invalid address"});
           return;         

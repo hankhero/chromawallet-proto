@@ -176,19 +176,30 @@ var MockWallet = function () {
         return assetModels;
     },
     getHistory = function () {return historyEntries;},
+    hasSeedFlag = false;
     isInitializedFlag = false,
+
     initialize = function(mnemonic, password) {
        isInitializedFlag = true;
-    }
+       hasSeedFlag = true;
+    },
     isInitialized = function () {
         return isInitializedFlag;
     },
+    setSeed = function(mnemonic, password) {
+       hasSeedFlag = true;
+    },
+    getSeed = function() {
+       if(hasSeedFlag){
+         return "random seed";
+       }
+       return "";
+    },
+    hasSeed = function () {
+        return hasSeedFlag;
+    },
     generateMnemonic = function() {
         return "tag capable scheme february vague first unfair mouse lift marriage salmon riot";
-    }
-    initializeFromSeed = function (seed) {
-        isInitializedFlag = true;
-        updateCallback();
     },
     generateRandomSeed = function (entropy) {
         return 'random seed';
@@ -204,7 +215,7 @@ var MockWallet = function () {
         initialize : initialize,
         generateMnemonic : generateMnemonic,
         isInitialized: isInitialized,
-        initializeFromSeed: initializeFromSeed,
+        hasSeed: hasSeed,
         generateRandomSeed: generateRandomSeed,
 
         _bumpBitcoin: function () {
