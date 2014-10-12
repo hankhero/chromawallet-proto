@@ -579,19 +579,57 @@ var CreateWallet = React.createClass({
 var ConfirmPassword = React.createClass({
                   //self.props.wallet.setSeed(mnemonic, password);
                   //self.props.wallet.setPin(pin);
-  render: function () {
-    return (
-      <div className="modal active" id="mnemonic-dialogue">
-        <div className="content">
-          <div className="row">
-            <div className="ten columns centered text-center">
-              <h2>TODO ConfirmPassword ...</h2>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+    setErrorMessage: function (text) {
+        this.setState({errorMessage: text});
+    },
+    getInitialState: function () {
+        return {
+            password: '',
+            errorMessage: null
+        };
+    },
+    handleChange: function(event) {
+        this.setState({
+            password: event.target.value,
+            errorMessage: null
+        });
+    },
+    handleLoginClick: function (event) {
+        var mnemonic = this.props.mnemonic,
+            password = this.state.password;
+        this.props.wallet.initialize(mnemonic, password);
+    },
+    render: function () {
+        if (this.props.wallet.isInitialized()) {
+            return <div/>;
+        } else {
+            var password = this.state.password,
+            errorMessage = this.state.errorMessage,
+            warningClasses = errorMessage ? 'warning alert': '';
+            return (
+              <div className="modal active" id="login-dialogue">
+                <div className="content">
+                  <div className="row">
+                    <div className="ten columns centered text-center">
+                      <h2>Login</h2>
+                      <p>Enter your password to login.</p>
+                      <form>
+                        <div className="field">
+                          <input className="input" placeholder="Password"
+                             type="password" value={password} onChange={this.handleChange}/>
+                        </div>
+                      </form>
+                      <p className="btn primary medium">
+                        <button onClick={this.handleLoginClick}>Login</button>
+                      </p>
+                      <p className={warningClasses}>{errorMessage}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+        }
+    }
 });
 
 var Login = React.createClass({
