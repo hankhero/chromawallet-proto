@@ -1,7 +1,7 @@
 /** @jsx React.DOM */
 
 var React = require('react/addons'); //With addons
-
+var store = require('store');
 
 var NextButton = React.createClass({
     //Props = onClick
@@ -62,7 +62,7 @@ var WelcomePanel = React.createClass({
 var MnemonicPanel = React.createClass({
     mixins: [Panel],
     renderContent: function () {
-        var passphrase = this.props.passphrase;
+        var mnemonic = this.props.mnemonic;
         return (
           <div>
             <div className="row">
@@ -70,7 +70,7 @@ var MnemonicPanel = React.createClass({
                 <h2>Secret phrase</h2>
                 <p>We have created some random words that represent the secret key to you wallet. It is very important you<em>write it down</em> and store it in a safe and secret place.</p>
 <p>Please store this phrase somewhere safe and secret.</p>
-                <p className="warning alert">{passphrase}</p>
+                <p className="warning alert">{mnemonic}</p>
               </div>
             </div>
             <NextButton onClick={this.props.nextClick} />
@@ -168,7 +168,6 @@ var PinPanel = React.createClass({
             message = this.props.message || 
                           'The PIN is a number sequence you use every time you send an asset.',
             nextClick = this.props.nextClick;
-
         if (! everythingOk) {
             nextClick = clickValidateHandler;            
         }
@@ -296,7 +295,7 @@ var RecoverWelcomePanel = React.createClass({
 var RecoverMnemonicPanel = React.createClass({
     mixins: [Panel],
     renderContent: function () {
-        var passphrase = this.props.passphrase,
+        var mnemonic = this.props.mnemonic,
             change = this.props.onChange;
         return (
           <div>
@@ -306,9 +305,9 @@ var RecoverMnemonicPanel = React.createClass({
                 <p>Please enter the words of your secret phrase that you wrote down when you created your wallet.</p>
                 <form>
                   <div className="field">
-                    <textarea className="passphrase-textarea"
+                    <textarea className="mnemonic-textarea"
                             placeholder="Enter the phrase here"
-                            value={passphrase}
+                            value={mnemonic}
                             onChange={change} />
                   </div>
                 </form>
@@ -320,12 +319,11 @@ var RecoverMnemonicPanel = React.createClass({
     }
 });
 
-
-var Login = React.createClass({
+var CreateWallet = React.createClass({
     normalTabNames: ['welcome','mnemonic', 'password','pin'],
     getInitialState: function () {
         var self = this,
-            generatedPassphrase = this.props.wallet.generateMnemonic(),
+            mnemonic = this.props.wallet.generateMnemonic(),
             passwordForm = makeSecretValidatorForm({
                 prefix: 'Password',
                 stateChangeCallback: function (form) {
@@ -352,25 +350,25 @@ var Login = React.createClass({
             activeTab: this.normalTabNames[0],
             tabNames: this.normalTabNames,
             recoverMode: false,
-            passphrase: generatedPassphrase,
+            mnemonic: mnemonic,
             passwordForm: passwordForm,
             pinForm: pinForm,
-            verifyPassphraseMode: false,
+            verifyMnemonicMode: false,
             showVerifyError: false,
-            initializing: false
+            loading: false
         };
     },
     setRecoverMode: function () {
         this.setState({
             activeTab: this.normalTabNames[0],
-            passphrase: '',
+            mnemonic: '',
             recoverMode: true
         });
     },
     setNormalMode: function () {
         this.setState({
             activeTab: this.normalTabNames[0],
-            passphrase: this.props.wallet.generateMnemonic(),
+            mnemonic: this.props.wallet.generateMnemonic(),
             recoverMode: false
         });
     },
@@ -381,6 +379,9 @@ var Login = React.createClass({
     getPassPhrase: function () {
         return this.state.passphrase; 
     },
+    getMnemonic: function () {
+        return this.state.mnemonic; 
+    },
     validateWizard: function () {
         if (this.state.recoverMode) {
             if (this.state.passwordForm.everythingOk && this.state.pinForm.everythingOk) {
@@ -388,7 +389,7 @@ var Login = React.createClass({
             }
         } else {
             if (this.state.passwordForm.everythingOk && this.state.pinForm.everythingOk) {
-                this.setState({verifyPassphraseMode: true});
+                this.setState({verifyMnemonicMode: true});
             }
         }
     },
@@ -402,18 +403,21 @@ var Login = React.createClass({
         this.setState(this.getInitialState());
     },
     startInitializeWallet: function () {
-        var self = this,
-            passPhrase = this.getPassPhrase(),
-            password = this.state.passwordForm.secret,
-            pin = this.state.pinForm.secret;
+        var self = this;
+        var mnemonic = this.getMnemonic();
+        var password = this.state.passwordForm.secret;
+        var pin = this.state.pinForm.secret;
         this.setState({
-            initializing: true,
-            verifyPassphraseMode: false,
+            loading: true,
+            verifyMnemonicMode: false,
             errorMessage: null
         }, function () {
             try {
-                self.props.wallet.initialize(passPhrase, password);
-                self.props.wallet.pin = pin; //TODO Where should we put pin-code?
+                 self.props.wallet.initialize(mnemonic, password);
+                 self.props.wallet.setPin(pin);
+                 store.set('cwp_mnemonic', mnemonic);
+                 // TODO store encrypted pin
+                 self.setState({ loading: false });
             } catch (e) {
                 alert('Could not initialize wallet. This is not supposed to happen. Restarting, sorry');
                 self.restart();
@@ -421,7 +425,7 @@ var Login = React.createClass({
         });
     },
     clickValidateVerify: function (event) {
-        var thirdWord = this.getPassPhrase().split(' ')[2];
+        var thirdWord = this.getMnemonic().split(' ')[2];
         if (this.state.verifyValue === thirdWord) {
             this.startInitializeWallet();
         } else {
@@ -444,26 +448,27 @@ var Login = React.createClass({
         if (this.props.wallet.isInitialized()) {
             return <div/>;
         } else {
+            var renderfunc = this.renderWizard;
+            if (this.state.loading) {
+                renderfunc = this.renderLoading;
+            }
+            if (this.state.verifyMnemonicMode) {
+                renderfunc = this.renderVerify;
+            }
             return (
-                <div className="modal active" id="passphrase-dialogue">
+                <div className="modal active" id="mnemonic-dialogue">
                   <div className="content">
-                    {
-                        this.state.initializing ?
-                            this.renderInitializing() :
-                            this.state.verifyPassphraseMode ? 
-                                this.renderVerify() :
-                                this.renderWizard()
-                    }
+                    { renderfunc() }
                   </div>
                 </div>
             );     
         }
     },
-    renderInitializing: function () {
+    renderLoading: function () {
         return (
           <div className="row">
              <div className="ten columns centered text-center">
-                <h2>Initializing Wallet ...</h2>
+                <h2>Loading Wallet ...</h2>
              </div>
           </div>
         );
@@ -477,15 +482,15 @@ var Login = React.createClass({
           <div>
             <div className="row">
               <div className="ten columns centered text-center">
-                 <h2>Verify passphrase</h2>
-                 <p>Please verify that you wrote down the passphrase earlier.</p>
+                 <h2>Verify mnemonic</h2>
+                 <p>Please verify that you wrote down the mnemonic earlier.</p>
                  <p>As explained, it is cruical that this information is saved.</p>
-                 <p>Please write the third word in the passphrase:</p>
+                 <p>Please write the third word in the mnemonic:</p>
                  <form>
                    <div className="field">
                      <input className="input" value={value}
                       onChange={handleVerifyChange}
-                       placeholder="The third word of the passphrase"
+                       placeholder="The third word of the mnemonic"
                       type="text" />
                    </div>
                  </form>
@@ -504,7 +509,7 @@ var Login = React.createClass({
         );
     },
     renderWizard: function () {
-        var passphrase = this.getPassPhrase(),
+        var mnemonic = this.getMnemonic(),
         tabNames = this.state.tabNames,
         activeTab = this.state.activeTab,
         recoverMode = this.state.recoverMode,
@@ -536,7 +541,7 @@ var Login = React.createClass({
                       <div>
                      <WelcomePanel nextClick={this.nextTab} recoverClick={this.recoverClick} active = {activeTab === tabNames[0]} />
                      <MnemonicPanel nextClick={this.nextTab}
-                         passphrase = {passphrase}
+                         mnemonic = {mnemonic}
                          active = {activeTab === tabNames[1]} />
                      <PasswordPanel nextClick={this.nextTab}
                          form = {this.state.passwordForm}
@@ -569,6 +574,53 @@ var Login = React.createClass({
             </section>
         );
     }
+});
+
+var ConfirmPassword = React.createClass({
+                  //self.props.wallet.setSeed(mnemonic, password);
+                  //self.props.wallet.setPin(pin);
+  render: function () {
+    return (
+      <div className="modal active" id="mnemonic-dialogue">
+        <div className="content">
+          <div className="row">
+            <div className="ten columns centered text-center">
+              <h2>TODO ConfirmPassword ...</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+});
+
+var Login = React.createClass({
+  // TODO handle recover wallet
+  getInitialState: function () {
+    var mnemonic = store.get('cwp_mnemonic');
+    // We don't need the pin code in this dialogue do we? Comes later I guess.
+    //var encryptedpin = store.get('cwp_encryptedpin');
+    var canresetseed = this.props.wallet.canResetSeed();
+    return {
+      mnemonic: mnemonic,
+      //encryptedpin: encryptedpin,
+      //reseeding: !!mnemonic && !!encryptedpin && canresetseed
+      reseeding: mnemonic && canresetseed
+    }
+  },
+  render: function () {
+      if (this.state.reseeding){
+        return (
+          <ConfirmPassword wallet={this.props.wallet} 
+                           mnemonic={this.state.mnemonic} 
+                           />
+        );
+      } else {
+        return (
+          <CreateWallet wallet={this.props.wallet} />
+        );
+      }
+  }
 });
 
 module.exports = Login;

@@ -14,7 +14,7 @@ console.log('done. creating wallet');
 
 var systemAssetDefinitions = [{
     monikers: ['gold'],
-    colorSchemes: ['epobc:b95323a763fa507110a89ab857af8e949810cf1e67e91104cd64222a04ccd0bb:0:180679']
+    colorDescs: ['epobc:b95323a763fa507110a89ab857af8e949810cf1e67e91104cd64222a04ccd0bb:0:180679']
     }];
 
 var wallet = new ccWalletEngine(
