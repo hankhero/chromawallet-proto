@@ -482,15 +482,15 @@ var CreateWallet = React.createClass({
           <div>
             <div className="row">
               <div className="ten columns centered text-center">
-                 <h2>Verify mnemonic</h2>
-                 <p>Please verify that you wrote down the mnemonic earlier.</p>
+                 <h2>Verify Secret Phrase</h2>
+                 <p>Please verify that you wrote down the secret phrase earlier.</p>
                  <p>As explained, it is cruical that this information is saved.</p>
-                 <p>Please write the third word in the mnemonic:</p>
+                 <p>Please write the third word in the secret phrase:</p>
                  <form>
                    <div className="field">
                      <input className="input" value={value}
                       onChange={handleVerifyChange}
-                       placeholder="The third word of the mnemonic"
+                       placeholder="The third word of the secret phrase"
                       type="text" />
                    </div>
                  </form>
