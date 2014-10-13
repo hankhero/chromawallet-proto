@@ -372,12 +372,9 @@ var CreateWallet = React.createClass({
             recoverMode: false
         });
     },
-    recoverPassphraseChange: function (event) {
+    recoverMnemonicChange: function (event) {
         var pp = event.target.value;
-        this.setState({passphrase: pp});
-    },
-    getPassPhrase: function () {
-        return this.state.passphrase; 
+        this.setState({mnemonic: pp});
     },
     getMnemonic: function () {
         return this.state.mnemonic; 
@@ -564,9 +561,9 @@ var CreateWallet = React.createClass({
                       <div>
                      <RecoverWelcomePanel nextClick={this.nextTab} normalClick={this.setNormalMode} active = {activeTab === tabNames[0]} />
                      <RecoverMnemonicPanel nextClick={this.nextTab}
-                         onChange={this.recoverPassphraseChange}
+                         onChange={this.recoverMnemonicChange}
 
-                         passphrase = {passphrase}
+                         mnemonic = {mnemonic}
                          active = {activeTab === tabNames[1]} />
                      <PasswordPanel nextClick={this.nextTab}
                          message={'Please enter your existing password'}
