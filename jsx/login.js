@@ -598,6 +598,11 @@ var ConfirmPassword = React.createClass({
             errorMessage: null
         });
     },
+    handleCreateRecover: function (event) {
+      // quick and easy, maybe having a clear function for the wallet is better 
+      localStorage.clear();
+      location.reload(false);
+    },
     handleLoginClick: function (event) {
         var self = this;
         self.setState({ loading: true });
@@ -655,6 +660,16 @@ var ConfirmPassword = React.createClass({
                       <p className="btn primary medium">
                         <button onClick={this.handleLoginClick}>Login</button>
                       </p>
+                      <p>
+                        &nbsp;
+                      </p>
+                      <p>
+                        If you instead want to create or recover a wallet,&nbsp; 
+                        <a href="#" className="switch active" 
+                           onClick={this.handleCreateRecover}>
+                           click here
+                        </a>.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -665,7 +680,6 @@ var ConfirmPassword = React.createClass({
 });
 
 var Login = React.createClass({
-  // TODO recover wallet component
   getInitialState: function () {
     var stored_mnemonic = store.get('cwp_mnemonic');
     var stored_encryptedpin = store.get('cwp_encryptedpin');
