@@ -389,10 +389,12 @@ var CreateWallet = React.createClass({
         setTimeout(
           function () {
               try {
-                  self.props.wallet.initialize(mnemonic, password);
-                  self.props.wallet.setPin(pin);
+                  var wallet = self.props.wallet;
+                  wallet.initialize(mnemonic, password);
+                  wallet.setPin(pin);
                   store.set('cwp_mnemonic', mnemonic);
-                  // TODO store encrypted pin
+                  var encryptedpin = wallet.getPinEncrypted();
+                  store.set('cwp_encryptedpin', encryptedpin);
                   self.setState({ loading: false });
               } catch (e) {
                   alert('Could not initialize wallet. This is not supposed to happen. Restarting, sorry');
@@ -531,8 +533,8 @@ var CreateWallet = React.createClass({
 });
 
 var ConfirmPassword = React.createClass({
-                  //self.props.wallet.setSeed(mnemonic, password);
-                  //self.props.wallet.setPin(pin);
+  // self.props.wallet.setSeed(mnemonic, password);
+  // self.props.wallet.setPinEncrypted(encryptedpin);
   render: function () {
     return (
       <div className="modal active" id="mnemonic-dialogue">
@@ -549,15 +551,15 @@ var ConfirmPassword = React.createClass({
 });
 
 var Login = React.createClass({
-  // TODO handle recover wallet
+  // TODO recover wallet component
   getInitialState: function () {
-    var mnemonic = store.get('cwp_mnemonic');
-    var encryptedpin = store.get('cwp_encryptedpin');
+    var stored_mnemonic = store.get('cwp_mnemonic');
+    var stored_encryptedpin = store.get('cwp_encryptedpin');
     var canresetseed = this.props.wallet.canResetSeed();
     return {
-      mnemonic: mnemonic,
-      encryptedpin: encryptedpin,
-      reseeding: !!mnemonic && !!encryptedpin && canresetseed
+      mnemonic: stored_mnemonic,
+      encryptedpin: stored_encryptedpin,
+      reseeding: !!stored_mnemonic && !!stored_encryptedpin && canresetseed
     }
   },
   render: function () {
