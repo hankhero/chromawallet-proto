@@ -384,11 +384,13 @@ var CreateWallet = React.createClass({
     },
     validateWizard: function () {
         if (this.state.recoverMode) {
-            if (this.state.passwordForm.everythingOk && this.state.pinForm.everythingOk) {
+            if (this.state.passwordForm.everythingOk && 
+                this.state.pinForm.everythingOk) {
                 this.startInitializeWallet();
             }
         } else {
-            if (this.state.passwordForm.everythingOk && this.state.pinForm.everythingOk) {
+            if (this.state.passwordForm.everythingOk && 
+                this.state.pinForm.everythingOk) {
                 this.setState({verifyMnemonicMode: true});
             }
         }
@@ -589,7 +591,8 @@ var ConfirmPassword = React.createClass({
     getInitialState: function () {
         return {
             password: '',
-            errorMessage: null
+            errorMessage: null,
+            loading: false
         };
     },
     handleChange: function(event) {
@@ -599,12 +602,39 @@ var ConfirmPassword = React.createClass({
         });
     },
     handleLoginClick: function (event) {
-        // TODO handel wrong seed -> password
-        this.props.wallet.setSeed(this.props.mnemonic, this.state.password);
-        this.props.wallet.setPinEncrypted(this.props.encryptedpin);
+        var self = this;
+        self.setState({ loading: true });
+        setTimeout(
+          function () {
+              try {
+                  var wallet = self.props.wallet
+                  wallet.setSeed(self.props.mnemonic, self.state.password);
+                  wallet.setPinEncrypted(self.props.encryptedpin);
+                  self.setState({ loading: false });
+              } catch (e) {
+                  self.setState({ 
+                      loading: false,
+                      errorMessage: "Wrong password!"
+                  });
+              }
+          }, 
+          100 // allow component to update
+        );
     },
     render: function () {
-        if (this.props.wallet.isInitialized()) {
+        if (this.state.loading) {
+            return (
+              <div className="modal active" id="login-dialogue">
+                <div className="content">
+                  <div className="row">
+                     <div className="ten columns centered text-center">
+                        <h2>Loading Wallet ...</h2>
+                     </div>
+                  </div>
+                </div>
+              </div>
+            );
+        } else if (this.props.wallet.isInitialized()) {
             return <div/>;
         } else {
             var password = this.state.password,
@@ -620,13 +650,14 @@ var ConfirmPassword = React.createClass({
                       <form>
                         <div className="field">
                           <input className="input" placeholder="Password"
-                             type="password" value={password} onChange={this.handleChange}/>
+                                 type="password" value={password} 
+                                 onChange={this.handleChange}/>
                         </div>
                       </form>
+                      <p className={warningClasses}>{errorMessage}</p>
                       <p className="btn primary medium">
                         <button onClick={this.handleLoginClick}>Login</button>
                       </p>
-                      <p className={warningClasses}>{errorMessage}</p>
                     </div>
                   </div>
                 </div>
