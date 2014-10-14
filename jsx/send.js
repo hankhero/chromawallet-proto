@@ -15,7 +15,6 @@ var AssetOption = React.createClass({
   }
 });
 
-// TODO put in common file
 var FormFieldError = React.createClass({
   render: function () {
     if(this.props.message){
@@ -35,17 +34,93 @@ var send_style = {
   padding: '0 18px !important'
 };
 
-var SendButton = React.createClass({
-    render: function () {
-        var text = 'Send';
-        return (
-          <li className="field">
-            <button className="medium primary btn" style={send_style}>
-                {text}
-            </button>
-          </li>
-        );            
+var ConfirmTransaction = React.createClass({
+  getInitialState: function() {
+    return {
+      pin: '',
+      errorMessage: "",
+      sending: false
+    };
+  },
+  onChangePin: function (e) {
+    this.setState({ pin: e.target.value, errorMessage: null });
+  },
+  onCancel: function (e) {
+    this.props.sendcomp.setState({ sending: false, payment: null });
+    this.setState(this.getInitialState());
+  },
+  onSubmit: function (e) {
+    e.preventDefault();
+    if (this.state.pin == this.props.sendcomp.props.wallet.getPin()){
+      this.sendTransaction();
+    } else {
+      this.setState({ errorMessage: "Invalid PIN" });
     }
+  },
+  sendTransaction: function () {
+    self = this;
+    var sendcomp = this.props.sendcomp;
+    sendcomp.state.payment.send(function (err, txid) {
+      if (err) {
+        alert('Error when sending coins :(');
+        sendcomp.setState(sendcomp.getInitialState());
+        self.setState(self.getInitialState());
+      } else {
+        setTimeout(
+          function () {
+            self.setState(self.getInitialState());
+            sendcomp.setState(sendcomp.getInitialState());
+            sendcomp.props.app.changeTab('History'); // change tab
+          },
+          8000 // wait until transaction propagates
+        );
+      }
+    });
+  },
+  render: function () {
+    if (this.props.sendcomp.state.sending && this.state.sending) {
+      return (
+        <div className="modal active">
+          <div className="content">
+            <div className="row">
+               <div className="ten columns centered text-center">
+                  <h2>Sending ...</h2>
+               </div>
+            </div>
+          </div>
+        </div>
+      );
+    } else if(this.props.sendcomp.state.sending) {
+      var warningClasses = this.state.errorMessage ? 'warning alert': '';
+      return (
+        <div className="modal active">
+          <div className="content">
+            <div className="row">
+              <div className="ten columns centered text-center">
+                <h2>Confirm Transaction</h2>
+                <p>Enter your pin to send the transaction.</p>
+                <form>
+                  <div className="field">
+                    <input className="input" placeholder="PIN"
+                           type="password" value={this.state.pin}
+                           onChange={this.onChangePin}/>
+                  </div>
+                </form>
+                <p className={warningClasses}>{this.state.errorMessage}</p>
+                <p className="btn primary medium">
+                  <button onClick={this.onCancel}>Cancel</button>
+                </p>
+                <p className="btn primary medium">
+                  <button onClick={this.onSubmit}>Submit</button>
+                </p>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    } 
+  }
 });
 
 var Send = React.createClass({
@@ -54,6 +129,7 @@ var Send = React.createClass({
       address: '',  address_error: '',
       amount: '', amount_error: '',
       asset: '#',   asset_error: '',
+      payment: null,
       sending: false
     };
   },
@@ -63,13 +139,13 @@ var Send = React.createClass({
           cordova.plugins.barcodeScanner.scan(
               function (result) {
                   self.initFromURI(result.text);
-              }, 
+              },
               function (error) {
                   this.setState(this.getInitialState());
               });
       } else {
           var uri = prompt('Enter Bitcoin URI');
-          this.initFromURI(uri);          
+          this.initFromURI(uri);
       }
   },
   initFromURI: function (uri) {
@@ -101,61 +177,51 @@ var Send = React.createClass({
     this.setState({asset: e.target.value});
   },
 
-  handleSubmit: function(e) {
-      var self = this;
+  onSubmit: function(e) {
+    var assets = this.props.wallet.getAssetModels();
+    var asset = null;
 
-      e.preventDefault();
+    // clear previous errors
+    this.setState({ asset_error: "", amount_error: "", address_error: "" });
 
-      var assets = self.props.wallet.getAssetModels();
-      var asset = null;
-      for (var i = 0; i < assets.length; i++) {
-          if (assets[i].getMoniker() === self.state.asset){
-              asset = assets[i];
-          }
+    // check asset
+    for (var i = 0; i < assets.length; i++) {
+      if (assets[i].getMoniker() === this.state.asset){
+        asset = assets[i];
       }
-      if (asset == null) {
-          self.setState({asset_error: "No asset selected"});
-          return;
-      }
+    }
+    if (asset == null) {
+      this.setState({asset_error: "No asset selected"});
+      return;
+    }
+    var payment = asset.makePayment(this.props.wallet.getSeed());
 
-      var payment = asset.makePayment(self.props.wallet.getSeed());
-      if (!payment.checkAddress(self.state.address)) {
-          self.setState({address_error: "Invalid address"});
-          return;         
-      }
-      if (!payment.checkAmount(self.state.amount)) {
-          self.setState({amount_error: "Wrong amount"});
-          return;          
-      }
+    // check amount
+    if (!payment.checkAmount(this.state.amount)) {
+      this.setState({amount_error: "Wrong amount"});
+      return;
+    }
+    if (this.state.amount <= 0) {
+      this.setState({amount_error: "No amount given"});
+      return;
+    }
 
-      payment.addRecipient(self.state.address, self.state.amount);
-      self.setState({sending: true});
-      payment.send(function (err, txid) {
-          if (err) {
-              alert('Error when sending coins :(');
-              self.setState(self.getInitialState()); // for next use
-          } else {
-              setTimeout(
-                  function () { 
-                    self.setState(self.getInitialState()); // for next use
-                    self.props.app.changeTab('History'); // change tab
-                  }, 
-                  8000 // wait until transaction propagates
-              );
-          }
-      });
+    // check address
+    if (!payment.checkAddress(this.state.address)) {
+      this.setState({address_error: "Invalid address"});
+      return;
+    }
 
+    // set sending state
+    payment.addRecipient(this.state.address, this.state.amount);
+    this.setState({sending: true, payment: payment});
   },
 
   render: function () {
     var assets = this.props.wallet.getAssetModels();
     if (this.state.sending) {
       return (
-        <div className="send">
-          <div className="row module-heading">
-            <h2>Sending ...</h2>
-          </div>
-        </div>
+        <ConfirmTransaction sendcomp={this} />
       );
     } else {
       return (
@@ -164,7 +230,7 @@ var Send = React.createClass({
             <h2>Send</h2>
           </div>
           <div className="recipient-form row">
-            <form onSubmit={this.handleSubmit}>
+            <form onSubmit={this.onSubmit}>
               <ul>
                 <div className="row">
                   <div className="ten columns">
@@ -172,30 +238,30 @@ var Send = React.createClass({
                       <label className="inline" htmlFor="address">Address</label>
                       <input className="xxwide input" type="text" id="address"
                              placeholder="Address of the recipient."
-                             onChange={this.onChangeAddress} 
+                             onChange={this.onChangeAddress}
                              value={this.state.address}
                       />
                       <FormFieldError message={this.state.address_error} />
                     </li>
                   </div>
                 </div>
-      
+
                 <div className="row">
                   <div className="five columns">
-      
+
                     <li className="field">
                       <label className="inline" htmlFor="amount">Amount</label>
                       <input className="xxwide input" type="text" id="amount"
-                             placeholder="Amount to send." 
-                             onChange={this.onChangeAmount} 
+                             placeholder="Amount to send."
+                             onChange={this.onChangeAmount}
                              value={this.state.amount}
                       />
                       <FormFieldError message={this.state.amount_error} />
                     </li>
-      
+
                   </div>
                   <div className="five columns">
-      
+
                     <li className="field">
                       <label className="inline" htmlFor="asset">Asset</label>
                       <select className="xxwide input" id="asset"
@@ -214,16 +280,19 @@ var Send = React.createClass({
                     </li>
                   </div>
                 </div>
-      
+
                 <div className="row">
                   <div className="ten columns">
-                     <SendButton sending={this.state.sending} />
+                    <div className="right-button medium primary btn">
+                      <a href="#" onClick={this.onSubmit}>Send</a>
+                    </div>
                   </div>
                 </div>
                 <div className="row">
                   <div className="ten columns">
                     <div className="right-button medium primary btn">
-                      <a href="#" onClick={this.scanURI}>Scan</a></div>
+                      <a href="#" onClick={this.scanURI}>Scan</a>
+                    </div>
                   </div>
                 </div>
               </ul>

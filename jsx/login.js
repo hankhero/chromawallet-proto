@@ -599,7 +599,7 @@ var ConfirmPassword = React.createClass({
         });
     },
     handleCreateRecover: function (event) {
-      // quick and easy, maybe having a clear function for the wallet is better 
+      // quick and easy, maybe having a clear function for the wallet is better
       localStorage.clear();
       location.reload(false);
     },
