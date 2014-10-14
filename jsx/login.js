@@ -609,7 +609,7 @@ var ConfirmPassword = React.createClass({
         setTimeout(
           function () {
               try {
-                  var wallet = self.props.wallet
+                  var wallet = self.props.wallet;
                   wallet.setSeed(self.props.mnemonic, self.state.password);
                   wallet.setPinEncrypted(self.props.encryptedpin);
                   self.setState({ loading: false });

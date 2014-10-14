@@ -177,32 +177,52 @@ var MockWallet = function () {
     },
     getHistory = function () {return historyEntries;},
     hasSeedFlag = false;
+    hasPinFlag = false;
     isInitializedFlag = false,
 
     initialize = function(mnemonic, password) {
-       isInitializedFlag = true;
-       hasSeedFlag = true;
+        isInitializedFlag = true;
+        hasSeedFlag = true;
     },
     isInitialized = function () {
         return isInitializedFlag;
     },
     setSeed = function(mnemonic, password) {
-       hasSeedFlag = true;
+        isInitializedFlag = true;
+        hasSeedFlag = true;
     },
     getSeed = function() {
-       if(hasSeedFlag){
-         return "random seed";
-       }
-       return "";
+        if(hasSeedFlag){
+          return "random seed";
+        }
+        return "";
     },
     hasSeed = function () {
         return hasSeedFlag;
+    },
+    canResetSeed = function () {
+        return !hasSeedFlag;
     },
     generateMnemonic = function() {
         return "tag capable scheme february vague first unfair mouse lift marriage salmon riot";
     },
     generateRandomSeed = function (entropy) {
         return 'random seed';
+    },
+    hasPin = function () {
+        return hasPinFlag;
+    },
+    getPin = function () {
+        return "1234";
+    },
+    setPin = function (pin) {
+      hasPinFlag = true;
+    },
+    getPinEncrypted = function () {
+      return "encryptedpin";
+    },
+    setPinEncrypted = function (encryptedpin){
+      hasPinFlag = true;
     },
     setCallback = function (notifier) {
         updateCallback = notifier;
@@ -215,7 +235,15 @@ var MockWallet = function () {
         initialize : initialize,
         generateMnemonic : generateMnemonic,
         isInitialized: isInitialized,
+        hasPin: hasPin,
+        getPin: getPin,
+        setPin: setPin,
+        getPinEncrypted: getPinEncrypted,
+        setPinEncrypted: setPinEncrypted,
         hasSeed: hasSeed,
+        getSeed: getSeed,
+        setSeed: setSeed,
+        canResetSeed: canResetSeed,
         generateRandomSeed: generateRandomSeed,
 
         _bumpBitcoin: function () {
