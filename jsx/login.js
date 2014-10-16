@@ -438,7 +438,7 @@ var CreateWallet = React.createClass({
                   self.setState({ loading: false });
               } catch (e) {
                   alert('Could not initialize wallet. This is not supposed to happen. Restarting, sorry');
-                  self.hardRestart();
+                  self.restart();
               }
           }, 
           100 // allow component to update
