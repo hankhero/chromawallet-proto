@@ -58,7 +58,7 @@ var ConfirmTransaction = React.createClass({
     }
   },
   sendTransaction: function () {
-    self = this;
+    var self = this;
     var sendcomp = this.props.sendcomp;
     sendcomp.state.payment.send(function (err, txid) {
       if (err) {
