@@ -18,7 +18,7 @@
     "grunt-contrib-copy": "",
     "grunt-contrib-connect": "^0.8.0",
     "grunt-contrib-compass": "^0.9.0",
-    "grunt-browserify": "^2.1.4",
+    "grunt-browserify": "",
     "grunt-cache-bust": "^0.4.0",
     "grunt-react": "",
     "grunt-subgrunt": "^0.4.0",

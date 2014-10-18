@@ -58,23 +58,33 @@ var ConfirmTransaction = React.createClass({
     }
   },
   sendTransaction: function () {
-    self = this;
+    var self = this;
     var sendcomp = this.props.sendcomp;
-    sendcomp.state.payment.send(function (err, txid) {
-      if (err) {
-        alert('Error when sending coins :(');
-        sendcomp.setState(sendcomp.getInitialState());
-        self.setState(self.getInitialState());
-      } else {
-        setTimeout(
-          function () {
-            self.setState(self.getInitialState());
+
+    function onPaymentComplete(err, txid) {
+        if (err) {
+            alert('Error when sending coins :(');
             sendcomp.setState(sendcomp.getInitialState());
-            sendcomp.props.app.changeTab('History'); // change tab
-          },
-          8000 // wait until transaction propagates
-        );
-      }
+            self.setState(self.getInitialState());
+        } else {
+            setTimeout(
+                function () { 
+                    self.setState(self.getInitialState());
+                    sendcomp.setState(sendcomp.getInitialState());
+                    sendcomp.props.app.changeTab('History'); // change tab
+                }, 
+                1000 // wait until we update wallet state
+            );
+        }          
+    }
+
+    process.nextTick(function () {
+        try {
+            sendcomp.state.payment.send(onPaymentComplete);
+        } catch (x) {
+            console.log(x);
+            alert('Error when sending coins :(');
+        }
     });
   },
   render: function () {
@@ -148,21 +158,29 @@ var Send = React.createClass({
           this.initFromURI(uri);
       }
   },
+  initFromPayment: function (payment) {
+      var recipients = payment.getRecipients();
+      var address = '';
+      var amount = '';
+      if (recipients.length == 1) {
+          address = recipients[0].address;
+          amount = recipients[0].amount;
+      }
+      this.setState({address: address, amount: amount,
+                     asset: payment.getAssetModel().getMoniker(),
+                     payment: payment});
+  },
   initFromURI: function (uri) {
+      this.setState(this.getInitialState());
+      var self = this;
       try {
-          var assetModel = this.props.wallet.getAssetForURI(uri);
-          if (assetModel) {
-              var params = assetModel.decodePaymentURI(uri);
-              if (params) {
-                  this.setState({asset: assetModel.getMoniker(),
-                                 address: params.address,
-                                 amount: params.amount
-                                 });
-              }
-          }
+          this.props.wallet.makePaymentForURI(uri, function (err, payment) {
+              if (err) return; // TODO: show error
+              else self.initFromPayment(payment);
+          });
       } catch (x) {
+          // TODO: display a warning. or something.
           console.log(x);
-          this.setState(this.getInitialState());
       }
   },
   onChangeAddress: function(e) {
@@ -178,43 +196,39 @@ var Send = React.createClass({
   },
 
   onSubmit: function(e) {
-    var assets = this.props.wallet.getAssetModels();
-    var asset = null;
+      var self = this;
 
     // clear previous errors
     this.setState({ asset_error: "", amount_error: "", address_error: "" });
 
-    // check asset
-    for (var i = 0; i < assets.length; i++) {
-      if (assets[i].getMoniker() === this.state.asset){
-        asset = assets[i];
+      var payment = this.state.payment;
+      if (!payment) {
+          // create and initialize payment if it doesn't exist
+          var assets = self.props.wallet.getAssetModels();
+          var asset = null;
+          for (var i = 0; i < assets.length; i++) {
+              if (assets[i].getMoniker() === self.state.asset){
+                  asset = assets[i];
+              }
+          }
+          if (asset == null) {
+              self.setState({asset_error: "No asset selected"});
+              return;
+          }
+
+          payment = asset.makePayment();
+          if (!payment.checkAddress(self.state.address)) {
+              self.setState({address_error: "Invalid address"});
+              return;         
+          }
+          if (!payment.checkAmount(self.state.amount)) {
+              self.setState({amount_error: "Wrong amount"});
+              return;          
+          }
+          payment.addRecipient(self.state.address, self.state.amount);
       }
-    }
-    if (asset == null) {
-      this.setState({asset_error: "No asset selected"});
-      return;
-    }
-    var payment = asset.makePayment(this.props.wallet.getSeed());
 
-    // check amount
-    if (!payment.checkAmount(this.state.amount)) {
-      this.setState({amount_error: "Wrong amount"});
-      return;
-    }
-    if (this.state.amount <= 0) {
-      this.setState({amount_error: "No amount given"});
-      return;
-    }
-
-    // check address
-    if (!payment.checkAddress(this.state.address)) {
-      this.setState({address_error: "Invalid address"});
-      return;
-    }
-
-    // set sending state
-    payment.addRecipient(this.state.address, this.state.amount);
-    this.setState({sending: true, payment: payment});
+      self.setState({sending: true, payment: payment});
   },
 
   render: function () {

@@ -49,7 +49,14 @@ var WelcomePanel = React.createClass({
 	            <h3>Setup and security</h3>
 	            <p>We will now take you through some steps to secure your wallet. This is necessary for your own security. It does not take long.</p>
 	            <p><em>It is very important!</em></p>
-	            <p>(If you instead need to <a href="#" className="switch active" onClick={this.props.recoverClick}>recover a wallet, click here</a>)</p>
+	            <p>(If you instead need to <a href="#" className="switch active"
+                    onClick={this.props.recoverClick}>recover a wallet, click here</a>)</p>
+                {
+                    this.props.loginClick && 
+                        <p>(If you instead want to <a href="#" className="switch active"
+                            onClick={this.props.loginClick}>
+                            login, click here</a>)</p>
+                }
 	          </div>
 	        </div>
             <NextButton onClick={this.props.nextClick} />
@@ -279,10 +286,18 @@ var RecoverWelcomePanel = React.createClass({
           <div>
 	        <div className="row">
 	          <div className="ten columns centered text-center">
-            <h2>Restore wallet</h2>
-            <p>If you have your mnemonic and password this is not difficult.</p>
-            <p>(If you instead need to <a href="#" className="switch active" onClick={this.props.normalClick}>create a wallet, click here</a>)</p>
-	          </div>
+                <h2>Restore wallet</h2>
+                <p>If you have your mnemonic and password this is not difficult.</p>
+                <p>(If you instead need to <a href="#" className="switch active"
+                    onClick={this.props.normalClick}>
+                    create a wallet, click here</a>)</p>
+                {
+                    this.props.loginClick && 
+                        <p>(If you instead want to <a href="#" className="switch active"
+                            onClick={this.props.loginClick}>
+                            login, click here</a>)</p>
+                }
+              </div>
 	        </div>
             <NextButton onClick={this.props.nextClick} />
           </div>
@@ -418,7 +433,7 @@ var CreateWallet = React.createClass({
                   self.setState({ loading: false });
               } catch (e) {
                   alert('Could not initialize wallet. This is not supposed to happen. Restarting, sorry');
-                  self.hardRestart();
+                  self.restart();
               }
           }, 
           100 // allow component to update
@@ -539,7 +554,10 @@ var CreateWallet = React.createClass({
               {
                   normalMode && 
                       <div>
-                     <WelcomePanel nextClick={this.nextTab} recoverClick={this.recoverClick} active = {activeTab === tabNames[0]} />
+                     <WelcomePanel nextClick={this.nextTab}
+                         recoverClick={this.recoverClick}
+                         loginClick={this.props.showLogin}
+                         active = {activeTab === tabNames[0]} />
                      <MnemonicPanel nextClick={this.nextTab}
                          mnemonic = {mnemonic}
                          active = {activeTab === tabNames[1]} />
@@ -554,10 +572,12 @@ var CreateWallet = React.createClass({
               {
                   recoverMode && 
                       <div>
-                     <RecoverWelcomePanel nextClick={this.nextTab} normalClick={this.setNormalMode} active = {activeTab === tabNames[0]} />
+                     <RecoverWelcomePanel nextClick={this.nextTab} 
+                         normalClick={this.setNormalMode} 
+                         loginClick={this.props.showLogin}
+                         active = {activeTab === tabNames[0]} />
                      <RecoverMnemonicPanel nextClick={this.nextTab}
                          onChange={this.recoverMnemonicChange}
-
                          mnemonic = {mnemonic}
                          active = {activeTab === tabNames[1]} />
                      <PasswordPanel nextClick={this.nextTab}
@@ -594,7 +614,9 @@ var ConfirmPassword = React.createClass({
         });
     },
     handleCreateRecover: function (event) {
-      // quick and easy, maybe having a clear function for the wallet is better
+      // this.props.showCreateRecover();
+      
+      // XXX temporary hack because wallet cannot be reinitialized
       localStorage.clear();
       location.reload(false);
     },
@@ -674,18 +696,30 @@ var ConfirmPassword = React.createClass({
 
 var Login = React.createClass({
   getInitialState: function () {
+    var reseeding = this.props.wallet.canResetSeed();
     return {
-      reseeding: this.props.wallet.canResetSeed()
-    }
+      loginPossible: reseeding,
+      reseeding: reseeding
+    };
+  },
+  showLogin: function () {
+      this.setState({reseeding: true});
+  },
+  showCreateRecover: function () { 
+      this.setState({reseeding: false});
   },
   render: function () {
       if (this.state.reseeding){
         return (
-          <ConfirmPassword wallet={this.props.wallet} />
+          <ConfirmPassword wallet={this.props.wallet} 
+                           showCreateRecover={this.showCreateRecover}
+                           />
         );
       } else {
         return (
-          <CreateWallet wallet={this.props.wallet} />
+          <CreateWallet wallet={this.props.wallet} 
+                        showLogin={this.state.loginPossible && this.showLogin}
+          />
         );
       }
   }
