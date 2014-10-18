@@ -1,7 +1,6 @@
 /** @jsx React.DOM */
 
 var React = require('react/addons'); //With addons
-var store = require('store');
 
 var NextButton = React.createClass({
     //Props = onClick
@@ -430,11 +429,7 @@ var CreateWallet = React.createClass({
           function () {
               try {
                   var wallet = self.props.wallet;
-                  wallet.initialize(mnemonic, password);
-                  wallet.setPin(pin);
-                  store.set('cwp_mnemonic', mnemonic);
-                  var encryptedpin = wallet.getPinEncrypted();
-                  store.set('cwp_encryptedpin', encryptedpin);
+                  wallet.initialize(mnemonic, password, pin);
                   self.setState({ loading: false });
               } catch (e) {
                   alert('Could not initialize wallet. This is not supposed to happen. Restarting, sorry');
@@ -619,31 +614,29 @@ var ConfirmPassword = React.createClass({
         });
     },
     handleCreateRecover: function (event) {
-        this.props.showCreateRecover();
-      // quick and easy, maybe having a clear function for the wallet is better
-      //localStorage.clear();
-        ///
-        //location.reload(false);
+      // this.props.showCreateRecover();
+      
+      // XXX temporary hack because wallet cannot be reinitialized
+      localStorage.clear();
+      location.reload(false);
     },
     handleLoginClick: function (event) {
-        var self = this;
-        self.setState({ loading: true });
-        setTimeout(
-          function () {
-              try {
-                  var wallet = self.props.wallet;
-                  wallet.setSeed(self.props.mnemonic, self.state.password);
-                  wallet.setPinEncrypted(self.props.encryptedpin);
-                  self.setState({ loading: false });
-              } catch (e) {
-                  self.setState({ 
-                      loading: false,
-                      errorMessage: "Wrong password!"
-                  });
-              }
-          }, 
-          100 // allow component to update
-        );
+      var self = this;
+      self.setState({ loading: true });
+      setTimeout(
+        function () {
+          try {
+            self.props.wallet.resetSeed(self.state.password);
+            self.setState({ loading: false });
+          } catch (e) {
+            self.setState({ 
+              loading: false,
+              errorMessage: "Wrong password!"
+            });
+          }
+        }, 
+        100 // allow component to update
+      );
     },
     render: function () {
         if (this.state.loading) {
@@ -703,13 +696,8 @@ var ConfirmPassword = React.createClass({
 
 var Login = React.createClass({
   getInitialState: function () {
-    var stored_mnemonic = store.get('cwp_mnemonic'),
-      stored_encryptedpin = store.get('cwp_encryptedpin'),
-      canresetseed = this.props.wallet.canResetSeed(),
-      reseeding = !!stored_mnemonic && !!stored_encryptedpin && canresetseed;
+    var reseeding = this.props.wallet.canResetSeed();
     return {
-      mnemonic: stored_mnemonic,
-      encryptedpin: stored_encryptedpin,
       loginPossible: reseeding,
       reseeding: reseeding
     };
@@ -724,8 +712,6 @@ var Login = React.createClass({
       if (this.state.reseeding){
         return (
           <ConfirmPassword wallet={this.props.wallet} 
-                           mnemonic={this.state.mnemonic} 
-                           encryptedpin={this.state.encryptedpin}
                            showCreateRecover={this.showCreateRecover}
                            />
         );
