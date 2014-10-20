@@ -2,6 +2,17 @@
 
 var React = require('react/addons'); //With addons
 
+
+var ClickLink = React.createClass({
+    render: function () {
+       return (
+         <a href="#" 
+            onClick={this.props.onClick}
+           onTap={this.props.onClick}>{this.props.text}</a>
+       );
+    }
+});
+
 var NextButton = React.createClass({
     //Props = onClick
     render: function () {
@@ -10,7 +21,7 @@ var NextButton = React.createClass({
 	        <div className="row">
 	          <div className="push_eight two columns">
 	            <div className="medium secondary btn">
-	              <a href="#" className="switch" onClick={onClick}>Next</a>
+	              <ClickLink onClick={onClick} text="Next" />
 	            </div>
 	          </div>
 	        </div>
@@ -44,18 +55,16 @@ var WelcomePanel = React.createClass({
           <div>
 	        <div className="row">
 	          <div className="ten columns centered text-center">
-	            <h2>Welcome</h2>
-	            <p>To a combined wallet for bitcoins and colored-coins such as gold, art and well basically anything.</p>
 	            <h3>Setup and security</h3>
 	            <p>We will now take you through some steps to secure your wallet. This is necessary for your own security. It does not take long.</p>
 	            <p><em>It is very important!</em></p>
-	            <p>(If you instead need to <a href="#" className="switch active"
-                    onClick={this.props.recoverClick}>recover a wallet, click here</a>)</p>
+	            <p>(If you instead need to <ClickLink 
+                    onClick={this.props.recoverClick} text="recover a wallet, click here" />)</p>
                 {
                     this.props.loginClick && 
-                        <p>(If you instead want to <a href="#" className="switch active"
-                            onClick={this.props.loginClick}>
-                            login, click here</a>)</p>
+                        <p>(If you instead want to <ClickLink
+                            onClick={this.props.loginClick} 
+                        text="login, click here"/></p>
                 }
 	          </div>
 	        </div>
@@ -288,14 +297,14 @@ var RecoverWelcomePanel = React.createClass({
 	          <div className="ten columns centered text-center">
                 <h2>Restore wallet</h2>
                 <p>If you have your mnemonic and password this is not difficult.</p>
-                <p>(If you instead need to <a href="#" className="switch active"
-                    onClick={this.props.normalClick}>
-                    create a wallet, click here</a>)</p>
+                <p>(If you instead need to <ClickLink
+                    onClick={this.props.normalClick}
+                    text="create a wallet, click here"/>)</p>
                 {
                     this.props.loginClick && 
-                        <p>(If you instead want to <a href="#" className="switch active"
-                            onClick={this.props.loginClick}>
-                            login, click here</a>)</p>
+                        <p>(If you instead want to <ClickLink
+                            onClick={this.props.loginClick}
+                            text="login, click here" />)</p>
                 }
               </div>
 	        </div>
@@ -517,8 +526,8 @@ var CreateWallet = React.createClass({
             </div>
             <NextButton onClick={this.clickValidateVerify} />
 
-            <div className="row push-row-three">
-                <p>(If you never wrote it down,  <a href="#" className="active" onClick={this.restart}>click here to restart</a>)</p>
+            <div className="row push-row">
+                <p>(If you never wrote it down,  <ClickLink onClick={this.restart} text="click here to restart" />)</p>
             </div>
           </div>
         );
@@ -544,9 +553,9 @@ var CreateWallet = React.createClass({
                       };
                       c['tab-' + tab] = true;
                       return (
-                          <li className={cx(c)}><a href="#"
+                          <li className={cx(c)}><ClickLink 
                               onClick={changeTab}
-                          >{i}</a></li>
+                              text={i}/></li>
                       );
                   })
               }
@@ -680,10 +689,10 @@ var ConfirmPassword = React.createClass({
                       </p>
                       <p>
                         If you instead want to create or recover a wallet,&nbsp; 
-                        <a href="#" className="switch active" 
-                           onClick={this.handleCreateRecover}>
-                           click here
-                        </a>.
+                        <ClickLink
+                           onClick={this.handleCreateRecover}
+                           text="click here"
+                        />.
                       </p>
                     </div>
                   </div>
