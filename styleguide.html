@@ -356,7 +356,7 @@
 
 </div><!-- overview -->
 
-
+<!--
 <div class="send">
   <div class="row module-heading">
     <h2>Send</h2>
@@ -411,7 +411,95 @@
     </fieldset>
   </div>
 
+</div> 
+-->
+
+<!-- send -->
+
+
+<hr/>
+
+<div class="send">
+  <div class="row module-heading">
+    <h2>Send</h2>
+  </div>
+
+  <div class="recipient-form row">
+    <form>
+      <ul>
+        <div class="row">
+          <div class="ten columns">
+            <li class="field">
+              <label class="inline" for="address">Address:</label>
+              <input class="xxwide input" id="address" type="text" placeholder="Address" />
+            </li>
+          </div>
+        </div>
+        <div class="row">
+          <div class="five columns">
+            <li class="field">
+            <label class="inline" for="amount">Amount:</label>
+              <input class="xxwide input" id="amount" type="text" placeholder="Amount" />
+            </li>
+          </div>
+          <div class="five columns">
+            <li class="field">
+              <label className="inline" htmlFor="asset">Asset</label>
+              <select class="xxwide input" id="asset">
+                  <option value="#" disabled>Select asset</option>
+                  <option>Bitcoin</option>
+                  <option>Gold-coin</option>
+                  <option>Foo-coin</option>
+              </select>
+            </li>
+          </div>
+        </div>
+        <div class="row">
+          <div class="ten columns">
+            <div class="right-button medium primary btn"><a href="#">Send</a></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="ten columns">
+            <div class="right-button medium primary btn"><a href="#">Scan</a></div>
+          </div>
+        </div>
+      </ul>
+    </form>
+  </div>
+
 </div> <!-- send -->
+
+<hr/>
+
+<p class="btn primary medium"><a href="#" class="switch active" gumby-trigger="#pin-dialogue">Open PIN dialogue</a></p>
+<hr/>
+
+<div class="modal" id="pin-dialogue">
+  <div class="content">
+    <div class="row">
+      <div class="ten columns centered text-center">
+        <h2>Confirm Transaction</h2>
+        <p>Enter your pin to send the transaction.</p>
+        <form>
+          <div class="field">
+            <input class="input" placeholder="PIN"
+                   type="password" value={this.state.pin}
+                   onChange={this.onChangePin}/>
+          </div>
+        </form>
+        <p class={warningClasses}>{this.state.errorMessage}</p>
+        <p class="btn primary medium">
+          <button class="toggle" gumby-trigger="#pin-dialogue">Cancel</button>
+        </p>
+        <p class="btn primary medium">
+          <button onClick={this.onSubmit}>Submit</button>
+        </p>
+
+      </div>
+    </div>
+  </div>
+</div>
 
 
 
@@ -460,61 +548,43 @@
   </div>  
 </div> <!-- assets -->
 
+<hr/>
+
 <div class="receive">
 
   <div class="row module-heading">
     <h2>Receive</h2>
-    <div class="right-button medium primary btn"><a href="#">New address</a></div>
+    <div class="right-button medium primary btn"></div>
   </div>
-
-  <div class="row">
-    <div class="six columns">
-      <p>These are your addresses for receiving payments</p>
-    </div>
-    <div class="six columns">
-      <div class="field">
-        <div class="picker">
-          <select id="receive-filter">
-            <option value="#">Show only</option>
-            <option>Bitcoin</option>
-            <option>Gold-coin</option>
-            <option>Foo-coin</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-
     
-  </div>
-
-  <div class="row"></div>
-
   <div class="row">
-    <table>
-	  <thead>
-		<tr>
-		  <th>Moniker</th>
-		  <th>Address</th>
-		  <th>Receive</th>
-		</tr>
-	  </thead>
-	  <tbody>
-		<tr>
-		  <td>Bitcoin</td>
-		  <td>123jasa994ncoee9q4n&nbsp;<div class="small primary btn"><a href="#">Copy</a></div></td>
-		  <td>10.23</td>
-		</tr>
-		<tr>
-		  <td>Foo-coin</td>
-		  <td><div>CoPw4ahi</div><div>jciS1C@m</div><div>p78983Px</div><div>HDLX4BdQ</div><div>TSHu4nhH</div><div>C7W6CEss</div>&nbsp;<div class="small primary btn"><a href="#">Copy</a></div></td>
 
-		  <td>1.02</td>
-		</tr>
-	  </tbody>
-    </table>
+    <div class="six columns"><h3>bitcoin</h3></div>
+    
+    <div class="six columns">
+      <span class="overview__address-hash">ES5wsZmWHs5xzP@mtB9UJtGNjr98ZEroLDJN5iCWTQa1ajokM</span>
+    </div>
+
+    <div class="six columns">
+      <canvas height="256" width="256" style="background-color: black"></canvas>
+    </div>
   </div>
+  <div class="row">
+
+    <div class="six columns"><h3>gold</h3></div>
+    
+    <div class="six columns">
+      <span class="overview__address-hash">ES5wsZmWHs5xzP@mtB9UJtGNjr98ZEroLDJN5iCWTQa1ajokM</span>
+    </div>
+
+    <div class="six columns">
+      <canvas height="256" width="256" style="background-color: black"></canvas>
+    </div>
+  </div>
+
 </div> <!-- receive -->
+
+
 
 
 <div class="history">
@@ -723,7 +793,7 @@
 	<!-- Grab Google CDN's jQuery, fall back to local if offline -->
 	<!-- 2.0 for modern browsers, 1.10 for .oldie -->
 	<script>
-	var oldieCheck = Boolean(document.getElementsByTagName('html')[0].className.match(/\soldie\s/g));
+	var oldieCheck = Boolean(document.getElementsByTagName('html')[0].class.match(/\soldie\s/g));
 	if(!oldieCheck) {
 	document.write('<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"><\/script>');
 	} else {
