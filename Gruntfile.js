@@ -169,6 +169,10 @@ module.exports = function(grunt) {
             index_to_mobile: {
                 src:'dist/index-cordova.html',
                 dest: 'mobile/www/index.html'
+            },
+            icon_to_mobile: {
+                src: 'mobile/images/cw-icon.png',
+                dest: 'mobile/platforms/android/res/drawable/icon.png'
             }
 
         },
@@ -218,7 +222,9 @@ module.exports = function(grunt) {
     grunt.registerTask('cordova', [
         'copy:index_to_mobile', 'copy:code_to_mobile',
         'copy:typedarray_to_mobile', 'copy:bower_to_mobile',
-        'copy:css_to_mobile', 'copy:img_to_mobile','copy:fonts_to_mobile']);
+        'copy:css_to_mobile', 'copy:img_to_mobile','copy:fonts_to_mobile',
+        'copy:icon_to_mobile'
+    ]);
 
 
     grunt.registerTask('dist', [
