@@ -196,19 +196,24 @@ var PinPanel = React.createClass({
                  <form>
                    <div className="field">
                      <input className="input" value={secret}
-                      onChange={handleSecretChange}
-                       placeholder="At least four digits."
-                      type="password" />
+                         onChange={handleSecretChange}
+                         placeholder="At least four digits."
+                         type="password" 
+                         pattern="[0-9]*"
+                     />
                    </div>
           {
                     lengthValid &&
                     <div>
-                       <label htmlFor="repeat-password">Please repeat the PIN-code</label>
+                       <label htmlFor="repeat-pin">Please repeat the PIN-code</label>
                        <div className="field">
                          <input className="input" value={repeat}
-                          onChange={handleRepeatChange}
-                           placeholder="Please repeat the PIN-code."
-                          type="password" />
+                             id="repeat-pin"
+                             onChange={handleRepeatChange}
+                             placeholder="Please repeat the PIN-code."
+                             type="password"
+                             pattern="[0-9]*"
+                         />
                        </div>
                     </div>
           }
