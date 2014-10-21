@@ -8,7 +8,7 @@ var ClickLink = React.createClass({
        return (
          <a href="#" 
             onClick={this.props.onClick}
-           onTap={this.props.onClick}>{this.props.text}</a>
+           >{this.props.text}</a>
        );
     }
 });
