@@ -21,8 +21,8 @@ var MockPaymentModel = function (props) {
             alert("sending " + recipients[0].amount + " to " + 
                 recipients[0].address);
             read_only = true;
-            err = false;
-            txid = '049bd47af99c347698fe416736c7315f73563f72d612d89a288a1485271aad91'
+            var err = false;
+            var txid = '049bd47af99c347698fe416736c7315f73563f72d612d89a288a1485271aad91';
             callback(err, txid);
         },
         getStatus: function () {
@@ -176,8 +176,8 @@ var MockWallet = function () {
         return assetModels;
     },
     getHistory = function () {return historyEntries;},
-    hasSeedFlag = false;
-    hasPinFlag = false;
+    hasSeedFlag = false,
+    hasPinFlag = false,
     isInitializedFlag = false,
 
     initialize = function(mnemonic, password) {
