@@ -276,6 +276,9 @@ window.setTimeout(function (){
 }, 10000);
 
 module.exports = {
-    wallet: wallet
+    wallet: wallet,
+    walletOptions: {
+        testnet: true
+    }
 };
 

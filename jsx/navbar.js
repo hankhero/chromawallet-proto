@@ -34,6 +34,9 @@ var NavBar = React.createClass({
                <a href="#">
                 <img src="img/chromawallet-logo.png" gumby-retina />
               </a>
+              {
+                  this.props.testnet && <p className="testnet-message">TESTNET</p>
+              }
             </h1>
             <ul className="ten columns">
             {

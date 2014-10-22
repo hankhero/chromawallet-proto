@@ -1,5 +1,10 @@
 // Your custom SCSS should be written here...
-
+.testnet-message {
+    color: yellow;
+    position: absolute;
+    bottom: -18px;
+    font-family: monospace;
+}
 
 .overview .row {
     border-bottom: 1px dashed;
@@ -135,3 +140,5 @@ span.non-desktop {
 .field textarea.passphrase-textarea {
     border: 1px solid black;
 }
+
+

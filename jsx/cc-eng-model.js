@@ -6,8 +6,11 @@ var ccWalletEngine = null;
 
 try {
     ccWalletEngine = require('cc-wallet-engine');
-} catch (x) {
-    console.log('error:' + x.toString());
+} catch (err) {
+    if (console.error) {
+        console.error(err);
+    }
+    console.log('error:' + err.toString());
 }
 
 console.log('done. creating wallet');
@@ -15,14 +18,19 @@ console.log('done. creating wallet');
 var systemAssetDefinitions = [{
     monikers: ['gold'],
     colorDescs: ['epobc:b95323a763fa507110a89ab857af8e949810cf1e67e91104cd64222a04ccd0bb:0:180679']
-    }];
+    }],
+walletOptions = {
+    testnet: true, 
+    systemAssetDefinitions: systemAssetDefinitions
+};
 
 try {
-    var wallet = new ccWalletEngine(
-        {testnet: true, systemAssetDefinitions: systemAssetDefinitions}
-    );
-} catch (x) {
-    var ok = window.confirm("An unexpected error occurred when starting. Do you agree to wipe out local data and retry so you can recover your wallet. Only click OF if you have access to your secret phrase and password.");
+    var wallet = new ccWalletEngine(walletOptions);
+} catch (err) {
+    if (console.error) {
+        console.error(err);
+    }
+    var ok = window.confirm("An unexpected error occurred when starting. Do you agree to wipe out local data and retry so you can recover your wallet. Only click OK if you have access to your secret phrase and password.");
     if (ok) {
         localStorage.clear();
         window.location.reload();
@@ -42,5 +50,6 @@ setInterval(function () {
     }, 15000);
 
 module.exports = {
-    wallet: wallet
+    wallet: wallet,
+    walletOptions: walletOptions
 };
