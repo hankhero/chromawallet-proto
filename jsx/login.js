@@ -634,23 +634,24 @@ var ConfirmPassword = React.createClass({
       localStorage.clear();
       location.reload(false);
     },
-    handleLoginClick: function (event) {
-      var self = this;
-      self.setState({ loading: true });
-      setTimeout(
-        function () {
-          try {
-            self.props.wallet.resetSeed(self.state.password);
-            self.setState({ loading: false });
-          } catch (e) {
-            self.setState({ 
-              loading: false,
-              errorMessage: "Wrong password!"
-            });
-          }
-        }, 
-        100 // allow component to update
-      );
+    handleSubmit: function (event) {
+        event.preventDefault();
+        var self = this;
+        self.setState({ loading: true });
+        setTimeout(
+            function () {
+              try {
+                self.props.wallet.resetSeed(self.state.password);
+                self.setState({ loading: false });
+              } catch (e) {
+                self.setState({ 
+                  loading: false,
+                  errorMessage: "Wrong password!"
+                });
+              }
+            }, 
+            100 // allow component to update
+        );
     },
     render: function () {
         if (this.state.loading) {
@@ -678,17 +679,17 @@ var ConfirmPassword = React.createClass({
                     <div className="ten columns centered text-center">
                       <h2>Login</h2>
                       <p>Enter your password to login.</p>
-                      <form>
+                      <form onSubmit={this.handleSubmit}>
                         <div className="field">
                           <input className="input" placeholder="Password"
                                  type="password" value={password} 
                                  onChange={this.handleChange}/>
                         </div>
+                        <p className={warningClasses}>{errorMessage}</p>
+                        <p className="btn primary medium">
+                          <button type="submit">Login</button>
+                        </p>
                       </form>
-                      <p className={warningClasses}>{errorMessage}</p>
-                      <p className="btn primary medium">
-                        <button onClick={this.handleLoginClick}>Login</button>
-                      </p>
                       <p>
                         &nbsp;
                       </p>
