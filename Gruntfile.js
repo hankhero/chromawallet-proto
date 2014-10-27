@@ -171,9 +171,26 @@ module.exports = function(grunt) {
                 dest: 'mobile/www/index.html'
             },
             icon_to_mobile: {
-                src: 'mobile/images/cw-icon.png',
-                dest: 'mobile/platforms/android/res/drawable/icon.png'
+                files: [
+                   {
+                       src: 'mobile/images/icon.png',
+                       dest: 'mobile/platforms/android/res/drawable/icon.png'
+                   },
+                   {
+                       src: 'mobile/images/generated/android/icon-72-hdpi.png',
+                       dest: 'mobile/platforms/android/res/drawable-hdpi/icon.png'
+                   },
+                   {
+                       src: 'mobile/images/generated/android/icon-48-mdpi.png',
+                       dest: 'mobile/platforms/android/res/drawable-mdpi/icon.png'
+                   },
+                   {
+                       src: 'mobile/images/generated/android/icon-96-xhdpi.png',
+                       dest: 'mobile/platforms/android/res/drawable-xhdpi/icon.png'
+                   }
+                ]                
             }
+
 
         },
         clean: {

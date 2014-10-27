@@ -15,7 +15,7 @@ rm generated/ios/*
 #
 #
  
-ICON=${1:-"cw-icon.png"}
+ICON=${1:-"icon.png"}
  
 mkdir android
 convert $ICON -resize 36x36 generated/android/icon-36-ldpi.png
