@@ -1,6 +1,6 @@
 {
   "name": "chromawallet-web",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "repository": {
       "type": "git",
       "url": "git://github.com/chromaway/chromawallet-proto.git"
@@ -10,7 +10,7 @@
     "grunt-beep": "^0.3.1"
   },
   "dependencies": {
-    "cc-wallet-engine": "git://github.com/chromaway/cc-wallet-engine.git",
+    "cc-wallet-engine": "git://github.com/chromaway/cc-wallet-engine.git#v0.0.5",
     "grunt": "~0.4.1",
     "grunt-shell": "^0.7.0",
     "grunt-contrib-clean": "^0.6.0",
