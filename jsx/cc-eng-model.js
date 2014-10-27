@@ -15,10 +15,16 @@ try {
 
 console.log('done. creating wallet');
 
-var systemAssetDefinitions = [{
-    monikers: ['gold'],
-    colorDescs: ['epobc:b95323a763fa507110a89ab857af8e949810cf1e67e91104cd64222a04ccd0bb:0:180679']
-    }],
+var gold = {
+        monikers: ['gold'],
+        colorDescs: ['epobc:b95323a763fa507110a89ab857af8e949810cf1e67e91104cd64222a04ccd0bb:0:180679']
+    },
+    euro = {
+        "colorDescs": ["epobc:0261b29b587020eeca15f831a5290a9d81038851da4365689be04e588ce58c66:0:303510"],
+        "monikers": ["euro"], 
+        "unit": 100
+    },
+    systemAssetDefinitions = [euro, gold],
 walletOptions = {
     testnet: true, 
     systemAssetDefinitions: systemAssetDefinitions
