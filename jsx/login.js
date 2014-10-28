@@ -37,7 +37,7 @@ var Panel = {
     },
     render: function () {
         var active = this.props.active ? ' active': '',
-        classes = "tab-content" + active;
+        classes = 'tab-content' + active;
         return (
          <div className={classes}>{
              this.renderContent()
@@ -64,7 +64,7 @@ var WelcomePanel = React.createClass({
                     this.props.loginClick && 
                         <p>(If you instead want to <ClickLink
                             onClick={this.props.loginClick} 
-                        text="login, click here"/></p>
+                        text='login, click here'/></p>
                 }
 	          </div>
 	        </div>
@@ -161,6 +161,7 @@ var makeSecretValidatorForm = function (options) {
     
     // When you click on the Next button, error messages are show
     form.clickValidateHandler = function (event) {
+        event.preventDefault();
         form.showError = true;
         form.stateChangeCallback(form);
     };
@@ -184,7 +185,7 @@ var PinPanel = React.createClass({
                           'The PIN is a number sequence you use every time you send an asset.',
             nextClick = this.props.nextClick;
         if (! everythingOk) {
-            nextClick = clickValidateHandler;            
+            nextClick = clickValidateHandler;
         }
         return (
           <div>
@@ -193,7 +194,7 @@ var PinPanel = React.createClass({
                  <h2>PIN</h2>
                  <p>{message}</p>
                  <p>Please provide a PIN-code for daily use.</p>
-                 <form>
+                 <form onSubmit={nextClick}>
                    <div className="field">
                      <input className="input" value={secret}
                          onChange={handleSecretChange}
@@ -258,7 +259,7 @@ var PasswordPanel = React.createClass({
               <div className="ten columns centered text-center">
                  <h2>Password</h2>
                  <p>{message}</p>
-                 <form>
+                 <form onSubmit={nextClick}>
                    <div className="field">
                      <input className="input" value={secret}
                       onChange={handleSecretChange}
@@ -331,7 +332,7 @@ var RecoverMnemonicPanel = React.createClass({
               <div className="ten columns centered text-center">
                 <h2>Secret phrase</h2>
                 <p>Please enter the words of your secret phrase that you wrote down when you created your wallet.</p>
-                <form>
+                <form onSubmit={this.props.nextClick}>
                   <div className="field">
                     <textarea className="mnemonic-textarea"
                             placeholder="Enter the phrase here"
@@ -454,6 +455,7 @@ var CreateWallet = React.createClass({
         );
     },
     clickValidateVerify: function (event) {
+        event.preventDefault();
         var thirdWord = this.getMnemonic().split(' ')[2];
         if (this.state.verifyValue === thirdWord) {
             this.startInitializeWallet();
@@ -461,7 +463,8 @@ var CreateWallet = React.createClass({
             this.setState({showVerifyError: true});
         }
     },
-    nextTab: function () {
+    nextTab: function (event) {
+        event.preventDefault(); //For submits
         var i = this.state.tabNames.indexOf(this.state.activeTab);
         i = i + 1;
         if (i >= this.state.tabNames.length) {
@@ -515,7 +518,7 @@ var CreateWallet = React.createClass({
                  <p>Please verify that you wrote down the secret phrase earlier.</p>
                  <p>As explained, it is cruical that this information is saved.</p>
                  <p>Please write the third word in the secret phrase:</p>
-                 <form>
+                 <form onSubmit={this.clickValidateVerify}>
                    <div className="field">
                      <input className="input" value={value}
                       onChange={handleVerifyChange}

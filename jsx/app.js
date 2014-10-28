@@ -12,7 +12,7 @@ var models = require('models'), //Aliased by browserify
     Overview = require('./overview'),
     History = require('./history');
 
-$ ( document).ready(function() {
+$(document).ready(function() {
   React.initializeTouchEvents(true);
   React.renderComponent(
     <App />,
