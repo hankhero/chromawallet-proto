@@ -1,6 +1,11 @@
 /** @jsx React.DOM */
 
-// Probably not much react, maybe move out later.
+
+var setupMode = false;
+
+if (window.location.hash === '#setup') {
+    setupMode = true;
+}
 
 
 var MockPaymentModel = function (props) {
@@ -192,16 +197,24 @@ var MockWallet = function () {
         hasSeedFlag = true;
     },
     getSeed = function() {
-        if(hasSeedFlag){
+        if (hasSeedFlag){
           return "random seed";
         }
         return "";
+    },
+    resetSeed =  function (password) {
+        if (password == 'test') {
+            isInitializedFlag = true;
+        } else {
+            throw new Error('Wrong password');
+        }
     },
     hasSeed = function () {
         return hasSeedFlag;
     },
     canResetSeed = function () {
-        return !hasSeedFlag;
+        return !setupMode;
+        //return !hasSeedFlag;
     },
     generateMnemonic = function() {
         return "tag capable scheme february vague first unfair mouse lift marriage salmon riot";
@@ -233,6 +246,7 @@ var MockWallet = function () {
         getAssetModels: getAssetModels,
         getHistory: getHistory,
         initialize : initialize,
+        resetSeed: resetSeed,
         generateMnemonic : generateMnemonic,
         isInitialized: isInitialized,
         hasPin: hasPin,
@@ -244,6 +258,7 @@ var MockWallet = function () {
         getSeed: getSeed,
         setSeed: setSeed,
         canResetSeed: canResetSeed,
+
         generateRandomSeed: generateRandomSeed,
 
         _bumpBitcoin: function () {
@@ -260,9 +275,28 @@ var MockWallet = function () {
             }));
             updateCallback();
         }
-
     };
 };
+
+$(document).ready(function () {
+    var $html = $('<div>Mock wallet. Password is test. Run <a href="#setup">setup</a></div>');
+    $('a', $html).click(function () {
+        window.location.hash = '#setup';
+        window.location.reload();
+    });
+
+    $html.css({
+            position: 'fixed',
+            bottom: 0,
+            top: 5,
+            zIndex: 9999999,
+            backgroundColor: 'yellow',
+            height: 30,
+            left: 5
+        })
+        .insertBefore('#main');
+});
+
 
 var mockWallet = MockWallet(),
     wallet = mockWallet;
@@ -274,6 +308,7 @@ window.setInterval(function (){
 window.setTimeout(function (){
     mockWallet._addNewAsset();
 }, 10000);
+
 
 module.exports = {
     wallet: wallet,
