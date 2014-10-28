@@ -139,11 +139,13 @@ var Send = React.createClass({
       address: '',  address_error: '',
       amount: '', amount_error: '',
       asset: '#',   asset_error: '',
+      scan_error: '',
       payment: null,
       sending: false
     };
   },
-  scanURI: function () {
+  scanURI: function (evt) {
+      evt.preventDefault();
       var self = this;
       if (window.cordova && cordova.plugins.barcodeScanner) {
           cordova.plugins.barcodeScanner.scan(
@@ -174,12 +176,14 @@ var Send = React.createClass({
       this.setState(this.getInitialState());
       var self = this;
       try {
-          this.props.wallet.makePaymentForURI(uri, function (err, payment) {
-              if (err) return; // TODO: show error
-              else self.initFromPayment(payment);
+          this.props.wallet.makePaymentFromURI(uri, function (err, payment) {
+              if (err) {
+                  throw err;
+              }
+              self.initFromPayment(payment);
           });
       } catch (x) {
-          // TODO: display a warning. or something.
+          this.setState({scan_error: "An error occurred. Bad QR-code?"});
           console.log(x);
       }
   },
@@ -196,10 +200,12 @@ var Send = React.createClass({
   },
 
   onSubmit: function(e) {
+      e.preventDefault();
+
       var self = this;
 
     // clear previous errors
-    this.setState({ asset_error: "", amount_error: "", address_error: "" });
+      this.setState({ asset_error: "", amount_error: "", address_error: "", scan_error: ''});
 
       var payment = this.state.payment;
       if (!payment) {
@@ -290,7 +296,9 @@ var Send = React.createClass({
                           })
                         }
                       </select>
-                      <FormFieldError message={this.state.asset_error} />
+                      <div className="row">
+                         <FormFieldError message={this.state.asset_error} />
+                      </div>
                     </li>
                   </div>
                 </div>
@@ -307,6 +315,11 @@ var Send = React.createClass({
                     <div className="right-button medium primary btn">
                       <a href="#" onClick={this.scanURI}>Scan</a>
                     </div>
+                  </div>
+                </div>
+                <div className="row ">
+                  <div className="push-row-one five columns">
+                    <FormFieldError message={this.state.scan_error} />
                   </div>
                 </div>
               </ul>
