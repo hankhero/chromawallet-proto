@@ -109,7 +109,7 @@ var ConfirmTransaction = React.createClass({
               <div className="ten columns centered text-center">
                 <h2>Confirm Transaction</h2>
                 <p>Enter your pin to send the transaction.</p>
-                <form>
+                <form onSubmit={this.onSubmit}>
                   <div className="field">
                     <input className="input" placeholder="PIN"
                            type="password" value={this.state.pin}
