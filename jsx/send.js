@@ -198,7 +198,16 @@ var Send = React.createClass({
   onChangeAsset: function(e) {
     this.setState({asset: e.target.value});
   },
-
+  getAsset: function () {
+      var assets = self.props.wallet.getAssetModels();
+      var asset = null;
+      for (var i = 0; i < assets.length; i++) {
+          if (assets[i].getMoniker() === self.state.asset){
+              asset = assets[i];
+          }
+      }
+      return asset;
+  },
   onSubmit: function(e) {
       e.preventDefault();
 
@@ -210,13 +219,7 @@ var Send = React.createClass({
       var payment = this.state.payment;
       if (!payment) {
           // create and initialize payment if it doesn't exist
-          var assets = self.props.wallet.getAssetModels();
-          var asset = null;
-          for (var i = 0; i < assets.length; i++) {
-              if (assets[i].getMoniker() === self.state.asset){
-                  asset = assets[i];
-              }
-          }
+          var asset = this.getAsset();
           if (asset == null) {
               self.setState({asset_error: "No asset selected"});
               return;
