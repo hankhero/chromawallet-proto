@@ -133,7 +133,7 @@ var ConfirmTransaction = React.createClass({
   }
 });
 
-var Send = React.createClass({
+var SendCoreMixin = {
   getInitialState: function() {
     return {
       address: '',  address_error: '',
@@ -151,6 +151,9 @@ var Send = React.createClass({
           cordova.plugins.barcodeScanner.scan(
               function (result) {
                   self.initFromURI(result.text);
+                  if (self.afterScanHook) {
+                      self.afterScanHook();
+                  }
               },
               function (error) {
                   this.setState(this.getInitialState());
@@ -245,8 +248,12 @@ var Send = React.createClass({
       }
 
       this.setState({sending: true, payment: payment});
-  },
+  }
+};
 
+
+var Send = React.createClass({
+  mixins: [SendCoreMixin],
   render: function () {
     var assets = this.props.wallet.getAssetModels();
     if (this.state.sending) {
@@ -341,4 +348,10 @@ var Send = React.createClass({
   }
 });
 
-module.exports = Send;
+module.exports = {
+    AssetOption: AssetOption,
+    FormFieldError: FormFieldError,
+    ConfirmTransaction: ConfirmTransaction,
+    SendCoreMixin: SendCoreMixin,
+    Send: Send
+};
