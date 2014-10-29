@@ -199,45 +199,52 @@ var Send = React.createClass({
     this.setState({asset: e.target.value});
   },
   getAsset: function () {
-      var assets = self.props.wallet.getAssetModels();
+      var assets = this.props.wallet.getAssetModels();
       var asset = null;
       for (var i = 0; i < assets.length; i++) {
-          if (assets[i].getMoniker() === self.state.asset){
+          if (assets[i].getMoniker() === this.state.asset){
               asset = assets[i];
           }
       }
       return asset;
   },
+  clearErrors: function () {
+      this.setState({
+          asset_error: "",
+          amount_error: "",
+          address_error: "",
+          scan_error: ''
+      });
+      
+  },
   onSubmit: function(e) {
       e.preventDefault();
 
-      var self = this;
-
-    // clear previous errors
-      this.setState({ asset_error: "", amount_error: "", address_error: "", scan_error: ''});
+      this.clearErrors();
 
       var payment = this.state.payment;
       if (!payment) {
           // create and initialize payment if it doesn't exist
           var asset = this.getAsset();
           if (asset == null) {
-              self.setState({asset_error: "No asset selected"});
+              this.setState({asset_error: "No asset selected"});
               return;
           }
 
           payment = asset.makePayment();
-          if (!payment.checkAddress(self.state.address)) {
-              self.setState({address_error: "Invalid address"});
+
+          if (!payment.checkAddress(this.state.address)) {
+              this.setState({address_error: "Invalid address"});
               return;         
           }
-          if (!payment.checkAmount(self.state.amount)) {
-              self.setState({amount_error: "Wrong amount"});
+          if (!payment.checkAmount(this.state.amount)) {
+              this.setState({amount_error: "Wrong amount"});
               return;          
           }
-          payment.addRecipient(self.state.address, self.state.amount);
+          payment.addRecipient(this.state.address, this.state.amount);
       }
 
-      self.setState({sending: true, payment: payment});
+      this.setState({sending: true, payment: payment});
   },
 
   render: function () {
