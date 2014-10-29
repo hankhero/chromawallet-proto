@@ -29,7 +29,6 @@ var Overview = React.createClass({
        <div className="overview">
          <div className="row module-heading">
            <h2>Overview</h2>
-           <div className="right-button medium primary btn"><a href="#">Update</a></div>
          </div>
          {
              assets.map(function (assetModel) {
