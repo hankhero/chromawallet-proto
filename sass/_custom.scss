@@ -1,9 +1,12 @@
 // Your custom SCSS should be written here...
 .testnet-message {
-    color: yellow;
+    color: rgb(255, 252, 0);
     position: absolute;
-    bottom: -18px;
-    font-family: monospace;
+    bottom: -15px;
+    left: 30px;
+    font-family: courier;
+    font-size: 14px;
+    font-weight: 600;
 }
 
 .overview .row {
