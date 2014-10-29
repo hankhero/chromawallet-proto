@@ -2,7 +2,6 @@
 
 var React = require('react/addons'); //With addons
 
-
 var ClickLink = React.createClass({
     render: function () {
        return (
@@ -637,6 +636,12 @@ var ConfirmPassword = React.createClass({
       localStorage.clear();
       location.reload(false);
     },
+    componentDidMount: function () {
+        var inp =  this.refs.passwordInput;
+        if (inp) {
+            inp.getDOMNode().focus();            
+        }
+    },
     handleSubmit: function (event) {
         event.preventDefault();
         var self = this;
@@ -685,7 +690,9 @@ var ConfirmPassword = React.createClass({
                       <form onSubmit={this.handleSubmit}>
                         <div className="field">
                           <input className="input" placeholder="Password"
-                                 type="password" value={password} 
+                                  ref="passwordInput"
+                                 type="password" value={password}
+                                 autoFocus
                                  onChange={this.handleChange}/>
                         </div>
                         <p className={warningClasses}>{errorMessage}</p>
