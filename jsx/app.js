@@ -8,7 +8,7 @@ var models = require('models'), //Aliased by browserify
     NavBar = require('./navbar'),
     Login = require('./login'),
     Send = require('./send').Send,
-    Receive = require('./receive'),
+    Receive = require('./receive').Receive,
     Overview = require('./overview'),
     History = require('./history');
 
