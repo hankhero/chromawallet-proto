@@ -243,6 +243,12 @@ module.exports = function(grunt) {
         'copy:icon_to_mobile'
     ]);
 
+    grunt.registerTask('build_fast', [
+        'browserify:production',
+        'copy:demo_ui',
+        'copy-to-dist',
+        'cacheBust'
+    ]);
 
     grunt.registerTask('dist', [
                            'copy:demo_ui',
