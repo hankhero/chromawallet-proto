@@ -29,11 +29,6 @@ var FormFieldError = React.createClass({
   }
 });
 
-var send_style = {
-  color: 'white',
-  padding: '0 18px !important'
-};
-
 var ConfirmTransaction = React.createClass({
   getInitialState: function() {
     return {
