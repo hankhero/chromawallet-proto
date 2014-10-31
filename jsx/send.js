@@ -174,7 +174,7 @@ var Send = React.createClass({
       this.setState(this.getInitialState());
       var self = this;
       try {
-          this.props.wallet.makePaymentForURI(uri, function (err, payment) {
+          this.props.wallet.makePaymentFromURI(uri, function (err, payment) {
               if (err) return; // TODO: show error
               else self.initFromPayment(payment);
           });
