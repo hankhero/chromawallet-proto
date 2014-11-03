@@ -636,12 +636,19 @@ var ConfirmPassword = React.createClass({
       localStorage.clear();
       location.reload(false);
     },
-    componentDidMount: function () {
-        var inp =  this.refs.passwordInput;
-        if (inp) {
-            inp.getDOMNode().focus();            
-        }
-    },
+    //componentDidMount: function () {
+        //This works but I'm not sure it is good.
+        // 
+        // requires ionic keyboard plugin
+        // 
+        //var inp =  this.refs.passwordInput;
+        //if (inp) {
+        //    inp.getDOMNode().focus();
+        //    try {
+        //        cordova.plugins.Keyboard.show();                
+        //    } catch (x) {}
+        //}
+    //},
     handleSubmit: function (event) {
         event.preventDefault();
         var self = this;
@@ -690,9 +697,8 @@ var ConfirmPassword = React.createClass({
                       <form onSubmit={this.handleSubmit}>
                         <div className="field">
                           <input className="input" placeholder="Password"
-                                  ref="passwordInput"
+                                 ref="passwordInput"
                                  type="password" value={password}
-                                 autoFocus
                                  onChange={this.handleChange}/>
                         </div>
                         <p className={warningClasses}>{errorMessage}</p>
