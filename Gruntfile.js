@@ -25,6 +25,17 @@ module.exports = function(grunt) {
                     debug: true
                 }
             }
+          },
+          test: {
+            src: ['test/*.js'],
+            dest: 'build/cw-ui-test.js',
+            options: {
+                alias: ['./jsx/models-mock.js:models'],
+                transform:  [ require('grunt-react').browserify ],
+                browserifyOptions: {
+                    debug: true
+                }
+            }
           }
         },
         connect: {
@@ -199,13 +210,25 @@ module.exports = function(grunt) {
             mobile: 'mobile/www/'
         },
         concurrent: {
-            browserify: ['compass', 'browserify:production', 'browserify:demo']
+            browserify: ['compass',
+                'browserify:production',
+                'browserify:demo',
+                'test']
+        },
+        mochaTest: {
+          test: {
+            options: {
+              reporter: 'spec',
+              timeout: 60*1000
+            },
+            src: ['test/*.js']
+          }
         },
         watch: {
           scripts: {
-            files: ['jsx/*.js', '!jsx/*_*.js', '!jsx/\.#*'],
+            files: ['jsx/*.js', '!jsx/*_*.js', '!jsx/\.#*', 'test/*.js'],
             //Second is to exclude flymake files, third auto-save emacs files
-            tasks: ['build', 'beep'],
+            tasks: ['build', 'test', 'beep'],
             options: {
               spawn: false
             }
@@ -230,6 +253,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-compass');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-mocha-test')
     grunt.loadNpmTasks('grunt-cache-bust');
 
     grunt.registerTask('copy-to-dist', [
@@ -252,7 +276,10 @@ module.exports = function(grunt) {
                            'cacheBust',
                            'cordova'
                        ]);
-
+    grunt.registerTask('test', [
+                           'browserify:test',
+                           'mochaTest'
+                       ]);
 
     grunt.registerTask('build', [
                            'concurrent:browserify',
