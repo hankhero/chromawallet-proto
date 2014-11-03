@@ -11,6 +11,7 @@ try {
         console.error(err);
     }
     console.log('error:' + err.toString());
+    throw err;
 }
 
 console.log('done. creating wallet');
