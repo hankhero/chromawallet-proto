@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 
-var React = require('react');
+var React = require('react'),
+    Validator = require('./validator');
 
 var AssetOption = React.createClass({
   render: function () {
@@ -190,7 +191,10 @@ var SendCoreMixin = {
   },
 
   onChangeAmount: function(e) {
-    this.setState({amount:  e.target.value});
+      var amount = e.target.value;
+      if (Validator.validateAmountInProgress(amount)) {
+          this.setState({amount:  amount});
+      }
   },
 
   onChangeAsset: function(e) {

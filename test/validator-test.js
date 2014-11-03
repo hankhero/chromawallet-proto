@@ -47,4 +47,40 @@ describe('validator', function() {
            expect(Validator.validateAmount('123.12  ')).to.be.ok;
        });
    });
+
+   describe('Amount in progress', function () {
+       it('Half finished inputs', function() {
+           expect(Validator.validateAmountInProgress('123.')).to.be.ok;
+       });
+
+       it('Unstarted input', function() {
+           expect(Validator.validateAmountInProgress('')).to.be.ok;
+       });
+
+       it('No spaces allowed', function() {
+           expect(Validator.validateAmountInProgress('  12')).to.be.false;
+       });
+
+       it('No spaces allowed after', function() {
+           expect(Validator.validateAmountInProgress('12 ')).to.be.false;
+       });
+
+       it('No spaces allowed in between', function() {
+           expect(Validator.validateAmountInProgress('1 2')).to.be.false;
+       });
+
+
+       it('But not broken', function() {
+           expect(Validator.validateAmountInProgress('123.2.')).to.be.false;
+       });
+
+       it('Ok input', function() {
+           expect(Validator.validateAmountInProgress('123.45')).to.be.ok;
+       });
+
+       it('bad input', function() {
+           expect(Validator.validateAmountInProgress('12foo')).to.be.false;
+       });
+       
+   });
 });
