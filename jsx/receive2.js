@@ -18,7 +18,6 @@ var AssetOption = React.createClass({
     }
 });
 
-
 var AssetAddressWithQR2 = React.createClass({
     render: function () {
         var assetModel = this.props.asset;
@@ -170,4 +169,6 @@ var Receive2 = React.createClass({
     }
 });
 
-module.exports = Receive2;
+module.exports = {
+    Receive: Receive2
+};
