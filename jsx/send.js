@@ -74,6 +74,8 @@ var ConfirmTransaction = React.createClass({
         }          
     }
 
+    this.setState({sending: true});
+
     process.nextTick(function () {
         try {
             sendcomp.state.payment.send(onPaymentComplete);
