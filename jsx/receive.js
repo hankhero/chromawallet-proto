@@ -4,6 +4,7 @@ var React = require('react');
 
 var QRCode = require('qrcode.react');
 var AssetAddressView = require("./asset-address");
+var Validator = require('./validator');
 
 var makeUriForQR = function(assetModel, optAmount) {
     var aparts = assetModel.getAddress().split('@');
@@ -26,6 +27,17 @@ var makeUriForQR = function(assetModel, optAmount) {
         separator = "&";
     }
     return uri;
+},
+paymentURI = {
+    // Two different kind of URI:s
+    makePlainBitcoin: function(assetModel, amount, cb) {
+        var uri = makeUriForQR(assetModel, amount);
+        cb(null, uri);
+    },
+    makeCWPP: function (assetModel, amount, cb) { 
+        var pay_req = assetModel.makePaymentRequest({amount: amount});
+        pay_req.getPaymentURI(cb);
+    }    
 };
 
 var QR = React.createClass({
@@ -44,7 +56,7 @@ var QR = React.createClass({
 var AssetAddressWithQR = React.createClass({
     render: function () {
         var assetModel = this.props.asset;
-        var uri = makeUriForQR(assetModel);
+        var uri = this.props.uri; 
         return (
             <div>
                 <div className="row">
@@ -65,49 +77,77 @@ var AssetAddressWithQR = React.createClass({
 var UpdateableQR = React.createClass({
     getInitialState: function () {
         return {
-            amount: ''
+            amount: '',
+            paymentURI: ''
         };
     },
     amountChanged: function (event) {
         var amount = event.target.value;
-        this.setState({
-            amount: amount
-        });
+
+        if (Validator.validateAmountInProgress(amount)) {
+            this.setState({
+                amount: amount,
+                paymentURI: ''
+            });
+        }
     },
-    noSubmit: function (event) {
+    onSubmit: function () {
         event.preventDefault();
+        var self = this,
+            cb = function (err, uri) {
+                if (err == null) {
+                    self.setState({paymentURI: uri});
+                } else {
+                    console.log(err); // TODO
+                }
+            },
+            makeUriFn = paymentURI.makePlainBitcoin,
+            amount = this.state.amount;
+        if (Validator.validateAmount(amount) || amount === '') {
+            makeUriFn(this.props.asset, amount, cb);            
+        }
     },
     render: function () {
         var assetModel = this.props.asset;
         var amount = this.state.amount;
-        var uri = makeUriForQR(assetModel, amount);
+        var uri = this.state.paymentURI;
         return (
-            <div>
-               <div className="row">
-                 <form onSubmit={this.noSubmit}>
+              <form onSubmit={this.onSubmit}>
+                <div className="row">
                     <div className="push-row-one five columns">
                       <div className="field">
                         <label className="inline" for="receive__amount">Write amount, then show the QR-code.</label>
                         <input className="xxwide input" id="receive__amount"
-                            type="number" placeholder="Amount Euro"
+                            type="text" placeholder="Amount Euro"
                             value={amount} onChange={this.amountChanged}/>
                       </div>
                     </div>
-                  </form>
                 </div>
-
+    
                 <div className="row">
-                    <div className="receive__qr-code">
-                        <QRCode value={uri} size={256} />
+                    <div className="push-row-one push-row-bottom-one five columns ">
+                      <div className="btn primary medium">
+                        <button onClick={this.onSubmit}>Show</button>
+                      </div>
                     </div>
                 </div>
-
-                <div className="row">
-                    <div className="six columns">
-                            <AssetAddressView asset={assetModel} />
-                    </div>
-                </div>
-            </div>
+                {
+                    uri && 
+                      <div>
+                        <div className="row">
+                            <div className="receive__qr-code">
+                                <QRCode value={uri} size={256} />
+                            </div>
+                        </div>
+                        
+                        <div className="row">
+                            <div className="six columns">
+                                    <AssetAddressView asset={assetModel} />
+                            </div>
+                        </div>
+                      </div>
+                }
+                </form>
         );
     }
 });
@@ -133,6 +173,7 @@ var Receive = React.createClass({
                   </div>
                   <AssetAddressWithQR
                           key={moniker}
+                          uri={makeUriForQR(assetModel)}
                           asset={assetModel} />
               </div>
           );
@@ -145,6 +186,7 @@ var Receive = React.createClass({
 
 module.exports = {
     makeUriForQR: makeUriForQR,
+    paymentURI: paymentURI,
     QR: QR,
     AssetAddressWithQR: AssetAddressWithQR,
     UpdateableQR: UpdateableQR,
