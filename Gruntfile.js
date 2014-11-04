@@ -81,17 +81,48 @@ module.exports = function(grunt) {
               }]
           }
         },
-
+        sync: {
+            bower_to_mobile: {
+                expand: true,
+                cwd: 'dist',
+                src:'bower_components/**',
+                dest: 'mobile/www/'
+            },
+            css_to_mobile: {
+                expand: true,
+                cwd: 'dist',
+                src:'css/**',
+                dest: 'mobile/www/'
+            },
+            img_to_mobile: {
+                expand: true,
+                cwd: 'dist',
+                src:'img/**',
+                dest: 'mobile/www/'
+            },
+            fonts_to_mobile: {
+                expand: true,
+                cwd: 'dist',
+                src:'fonts/**',
+                dest: 'mobile/www/'
+            },
+            code_to_mobile: {
+                expand: true,
+                cwd: 'dist',
+                src:'cw-ui.*',
+                dest: 'mobile/www/'
+            },
+            bower_to_dist: {
+                expand: true,
+                src:'bower_components/**',
+                dest: 'dist/'
+            }
+        },
         copy: {
             build_to_dist: {
                 expand: true,
                 cwd:'build',
                 src:'**',
-                dest: 'dist/'
-            },
-            bower_to_dist: {
-                expand: true,
-                src:'bower_components/**',
                 dest: 'dist/'
             },
             css_to_dist: {
@@ -142,45 +173,6 @@ module.exports = function(grunt) {
                     }
                 }
             },
-
-            bower_to_mobile: {
-                expand: true,
-                cwd: 'dist',
-                src:'bower_components/**',
-                dest: 'mobile/www/'
-            },
-            css_to_mobile: {
-                expand: true,
-                cwd: 'dist',
-                src:'css/**',
-                dest: 'mobile/www/'
-            },
-            img_to_mobile: {
-                expand: true,
-                cwd: 'dist',
-                src:'img/**',
-                dest: 'mobile/www/'
-            },
-            fonts_to_mobile: {
-                expand: true,
-                cwd: 'dist',
-                src:'fonts/**',
-                dest: 'mobile/www/'
-            },
-            code_to_mobile: {
-                expand: true,
-                cwd: 'dist',
-                src:'cw-ui.*',
-                dest: 'mobile/www/'
-            },
-            typedarray_to_mobile: {
-                src:'js/typedarray.js',
-                dest: 'mobile/www/typedarray.js'
-            },
-            index_to_mobile: {
-                src:'dist/index-cordova.html',
-                dest: 'mobile/www/index.html'
-            },
             icon_to_mobile: {
                 files: [
                    {
@@ -200,9 +192,15 @@ module.exports = function(grunt) {
                        dest: 'mobile/platforms/android/res/drawable-xhdpi/icon.png'
                    }
                 ]                
+            },
+            typedarray_to_mobile: {
+                src:'js/typedarray.js',
+                dest: 'mobile/www/typedarray.js'
+            },
+            index_to_mobile: {
+                src:'dist/index-cordova.html',
+                dest: 'mobile/www/index.html'
             }
-
-
         },
         clean: {
             build: 'build/',
@@ -212,8 +210,12 @@ module.exports = function(grunt) {
         concurrent: {
             browserify: ['compass',
                 'browserify:production',
-                'browserify:demo',
-                'test']
+                'browserify:demo'
+                ],
+            testAndDist: [
+                'test',
+                'dist'
+            ]
         },
         mochaTest: {
           test: {
@@ -253,17 +255,18 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-compass');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-mocha-test')
+    grunt.loadNpmTasks('grunt-sync');
+    grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-cache-bust');
 
     grunt.registerTask('copy-to-dist', [
-        'copy:build_to_dist', 'copy:bower_to_dist',
+        'copy:build_to_dist', 'sync:bower_to_dist',
         'copy:css_to_dist', 'copy:img_to_dist','copy:fonts_to_dist']);
 
     grunt.registerTask('cordova', [
-        'copy:index_to_mobile', 'copy:code_to_mobile',
-        'copy:typedarray_to_mobile', 'copy:bower_to_mobile',
-        'copy:css_to_mobile', 'copy:img_to_mobile','copy:fonts_to_mobile',
+        'copy:index_to_mobile', 'sync:code_to_mobile',
+        'copy:typedarray_to_mobile', 'sync:bower_to_mobile',
+        'sync:css_to_mobile', 'sync:img_to_mobile','sync:fonts_to_mobile',
         'copy:icon_to_mobile'
     ]);
 
@@ -289,7 +292,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('build', [
                            'concurrent:browserify',
-                           'dist'
+                           'concurrent:testAndDist'
                        ]);
 
     grunt.registerTask('default', [
