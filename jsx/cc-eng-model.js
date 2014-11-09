@@ -52,7 +52,6 @@ setInterval(function () {
     if (wallet.isInitialized())
         wallet.ccWallet.scanAllAddresses(function (err) {
             if (err) console.log(err);
-            wallet.update();
         });
     }, 15000);
 
