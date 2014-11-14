@@ -39,16 +39,27 @@ var ConfirmTransaction = React.createClass({
     };
   },
   onChangePin: function (e) {
-    this.setState({ pin: e.target.value, errorMessage: null });
+    var pin = e.target.value;
+    pin = pin.replace(/\s/g, '');
+    this.setState({ pin: pin, errorMessage: null });
+    if (pin === this._getCorrectPin()) {
+        this.sendTransaction();
+    }
   },
   onCancel: function (e) {
     this.props.sendcomp.setState({ sending: false, payment: null });
     this.setState(this.getInitialState());
   },
+  _getCorrectPin: function () {
+      return this.props.sendcomp.props.wallet.getPin();
+  },
   onSubmit: function (e) {
     e.preventDefault();
-    if (this.state.pin == this.props.sendcomp.props.wallet.getPin()){
-      this.sendTransaction();
+    var self = this;
+    if (this.state.pin == this._getCorrectPin()){
+      setTimeout(function () {
+        self.sendTransaction();
+      }, 300); //Allow keyboard to animate away on android
     } else {
       this.setState({ errorMessage: "Invalid PIN" });
     }
@@ -109,8 +120,8 @@ var ConfirmTransaction = React.createClass({
                 <p>Enter your pin to send the transaction.</p>
                 <form onSubmit={this.onSubmit}>
                   <div className="field">
-                    <input className="input" placeholder="PIN"
-                           type="password" value={this.state.pin}
+                    <input className="input numeric-password" placeholder="PIN"
+                           type="number" value={this.state.pin}
                            onChange={this.onChangePin}/>
                   </div>
                 </form>
@@ -136,7 +147,8 @@ var SendCoreMixin = {
     return {
       address: '',  address_error: '',
       amount: '', amount_error: '',
-      asset: '#',   asset_error: '',
+      //asset can be set by the class that does mixin
+      asset_error: '',
       scan_error: '',
       payment: null,
       sending: false
@@ -230,28 +242,33 @@ var SendCoreMixin = {
       if (!payment) {
           // create and initialize payment if it doesn't exist
           var asset = this.getAsset();
+          var showError = false;
           if (asset == null) {
               this.setState({asset_error: "No asset selected"});
-              return;
+              showError = true;
           }
+          var amount = Validator.normalizeAmount(this.state.amount);
+          var address = Validator.normalizeAddress(this.state.address);
 
           payment = asset.makePayment();
 
-          if (!payment.checkAddress(this.state.address)) {
+          if (!payment.checkAddress(address)) {
               this.setState({address_error: "Invalid address"});
-              return;         
+              showError = true;
           }
-          if (!payment.checkAmount(this.state.amount)) {
+          if (!payment.checkAmount(amount)) {
               this.setState({amount_error: "Wrong amount"});
-              return;          
+              showError = true;
           }
-          payment.addRecipient(this.state.address, this.state.amount);
+          if (showError) {
+            return;
+          }
+          payment.addRecipient(address, amount);
       }
 
       this.setState({sending: true, payment: payment});
   }
 };
-
 
 var Send = React.createClass({
   mixins: [SendCoreMixin],

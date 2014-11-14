@@ -157,3 +157,19 @@ span.non-desktop {
 }
 
 
+
+//http://blog.pamelafox.org/2012/05/triggering-numeric-keyboards-with-html5.html
+
+input.numeric-input-no-spinner::-webkit-outer-spin-button,
+input.numeric-input-no-spinner::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+
+// Tweaks to get password fields with numeric keypad
+// http://stackoverflow.com/questions/8333117/is-there-a-way-to-have-a-masked-numeric-input-field/
+
+input[type=number].numeric-password {
+    -webkit-text-security: disc;
+}
