@@ -303,22 +303,23 @@ var Send = React.createClass({
 
                 <div className="row">
                   <div className="five columns">
-
+                    <label className="inline" htmlFor="amount">Amount</label>
                     <li className="field">
-                      <label className="inline" htmlFor="amount">Amount</label>
-                      <input className="xxwide input" type="text" id="amount"
+                      <input className="xxwide input numeric-input-no-spinner"
+                             type="number"
+                             id="amount"
+                             step="0.01"
                              placeholder="Amount to send."
                              onChange={this.onChangeAmount}
-                             value={this.state.amount}
+                             defaultValue={this.state.amount}
                       />
                       <FormFieldError message={this.state.amount_error} />
                     </li>
 
                   </div>
                   <div className="five columns">
-
+                    <label className="inline" htmlFor="asset">Asset</label>
                     <li className="field">
-                      <label className="inline" htmlFor="asset">Asset</label>
                       <select className="xxwide input" id="asset"
                               value={this.state.asset}
                               onChange={this.onChangeAsset}>
