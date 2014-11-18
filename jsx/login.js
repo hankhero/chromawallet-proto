@@ -652,22 +652,25 @@ var ConfirmPassword = React.createClass({
     handleSubmit: function (event) {
         event.preventDefault();
         var self = this;
-        self.setState({ loading: true });
-        setTimeout(
-            function () {
-              try {
-                self.props.wallet.resetSeed(self.state.password);
-                self.setState({ loading: false });
-              } catch (e) {
-                self.setState({ 
-                  loading: false,
-                  errorMessage: "Wrong password!"
-                });
-              }
-            }, 
-            100 // allow component to update
-        );
+        setTimeout(function () {
+            self.setState({ loading: true });
+            setTimeout(
+                function () {
+                  try {
+                    self.props.wallet.resetSeed(self.state.password);
+                    self.setState({ loading: false });
+                  } catch (e) {
+                    self.setState({ 
+                      loading: false,
+                      errorMessage: "Wrong password!"
+                    });
+                  }
+                }, 
+                100 // allow component to update
+            );
+        }, 300); //Allow keyboard to animate away on android
     },
+
     render: function () {
         if (this.state.loading) {
             return (
@@ -698,6 +701,7 @@ var ConfirmPassword = React.createClass({
                         <div className="field">
                           <input className="input" placeholder="Password"
                                  ref="passwordInput"
+                                 autoFocus="autoFocus"
                                  type="password" value={password}
                                  onChange={this.handleChange}/>
                         </div>
