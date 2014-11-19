@@ -50,10 +50,10 @@ wallet.update();
 
 setInterval(function () {
     if (wallet.isInitialized())
-        wallet.ccWallet.scanAllAddresses(function (err) {
+        wallet.ccWallet.subscribeAndSyncAllAddresses(function (err) {
             if (err) console.log(err);
         });
-    }, 15000);
+    }, 5000);
 
 module.exports = {
     wallet: wallet,
