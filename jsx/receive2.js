@@ -3,7 +3,8 @@
 var React = require('react');
 
 var QRCode = require('qrcode.react');
-var AssetAddressView = require("./asset-address");
+var AssetAddressView = require('./asset-address');
+var CopyableLongString = require('./copyable-long-string');
 
 var AssetOption = React.createClass({
     render: function () {
@@ -20,16 +21,20 @@ var AssetOption = React.createClass({
 
 var AssetAddressWithQR2 = React.createClass({
     render: function () {
-        var assetModel = this.props.asset;
+        var assetModel = this.props.asset,
+            amount = this.props.amount,
+            uri = this.props.uri,
+            moniker = assetModel.getMoniker();
 
         return (<div className="row">
                 <div className="six columns">
-                        <h3>{assetModel.getMoniker()}</h3>
+                        <h3>{amount} {moniker}</h3>
                 </div>
-                <div className="twelve columns">{this.props.uri}</div>
                 <div className="six columns">
-                        <QRCode value={this.props.uri} size={256} />       
+                        <QRCode value={uri} size={256} />       
                 </div>
+                <CopyableLongString string={uri} />
+
                 </div>);
     }
 });
@@ -57,23 +62,28 @@ function generate_cwpp(assetModel, amount, cb) {
 var Receive2 = React.createClass({
     getInitialState: function () {
         return {
-            address: '', address_error: '',
             amount: '', amount_error: '',
             asset: '#', asset_error: '',
             paymentURI: null,
-            assetModel: null
+            assetModel: null,
+            shownAmount: null
         };
     },
-    onChangeAddress: function (e) {
-        this.setState({address: e.target.value});
-    },
     onChangeAmount: function (e) {
-        this.setState({amount: e.target.value});
+        this.setState({
+          amount: e.target.value,
+          paymentURI: null
+        });
     },
     onChangeAsset: function (e) {
-        this.setState({asset: e.target.value});
+        this.setState({
+          asset: e.target.value,
+          paymentURI: null
+       });
     },
     onSubmit: function (e) {
+        e.preventDefault();
+
         var self = this;
         var assets = self.props.wallet.getAssetModels();
         var asset = null;
@@ -85,9 +95,11 @@ var Receive2 = React.createClass({
         if (asset == null) {
             return;
         }
-        generate_cwpp(asset, this.state.amount, function (err, uri) {
+        var amount = this.state.amount;
+        generate_cwpp(asset, amount, function (err, uri) {
             if (err == null) {
                 self.setState({paymentURI: uri,
+                               shownAmount: amount,
                                assetModel: asset});
             } else {
                 console.log(err); // TODO
@@ -96,76 +108,74 @@ var Receive2 = React.createClass({
     },
     render: function () {
         var assets = this.props.wallet.getAssetModels();
-        if (this.state.paymentURI) {
-            return (<AssetAddressWithQR2 asset={this.state.assetModel}
-                                         uri={this.state.paymentURI} />);
-        }
+        // if (this.state.paymentURI) {
+        //     return (<AssetAddressWithQR2 asset={this.state.assetModel}
+        //                                  uri={this.state.paymentURI} />);
+        // }
         return (
-            <div className="send">
-                <div className="row module-heading">
-                    <h2>Receive</h2>
-                </div>
-                <div className="recipient-form row">
-                    <form onSubmit={this.onSubmit}>
-                        <ul>
-                            <div className="row">
-                                <div className="ten columns">
-                                    <li className="field">
-                                        <label className="inline" htmlFor="address">Address</label>
-                                        <input className="xxwide input" type="text" id="address"
-                                        placeholder="Address of the recipient."
-                                        onChange={this.onChangeAddress}
-                                        value={this.state.address}
-                                        />
-                                    </li>
-                                </div>
+        <div className="send">
+            <div className="row module-heading">
+                <h2>Receive</h2>
+            </div>
+            <div className="recipient-form row">
+                <form onSubmit={this.onSubmit}>
+                    <ul>
+                        <div className="row">
+                            <div className="five columns">
+                                <label className="inline" htmlFor="amount">Amount</label>
+                                <li className="field">
+                                    <input className="xxwide input numeric-input-no-spinner"
+                                    id="amount"
+                                    type="number"
+                                    step="0.01"
+                                    placeholder="Amount to send."
+                                    onChange={this.onChangeAmount}
+                                    defaultValue={this.state.amount}
+                                    />
+                                </li>
                             </div>
-
-                            <div className="row">
-                                <div className="five columns">
-
-                                    <li className="field">
-                                        <label className="inline" htmlFor="amount">Amount</label>
-                                        <input className="xxwide input" type="text" id="amount"
-                                        placeholder="Amount to send."
-                                        onChange={this.onChangeAmount}
-                                        value={this.state.amount}
-                                        />
-                                    </li>
-
-                                </div>
-                                <div className="five columns">
-
-                                    <li className="field">
-                                        <label className="inline" htmlFor="asset">Asset</label>
-                                        <select className="xxwide input" id="asset"
+                            <div className="five columns">
+                                 <label className="inline" htmlFor="asset">Asset</label>
+                                <li className="field">
+                                  <div className="picker">
+                                    <select className="xxwide input" id="asset"
                                         value={this.state.asset}
                                         onChange={this.onChangeAsset}>
-                                            <option value="#">Select asset</option>
-                        {
-                            assets.map(function (asset) {
-                                return (
-                                    <AssetOption key={asset.getAddress()} asset={asset} />
-                                    );
-                            })
-                            }
-                                        </select>
-                                    </li>
-                                </div>
+                                        <option value="#" disabled>Select asset</option>
+                                        {
+                                            assets.map(function (asset) {
+                                                return (
+                                                    <AssetOption
+                                                          key={asset.getAddress()}
+                                                          asset={asset} />
+                                                    );
+                                            })
+                                        }
+                                    </select>
+                                  </div>
+                                </li>
                             </div>
+                        </div>
 
-                            <div className="row">
-                                <div className="ten columns">
-                                    <div className="right-button medium primary btn">
-                                        <a href="#" onClick={this.onSubmit}>Generate</a>
-                                    </div>
+                        <div className="row">
+                            <div className="ten columns">
+                                <div className="right-button medium primary btn">
+                                    <input type="submit" value="Generate QR"></input>
                                 </div>
                             </div>
-                        </ul>
-                    </form>
-                </div>
+                        </div>
+
+                    </ul>
+                </form>
             </div>
-            );
+            { this.state.paymentURI &&
+                 <AssetAddressWithQR2 asset={this.state.assetModel}
+                     amount={this.state.shownAmount}
+                     uri={this.state.paymentURI} />
+            }
+
+        </div>
+        );
     }
 });
 
