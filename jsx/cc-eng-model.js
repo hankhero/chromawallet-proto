@@ -46,14 +46,7 @@ try {
 
 console.log('done!');
 
-wallet.update();
-
-setInterval(function () {
-    if (wallet.isInitialized())
-        wallet.ccWallet.subscribeAndSyncAllAddresses(function (err) {
-            if (err) console.log(err);
-        });
-    }, 5000);
+wallet.on('error', function (error) { console.log(error) })
 
 module.exports = {
     wallet: wallet,
