@@ -5,6 +5,7 @@ var React = require('react');
 var QRCode = require('qrcode.react');
 var AssetAddressView = require('./asset-address');
 var CopyableLongString = require('./copyable-long-string');
+var PaymentProtocol = require('./payment-protocol');
 
 var AssetOption = React.createClass({
     render: function () {
@@ -39,25 +40,6 @@ var AssetAddressWithQR2 = React.createClass({
     }
 });
 
-function generate_bitcoin(assetModel, amount, cb) {
-    // TODO: do something with amount
-    var aparts = assetModel.getAddress().split('@');
-    var asset_id = null, address = '';
-    if (aparts.length == 2) {
-        asset_id = aparts[0];
-        address = aparts[1];
-    } else {
-        address = aparts[0];
-    }
-    var uri = "bitcoin:" + address;
-    if (asset_id) uri = uri + "?asset_id=" + asset_id;
-    cb(null, uri);
-}
-
-function generate_cwpp(assetModel, amount, cb) {
-    var pay_req = assetModel.makePaymentRequest({amount: amount});
-    pay_req.getPaymentURI(cb);
-}
 
 var Receive2 = React.createClass({
     getInitialState: function () {
@@ -96,7 +78,7 @@ var Receive2 = React.createClass({
             return;
         }
         var amount = this.state.amount;
-        generate_cwpp(asset, amount, function (err, uri) {
+        PaymentProtocol.makePlainBitcoin(asset, amount, function (err, uri) {
             if (err == null) {
                 self.setState({paymentURI: uri,
                                shownAmount: amount,
