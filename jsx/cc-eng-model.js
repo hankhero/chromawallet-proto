@@ -1,3 +1,4 @@
+
 /** @jsx React.DOM */
 
 console.log('loading cc-wallet-engine');
@@ -46,14 +47,7 @@ try {
 
 console.log('done!');
 
-wallet.update();
-
-setInterval(function () {
-    if (wallet.isInitialized())
-        wallet.ccWallet.scanAllAddresses(function (err) {
-            if (err) console.log(err);
-        });
-    }, 15000);
+wallet.on('error', function (error) { console.log(error) })
 
 module.exports = {
     wallet: wallet,
