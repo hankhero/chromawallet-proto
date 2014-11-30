@@ -31,7 +31,7 @@ dist/
 cc-wallet-engine.js
 
 mobile/www
-mobile/platforms/android
+mobile/platforms
 mobile/plugins
 
 # gumby.css is built with compass
