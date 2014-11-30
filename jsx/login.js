@@ -84,7 +84,7 @@ var MnemonicPanel = React.createClass({
                 <h2>Secret phrase</h2>
                 <p>We have created some random words that represent the secret key to you wallet. It is very important you<em>write it down</em> and store it in a safe and secret place.</p>
 <p>Please store this phrase somewhere safe and secret.</p>
-                <p className="warning alert">{mnemonic}</p>
+                <p className="warning alert selectable">{mnemonic}</p>
               </div>
             </div>
             <NextButton onClick={this.props.nextClick} />

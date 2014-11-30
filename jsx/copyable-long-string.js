@@ -47,7 +47,7 @@ var CopyableLongString = React.createClass({
         } else {
             return (
                     <div className="overview__address-line">
-                        <span className="overview__address-hash">{address}</span>
+                        <span className="overview__address-hash selectable">{address}</span>
                     </div>
             );
         }
