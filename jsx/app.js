@@ -2,17 +2,23 @@
 
 var React = require('react');
 
-var models = require('models'), //Aliased by browserify
-    wallet = models.wallet, 
-    testnet = models.walletOptions.testnet,
-    NavBar = require('./navbar'),
-    Login = require('./login'),
-    Send = require('./send').Send,
-    Receive = require('./receive2').Receive,
-    Overview = require('./overview'),
-    History = require('./history');
+var models = require('models') //Aliased by browserify
+    , wallet = models.wallet 
+    , testnet = models.walletOptions.testnet
+    , NavBar = require('./navbar')
+    , Login = require('./login')
+    , Send = require('./send').Send
+    , Receive = require('./receive2').Receive
+    , Overview = require('./overview')
+    , History = require('./history')
+    , Device = require('./device-detect')
+    , FastClick = require('fastclick')
 
 $(document).ready(function() {
+  Device.detect();
+
+  FastClick(document.body);
+
   React.initializeTouchEvents(true);
   React.renderComponent(
     <App />,
