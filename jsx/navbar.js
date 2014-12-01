@@ -13,21 +13,25 @@ var NavBar = React.createClass({
       }
     };
   },
+  getInitialState: function () {
+    return { active: false };
+  },
   handleClick: function(tabName, event) {
+    this.setState({active: false});
     this.props.navigateHandler.call(this, tabName);
   },
-  componentDidMount: function () {
-      var node = this.getDOMNode(),
-          $node = $(node),
-          $toggler = $node.find('.icon-toggle');
-      $toggler.attr('gumby-trigger', '#nav1 > ul');
-      Gumby.initialize(['toggles', 'switches', 'navbar']);
+  toggle: function (evt) {
+    evt.preventDefault();
+    this.setState({active: ! this.state.active});
   },
   render: function() {
-    var self = this;
+    var self = this
+      , active = this.state.active ? ' active' : ''
+      , toggleIconClasses = 'toggle icon-toggle ' + active
+      , ulClasses = 'ten columns ' + active
     return (
-        <div className="row navbar metro" id="nav1">
-          <a className="toggle icon-toggle" data-gumby-trigger="#nav1 > ul" href="#">
+        <div className="row navbar metro">
+          <a className={toggleIconClasses} onClick={this.toggle} href="#">
             <i className="icon-menu"></i>
           </a>
             <h1 className="two columns logo">
@@ -38,7 +42,7 @@ var NavBar = React.createClass({
                   this.props.testnet && <p className="testnet-message">TESTNET</p>
               }
             </h1>
-            <ul className="ten columns">
+            <ul className={ulClasses}>
             {
                 this.props.tabs.map(function (tab) {
                     var activeClass = 
@@ -46,7 +50,6 @@ var NavBar = React.createClass({
                         clickHandler = self.handleClick.bind(self,tab);
                     return <li key={tab} className={activeClass}>
                       <a href={ '#' + tab.toLowerCase() }
-                          onTouchStart={clickHandler}
                           onClick={clickHandler}>
                       {tab}</a></li>;
                 })
