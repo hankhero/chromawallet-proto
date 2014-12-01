@@ -8,13 +8,16 @@
     <author email="info@chromaway.com" href="http://www.chromaway.com">
         ChromaWay AB
     </author>
+
     <content src="index.html" />
     <access origin="*" />
+
+    <preference name="DisallowOverscroll" value="true"/>
+
     <feature name="BarcodeScanner">
         <param name="id" value="com.phonegap.plugins.barcodescanner" />
     </feature>
     <feature name="Clipboard">
         <param name="id" value="com.verso.cordova.clipboard" />
     </feature>
-
 </widget>
