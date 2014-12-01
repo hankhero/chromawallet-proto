@@ -190,6 +190,22 @@ module.exports = function(grunt) {
                    {
                        src: 'mobile/images/generated/android/icon-96-xhdpi.png',
                        dest: 'mobile/platforms/android/res/drawable-xhdpi/icon.png'
+                   },
+                   {
+                       src: 'mobile/images/generated/android/icon-72-hdpi.png',
+                       dest: 'mobile/platforms/android/res/drawable-hdpi/icon.png'
+                   },
+                   {
+                       expand: true,
+                       cwd: 'mobile/images/generated/ios/',
+                       src: '*',
+                       dest: 'mobile/platforms/ios/ChromaWallet/Resources/icons/'
+                   },
+                   {
+                       expand: true,
+                       cwd: 'mobile/images/generated/ios-splash/',
+                       src: '*',
+                       dest: 'mobile/platforms/ios/ChromaWallet/Resources/splash/'
                    }
                 ]                
             },
