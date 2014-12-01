@@ -23,11 +23,10 @@ var CopyableLongString = React.createClass({
         this.setState({clicked: false});
     },
     copyAddress : function () {
-        if (window.cordova && cordova.plugins.clipboard) {
+        if (window.cordova && cordova.plugins && cordova.plugins.clipboard) {
             cordova.plugins.clipboard.copy(this.props.string);
         }
         this.showClick();
-
     },
     render: function () {
         var animation,
@@ -35,7 +34,7 @@ var CopyableLongString = React.createClass({
         if (this.state.clicked) {
             animation =this.getAnimatedStyle("my-custom-animation");
         }
-        if (window.cordova && cordova.plugins.clipboard) {
+        if (window.cordova && cordova.plugins && cordova.plugins.clipboard) {
             return (
                     <div style={animation} className="overview__address-line">
                     <span className="overview__address-hash">{address}</span>
