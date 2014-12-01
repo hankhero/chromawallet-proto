@@ -176,7 +176,8 @@ input[type=number].numeric-password {
 
 //Platform tweaks //
 
-.ios .row.header {
+.ios .row.header,
+.ios .row.navbar  {
   padding-top: 10px;
 }
 
