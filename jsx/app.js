@@ -20,7 +20,7 @@ $(document).ready(function() {
   FastClick(document.body);
 
   React.initializeTouchEvents(true);
-  React.renderComponent(
+  React.render(
     <App />,
     document.getElementById('main')
   );
