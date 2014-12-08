@@ -120,7 +120,7 @@ var ConfirmTransaction = React.createClass({
                 <p>Enter your pin to send the transaction.</p>
                 <form onSubmit={this.onSubmit}>
                   <div className="field">
-                    <input className="input numeric-password" placeholder="PIN"
+                    <input className="input numeric-password numeric-input-no-spinner" placeholder="PIN"
                            type="number" value={this.state.pin}
                            onChange={this.onChangePin}/>
                   </div>
