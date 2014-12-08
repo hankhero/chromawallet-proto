@@ -149,6 +149,22 @@ describe('validator', function() {
       });
     });
 
-  
- 
+  describe('Mnemonic', function () {
+    it('compare words should be lowercase', function () {
+      expect(Validator.normalizeMnemonicWord('Metro')).to.equal('metro')
+    })
+    it('remove trailing and ending whitespace', function () {
+      expect(Validator.normalizeMnemonicWord('   Metro ' + '\t')).to.equal('metro')
+    })
+    it('compare words should be lowercase', function () {
+      expect(Validator.normalizeMnemonicWord('Metro')).to.equal('metro')
+    })
+
+    it ('Normalize mnemonic phrase', function () {
+      var before = '  the   Long AND winding road ',
+          after = 'the long and winding road';
+      expect(Validator.normalizeMnemonicPhrase(before)).to.equal(after)
+    })
+    
+  })
 });

@@ -1,6 +1,8 @@
 /** @jsx React.DOM */
 
 var React = require('react/addons'); //With addons
+var Validator = require('./validator');
+
 
 var ClickLink = React.createClass({
     render: function () {
@@ -401,11 +403,14 @@ var CreateWallet = React.createClass({
         });
     },
     recoverMnemonicChange: function (event) {
-        var pp = event.target.value;
-        this.setState({mnemonic: pp});
+        var rawMnemonic = event.target.value;
+        
+        this.setState({mnemonic: rawMnemonic});
     },
     getMnemonic: function () {
-        return this.state.mnemonic; 
+        var rawMnemonic = this.state.mnemonic,
+            mnemonic = Validator.normalizeMnemonicPhrase(rawMnemonic);
+        return mnemonic;
     },
     validateWizard: function () {
         if (this.state.recoverMode) {
@@ -455,8 +460,11 @@ var CreateWallet = React.createClass({
     },
     clickValidateVerify: function (event) {
         event.preventDefault();
-        var thirdWord = this.getMnemonic().split(' ')[2];
-        if (this.state.verifyValue === thirdWord) {
+        var thirdWord = this.getMnemonic().split(' ')[2],
+            safeThirdWord = Validator.normalizeMnemonicWord(thirdWord),
+            safeUserInput = Validator.normalizeMnemonicWord(this.state.verifyValue);
+
+        if (safeThirdWord === safeUserInput) {
             this.startInitializeWallet();
         } else {
             this.setState({showVerifyError: true});
@@ -540,7 +548,7 @@ var CreateWallet = React.createClass({
         );
     },
     renderWizard: function () {
-        var mnemonic = this.getMnemonic(),
+        var mnemonic = this.state.mnemomic,
         tabNames = this.state.tabNames,
         activeTab = this.state.activeTab,
         recoverMode = this.state.recoverMode,

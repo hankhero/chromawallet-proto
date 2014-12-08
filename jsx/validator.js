@@ -1,3 +1,6 @@
+
+var _ = require('lodash')
+
 var validateAmount = function (amount) {
    return /^ *[0-9]+([.,][0-9]+)? *$/.test(amount); //See testcases
 };
@@ -20,11 +23,24 @@ var normalizeAddress = function (address) {
   return address.replace(/\s/g, '');
 };
 
+var normalizeMnemonicWord = function (wordString) {
+  return wordString.replace(/\s/g, '').toLowerCase()
+}
+
+var normalizeMnemonicPhrase = function (phrase) {
+  var parts = phrase.split(/\s+/),
+      words = _.filter(parts, function (x) { return x !== "" }),
+      clean = _.map(words, normalizeMnemonicWord),
+      asString = clean.join(" ");
+  return asString;
+}
 
 module.exports = {
-    validateAmount: validateAmount,
-    normalizeAmount: normalizeAmount,
-    validateAddress: validateAddress,
-    normalizeAddress: normalizeAddress,
-    validateAmountInProgress: validateAmountInProgress
-};
+  validateAmount: validateAmount
+  , normalizeAmount: normalizeAmount
+  , validateAddress: validateAddress
+  , normalizeAddress: normalizeAddress
+  , validateAmountInProgress: validateAmountInProgress
+  , normalizeMnemonicWord: normalizeMnemonicWord
+  , normalizeMnemonicPhrase: normalizeMnemonicPhrase
+}
