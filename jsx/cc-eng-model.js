@@ -47,7 +47,7 @@ try {
 
 console.log('done!');
 
-wallet.on('error', function (error) { console.log(error) })
+wallet.on('error', function (error) { throw error })
 
 module.exports = {
     wallet: wallet,
