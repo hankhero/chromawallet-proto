@@ -22,12 +22,18 @@ var gold = {
     },
     euro = {
         "colorDescs": ["epobc:0261b29b587020eeca15f831a5290a9d81038851da4365689be04e588ce58c66:0:303510"],
-        "monikers": ["euro"], 
+        "monikers": ["euro"],
         "unit": 100
     },
-    systemAssetDefinitions = [euro, gold],
-walletOptions = {
-    testnet: true, 
+    systemAssetDefinitions = [euro, gold];
+
+var walletOptions = {
+    testnet: true,
+    networks: [
+        {name: 'ElectrumJS', args: [{testnet: true, url: 'ws://devel.hz.udoidio.info:8784'}]},
+        {name: 'Chain',      args: [{testnet: true, apiKeyId: 'DEMO-4a5e1e4', requestTimeout: 15000}]}
+    ],
+    blockchain: {name: 'Naive'},
     systemAssetDefinitions: systemAssetDefinitions
 };
 
@@ -35,7 +41,7 @@ try {
     var wallet = new ccWalletEngine(walletOptions);
 } catch (err) {
     if (console.error) {
-        console.error(err);
+        console.error(err.stack || err);
     }
     var ok = window.confirm("An unexpected error occurred when starting. Do you agree to wipe out local data and retry so you can recover your wallet. Only click OK if you have access to your secret phrase and password.");
     if (ok) {
@@ -46,7 +52,9 @@ try {
 
 console.log('done!');
 
-wallet.on('error', function (error) { throw error })
+wallet.on('error', function (err) {
+    console.log(err.stack || err);
+});
 
 module.exports = {
     wallet: wallet,
