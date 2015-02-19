@@ -24,11 +24,13 @@ var AssetBalanceView = React.createClass({
 
 var Overview = React.createClass({
   render: function () {
+    var wallet = this.props.wallet;
     var assets = this.props.wallet.getAssetModels();
     return (
        <div className="overview">
          <div className="row module-heading">
            <h2>Overview</h2>
+            { (wallet.isUpdating()) ? <p>updating</p> : <p></p> }        
          </div>
          {
              assets.map(function (assetModel) {
