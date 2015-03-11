@@ -28,29 +28,24 @@ var gold = {
     systemAssetDefinitions = [euro, gold];
 
 var walletOptions = {
-    networkName: 'testnet',
+    testnet: true,
     networks: [
         {
-            name: 'ElectrumWS',
+            name: 'ElectrumJS',
             args: [{
-                networkName: 'testnet'
+                testnet: true
             }]
         },
         {
             name: 'Chain',
             args: [{
-                networkName: 'testnet',
+                testnet: true,
                 apiKeyId: 'DEMO-4a5e1e4',
                 requestTimeout: 15000
             }]
         }
     ],
-    blockchain: {
-        name: 'Verified',
-        storage: 'LocalStorage',
-        useSPV: true,
-        usePreSavedChunkHashes: true
-    },
+    blockchain: {name: 'Naive'},
     systemAssetDefinitions: systemAssetDefinitions
 };
 
