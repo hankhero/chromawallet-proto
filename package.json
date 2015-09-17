@@ -6,7 +6,7 @@
     "url": "git://github.com/chromaway/chromawallet-proto.git"
   },
   "dependencies": {
-    "cc-wallet-engine": "git://github.com/chromaway/cc-wallet-engine.git#v0.5.1",
+    "cc-wallet-engine": "git://github.com/chromaway/cc-wallet-engine.git#v0.6.13",
     "grunt": "0.4.5",
     "grunt-shell": "0.7.0",
     "grunt-contrib-clean": "0.6.0",
@@ -23,6 +23,7 @@
     "react": "0.12.1",
     "qrcode.react": "0.3.0",
     "react-animate": "0.1.5",
+    "lodash": "^2.4.1",      
     "fastclick": "^1.0.6",
     "store": "1.3.16"
   },
