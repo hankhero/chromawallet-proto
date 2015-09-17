@@ -7,7 +7,7 @@ var Validator = require('./validator');
 var ClickLink = React.createClass({
     render: function () {
        return (
-         <a href="#" 
+         <a href="#"
             onClick={this.props.onClick}
            >{this.props.text}</a>
        );
@@ -59,12 +59,12 @@ var WelcomePanel = React.createClass({
 	            <h3>Setup and security</h3>
 	            <p>We will now take you through some steps to secure your wallet. This is necessary for your own security. It does not take long.</p>
 	            <p><em>It is very important!</em></p>
-	            <p>(If you instead need to <ClickLink 
+	            <p>(If you instead need to <ClickLink
                     onClick={this.props.recoverClick} text="recover a wallet, click here" />)</p>
                 {
-                    this.props.loginClick && 
+                    this.props.loginClick &&
                         <p>(If you instead want to <ClickLink
-                            onClick={this.props.loginClick} 
+                            onClick={this.props.loginClick}
                         text='login, click here'/></p>
                 }
 	          </div>
@@ -115,14 +115,14 @@ var makeSecretValidatorForm = function (options) {
             lengthTooLong = (secret.length > form.maxLength),
             mismatch = secret !== repeat,
             valueError = form.secretErrorCheck(secret),
-            everythingOk = (lengthValid && !mismatch && 
+            everythingOk = (lengthValid && !mismatch &&
                             !valueError && !lengthTooLong),
             errorMessage = '';
-    
+
         if (mismatch) {
             errorMessage = prefix + 's do not match';
         }
-    
+
         if (!lengthValid) {
             errorMessage = prefix + ' is too short';
         }
@@ -139,27 +139,27 @@ var makeSecretValidatorForm = function (options) {
         form.errorMessage = errorMessage;
         form.everythingOk = everythingOk;
     };
-    
+
     form.secretErrorCheck = options.secretErrorCheck || function (secret) {
-        //Override and return an error message 
+        //Override and return an error message
         return false;
     };
-    
+
     form.handleSecretChange= function (event) {
         form.secret = event.target.value;
         form.showError = false;
         form.validate();
         form.stateChangeCallback(form);
     };
-    
-    
+
+
     form.handleRepeatChange = function (event) {
         form.repeat = event.target.value;
         form.showError = false;
         form.validate();
         form.stateChangeCallback(form);
     };
-    
+
     // When you click on the Next button, error messages are show
     form.clickValidateHandler = function (event) {
         event.preventDefault();
@@ -182,7 +182,7 @@ var PinPanel = React.createClass({
             lengthValid = form.lengthValid,
             errorMessage = form.errorMessage,
             showError = form.showError,
-            message = this.props.message || 
+            message = this.props.message ||
                           'The PIN is a number sequence you use every time you send an asset.',
             nextClick = this.props.nextClick;
         if (! everythingOk) {
@@ -200,7 +200,7 @@ var PinPanel = React.createClass({
                      <input className="input" value={secret}
                          onChange={handleSecretChange}
                          placeholder="At least four digits."
-                         type="password" 
+                         type="password"
                          pattern="[0-9]*"
                      />
                    </div>
@@ -224,7 +224,7 @@ var PinPanel = React.createClass({
                   showError && errorMessage &&
                     <p className="warning alert">{errorMessage}</p>
           }
-    
+
               </div>
             </div>
              <NextButton onClick={nextClick} />
@@ -246,8 +246,8 @@ var PasswordPanel = React.createClass({
             lengthValid = form.lengthValid,
             errorMessage = form.errorMessage,
             showError = form.showError,
-            message = this.props.message || 
-                'The password is used every time you open your wallet. ' + 
+            message = this.props.message ||
+                'The password is used every time you open your wallet. ' +
                 'It should be difficult but possible to remember.',
             nextClick = this.props.nextClick;
 
@@ -278,14 +278,14 @@ var PasswordPanel = React.createClass({
                           type="password" />
                        </div>
                     </div>
-    
+
           }
                  </form>
           {
                   showError && errorMessage &&
                     <p className="warning alert">{errorMessage}</p>
           }
-    
+
               </div>
             </div>
             <NextButton onClick={nextClick} />
@@ -308,7 +308,7 @@ var RecoverWelcomePanel = React.createClass({
                     onClick={this.props.normalClick}
                     text="create a wallet, click here"/>)</p>
                 {
-                    this.props.loginClick && 
+                    this.props.loginClick &&
                         <p>(If you instead want to <ClickLink
                             onClick={this.props.loginClick}
                             text="login, click here" />)</p>
@@ -376,6 +376,7 @@ var CreateWallet = React.createClass({
                     }
                 }
             });
+
         return {
             activeTab: this.normalTabNames[0],
             tabNames: this.normalTabNames,
@@ -404,7 +405,7 @@ var CreateWallet = React.createClass({
     },
     recoverMnemonicChange: function (event) {
         var rawMnemonic = event.target.value;
-        
+
         this.setState({mnemonic: rawMnemonic});
     },
     getMnemonic: function () {
@@ -414,12 +415,12 @@ var CreateWallet = React.createClass({
     },
     validateWizard: function () {
         if (this.state.recoverMode) {
-            if (this.state.passwordForm.everythingOk && 
+            if (this.state.passwordForm.everythingOk &&
                 this.state.pinForm.everythingOk) {
                 this.startInitializeWallet();
             }
         } else {
-            if (this.state.passwordForm.everythingOk && 
+            if (this.state.passwordForm.everythingOk &&
                 this.state.pinForm.everythingOk) {
                 this.setState({verifyMnemonicMode: true});
             }
@@ -454,7 +455,7 @@ var CreateWallet = React.createClass({
                   alert('Could not initialize wallet. This is not supposed to happen. Restarting, sorry');
                   self.restart();
               }
-          }, 
+          },
           100 // allow component to update
         );
     },
@@ -500,7 +501,7 @@ var CreateWallet = React.createClass({
                     { renderfunc() }
                   </div>
                 </div>
-            );     
+            );
         }
     },
     renderLoading: function () {
@@ -569,7 +570,7 @@ var CreateWallet = React.createClass({
                       };
                       c['tab-' + tab] = true;
                       return (
-                          <li className={cx(c)}><ClickLink 
+                          <li className={cx(c)}><ClickLink
                               onClick={changeTab}
                               text={i}/></li>
                       );
@@ -577,7 +578,7 @@ var CreateWallet = React.createClass({
               }
               </ul>
               {
-                  normalMode && 
+                  normalMode &&
                       <div>
                      <WelcomePanel nextClick={this.nextTab}
                          recoverClick={this.recoverClick}
@@ -595,10 +596,10 @@ var CreateWallet = React.createClass({
                       </div>
               }
               {
-                  recoverMode && 
+                  recoverMode &&
                       <div>
-                     <RecoverWelcomePanel nextClick={this.nextTab} 
-                         normalClick={this.setNormalMode} 
+                     <RecoverWelcomePanel nextClick={this.nextTab}
+                         normalClick={this.setNormalMode}
                          loginClick={this.props.showLogin}
                          active = {activeTab === tabNames[0]} />
                      <RecoverMnemonicPanel nextClick={this.nextTab}
@@ -640,21 +641,21 @@ var ConfirmPassword = React.createClass({
     },
     handleCreateRecover: function (event) {
       // this.props.showCreateRecover();
-      
+
       // XXX temporary hack because wallet cannot be reinitialized
       localStorage.clear();
       location.reload(false);
     },
     //componentDidMount: function () {
         //This works but I'm not sure it is good.
-        // 
+        //
         // requires ionic keyboard plugin
-        // 
+        //
         //var inp =  this.refs.passwordInput;
         //if (inp) {
         //    inp.getDOMNode().focus();
         //    try {
-        //        cordova.plugins.Keyboard.show();                
+        //        cordova.plugins.Keyboard.show();
         //    } catch (x) {}
         //}
     //},
@@ -669,12 +670,12 @@ var ConfirmPassword = React.createClass({
                     self.props.wallet.resetSeed(self.state.password);
                     self.setState({ loading: false });
                   } catch (e) {
-                    self.setState({ 
+                    self.setState({
                       loading: false,
                       errorMessage: "Wrong password!"
                     });
                   }
-                }, 
+                },
                 100 // allow component to update
             );
         }, 300); //Allow keyboard to animate away on android
@@ -723,7 +724,7 @@ var ConfirmPassword = React.createClass({
                         &nbsp;
                       </p>
                       <p>
-                        If you instead want to create or recover a wallet,&nbsp; 
+                        If you instead want to create or recover a wallet,&nbsp;
                         <ClickLink
                            onClick={this.handleCreateRecover}
                            text="click here"
@@ -749,19 +750,19 @@ var Login = React.createClass({
   showLogin: function () {
       this.setState({reseeding: true});
   },
-  showCreateRecover: function () { 
+  showCreateRecover: function () {
       this.setState({reseeding: false});
   },
   render: function () {
       if (this.state.reseeding){
         return (
-          <ConfirmPassword wallet={this.props.wallet} 
+          <ConfirmPassword wallet={this.props.wallet}
                            showCreateRecover={this.showCreateRecover}
                            />
         );
       } else {
         return (
-          <CreateWallet wallet={this.props.wallet} 
+          <CreateWallet wallet={this.props.wallet}
                         showLogin={this.state.loginPossible && this.showLogin}
           />
         );
