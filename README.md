@@ -17,10 +17,9 @@ Build statuses
 --------------
 ChromaWay (master):
 
-[![Build Status](https://travis-ci.org/chromaway/chromawallet-proto.svg)](https://travis-ci.org/chromaway/chromawallet-proto)
+[![build status](https://img.shields.io/travis/chromaway/chromawallet-proto.svg?branch=master&style=flat-square)](http://travis-ci.org/chromaway/chromawallet-proto)
 
 Developer forks:
 
 Hankhero master:
-[![Build status](https://travis-ci.org/hankhero/chromawallet-proto.svg?branch=master)](https://travis-ci.org/hankhero/chromawallet-proto)
-
+[![build status](https://img.shields.io/travis/hankhero/chromawallet-proto.svg?branch=master&style=flat-square)](http://travis-ci.org/hankhero/chromawallet-proto)

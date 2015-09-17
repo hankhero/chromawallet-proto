@@ -6,25 +6,24 @@
     "url": "git://github.com/chromaway/chromawallet-proto.git"
   },
   "dependencies": {
-    "cc-wallet-engine": "git://github.com/chromaway/cc-wallet-engine.git#v0.1.3",
-    "fastclick": "^1.0.3",
-    "grunt": "~0.4.1",
-    "grunt-browserify": "",
-    "grunt-cache-bust": "^0.4.0",
-    "grunt-concurrent": "^1.0.0",
-    "grunt-contrib-clean": "^0.6.0",
-    "grunt-contrib-compass": "^0.9.0",
-    "grunt-contrib-connect": "^0.8.0",
-    "grunt-contrib-copy": "",
-    "grunt-react": "",
-    "grunt-shell": "^0.7.0",
-    "grunt-subgrunt": "^0.4.0",
-    "install": "^0.1.7",
-    "lodash": "^2.4.1",
-    "npm": "^1.4.21",
-    "qrcode.react": "git://github.com/hankhero/qrcode.react.git",
-    "react": "",
-    "react-animate": "^0.1.5",
+    "cc-wallet-engine": "git://github.com/chromaway/cc-wallet-engine.git#v0.5.1",
+    "grunt": "0.4.5",
+    "grunt-shell": "0.7.0",
+    "grunt-contrib-clean": "0.6.0",
+    "grunt-concurrent": "1.0.0",
+    "grunt-contrib-copy": "0.7.0",
+    "grunt-contrib-connect": "0.8.0",
+    "grunt-contrib-compass": "0.9.1",
+    "grunt-browserify": "3.2.0",
+    "grunt-cache-bust": "0.4.4",
+    "grunt-react": "0.10.0",
+    "grunt-subgrunt": "0.4.1",
+    "install": "0.1.7",
+    "npm": "1.4.28",
+    "react": "0.12.1",
+    "qrcode.react": "0.3.0",
+    "react-animate": "0.1.5",
+    "fastclick": "^1.0.6",
     "store": "1.3.16"
   },
   "devDependencies": {
@@ -32,7 +31,7 @@
     "grunt-mocha-test": "0.12.1",
     "mocha": "1.21.5",
     "grunt-contrib-watch": "git://github.com/jacksonrayhamilton/grunt-contrib-watch.git",
-    "grunt-beep": "^0.3.1",
-    "grunt-sync": "^0.2.0"
+    "grunt-beep": "0.3.1",
+    "grunt-sync": "0.2.1"
   }
 }
