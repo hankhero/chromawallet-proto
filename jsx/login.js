@@ -548,12 +548,13 @@ var CreateWallet = React.createClass({
         );
     },
     renderWizard: function () {
-        var mnemonic = this.state.mnemomic,
+        var mnemonic = this.state.mnemonic,
         tabNames = this.state.tabNames,
         activeTab = this.state.activeTab,
         recoverMode = this.state.recoverMode,
         normalMode = ! recoverMode,
         self = this;
+
         return (
             <section className="pill tabs">
               <ul className="tab-nav">
